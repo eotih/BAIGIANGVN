@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { generateToken, isAdmin, isAuthenticated } = require('../utils/auth');
-const UserController = require('../controllers/user.controller');
+const { show, getById, update, deleteUser } = require('../controllers/user.controller');
 
-router.get('/', isAuthenticated, isAdmin, UserController.show)
-router.get('/:id', isAuthenticated, isAdmin, UserController.getById)
-router.post('/:id', isAuthenticated, isAdmin, UserController.create)
-router.put('/:id', isAuthenticated, isAdmin, UserController.update)
-router.delete('/:id', isAuthenticated, isAdmin, UserController.delete)
+router.get('/', isAuthenticated, isAdmin, show)
+router.get('/:id', isAuthenticated, isAdmin, getById)
+router.put('/:id', isAuthenticated, isAdmin, update)
+router.delete('/:id', isAuthenticated, isAdmin, deleteUser)
 
 
 module.exports = router

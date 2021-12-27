@@ -52,11 +52,11 @@ class OrderController {
         }
     }
     // [DELETE] /orders/:id
-    delete(req, res, next) {
+    deleteOrder(req, res, next) {
         Order.deleteOne({ _id: req.params.id })
             .then(order => {
                 if (order) {
-                    res.json(order);
+                    res.status(200).json(order);
                 }
                 else {
                     res.json({ message: 'Order not found' });
@@ -69,7 +69,7 @@ class OrderController {
         Order.findById(req.params.id)
             .then(order => {
                 if (order) {
-                    res.json(order);
+                    res.status(200).json(order);
                 }
                 else {
                     res.json({ message: 'Order not found' });
@@ -77,5 +77,19 @@ class OrderController {
             })
             .catch(next);
     }
+    //[GET] /orders/user/:id
+    getByUserId(req, res, next) {
+        Order.find({ user: req.params.id })
+            .then(orders => {
+                if (orders) {
+                    res.status(200).json(orders);
+                }
+                else {
+                    res.status(200).json({ message: 'No orders found' });
+                }
+            })
+            .catch(next);
+    }
+
 }
 module.exports = new OrderController;

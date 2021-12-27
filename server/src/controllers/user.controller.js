@@ -9,16 +9,6 @@ class UserController {
             })
             .catch(next);
     }
-    // [POST] /users
-    create(req, res, next) {
-        const user = new User(req.body);
-        user
-            .save()
-            .then(user => {
-                res.json(user);
-            })
-            .catch(next);
-    }
     // [PUT] /users/:id
     update(req, res, next) {
         User.updateOne({ _id: req.params.id }, req.body)
@@ -28,7 +18,7 @@ class UserController {
             .catch(next);
     }
     // [DELETE] /users/:id
-    delete(req, res, next) {
+    deleteUser(req, res, next) {
         User.deleteOne({ _id: req.params.id })
             .then(user => {
                 res.json(user);

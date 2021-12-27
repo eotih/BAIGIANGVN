@@ -27,7 +27,7 @@ const Order = new Schema(
         itemsPrice: { type: Number, required: true },
         totalPrice: { type: Number, required: true },
         user: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'User',
             required: true,
         }, // user who made the order

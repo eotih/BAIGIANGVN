@@ -11,9 +11,10 @@ const Lesson = new Schema(
         slide: { type: Number, required: true }, // (Powerpoint đó có bao nhiêu slide)
         week: { type: Number, required: true }, // Tuần thứ mấy (Tuần 1, Tuần 2, ...)
         subject: { type: String, required: true }, // Môn học (Toán Văn Sử Địa)
-        class: { type: String, required: true }, // Lớp mấy (1 - 5)
+        grade: { type: String, required: true }, // Lớp mấy (1 - 5)
         link: { type: String, required: true }, // Link để download file
         category: { type: String, required: true },
+        sale: { type: Number, required: true, default: 0 },
         isActive: { type: Boolean, default: true, required: true },
     },
     {
