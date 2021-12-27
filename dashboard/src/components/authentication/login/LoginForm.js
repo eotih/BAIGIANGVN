@@ -16,10 +16,11 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import axios from '../../../constants/axios';
 
 // ----------------------------------------------------------------------
 
-export default function LoginForm() {
+export default function LoginForm({ setToken }) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -36,7 +37,20 @@ export default function LoginForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+      axios
+        .post('/auth/login', formik.values)
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200) {
+            setToken(res.data.token);
+            navigate('/');
+          } else {
+            alert('Login failed');
+          }
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
     }
   });
 

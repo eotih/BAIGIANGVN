@@ -39,7 +39,7 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Login() {
+export default function Login({ setToken }) {
   return (
     <RootStyle title="Login | Minimal-UI">
       <AuthLayout>
@@ -68,7 +68,7 @@ export default function Login() {
           </Stack>
           <AuthSocial />
 
-          <LoginForm />
+          <LoginForm setToken={setToken} />
 
           <MHidden width="smUp">
             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
