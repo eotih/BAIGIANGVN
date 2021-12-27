@@ -6,7 +6,7 @@ const UserController = require('../controllers/user.controller');
 router.get('/', isAuthenticated, isAdmin, UserController.show)
 router.get('/:id', isAuthenticated, isAdmin, UserController.getById)
 router.post('/:id', isAuthenticated, isAdmin, UserController.create)
-router.put('/', isAuthenticated, isAdmin, UserController.update)
+router.put('/:id', isAuthenticated, isAdmin, UserController.update)
 router.delete('/:id', isAuthenticated, isAdmin, UserController.delete)
 
 
