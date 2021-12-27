@@ -1,40 +1,43 @@
+// material
 import { Box, Grid, Container, Typography } from '@mui/material';
+// components
 import Page from '../components/Page';
 import {
   AppTasks,
+  AppNewUsers,
   AppBugReports,
+  AppItemOrders,
   AppNewsUpdate,
+  AppWeeklySales,
   AppOrderTimeline,
   AppCurrentVisits,
   AppWebsiteVisits,
   AppTrafficBySite,
   AppCurrentSubject,
-  NoiCom1L,
-  NoiCom1L8,
-  NoiCom05L,
-  MayLocKhongKhi,
   AppConversionRates
 } from '../components/_dashboard/app';
 
+// ----------------------------------------------------------------------
+
 export default function DashboardApp() {
   return (
-    <Page title="Dashboard | Hàng nội địa Nhật">
+    <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
         <Box sx={{ pb: 5 }}>
           <Typography variant="h4">Hi, Welcome back</Typography>
         </Box>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <NoiCom05L />
+            <AppWeeklySales />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <NoiCom1L />
+            <AppNewUsers />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <NoiCom1L8 />
+            <AppItemOrders />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <MayLocKhongKhi />
+            <AppBugReports />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>

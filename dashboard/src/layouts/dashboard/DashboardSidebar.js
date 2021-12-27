@@ -1,6 +1,5 @@
-/* eslint-disable array-callback-return */
 import PropTypes from 'prop-types';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
@@ -12,7 +11,7 @@ import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
 import sidebarConfig from './SidebarConfig';
-import { AccountContext } from '../../Context/AccountContext';
+import account from '../../_mocks_/account';
 
 // ----------------------------------------------------------------------
 
@@ -42,7 +41,7 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  const account = useContext(AccountContext);
+
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -65,19 +64,17 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
-          {account ? (
-            <AccountStyle>
-              <Avatar src={account.Image} alt="photoURL" />
-              <Box sx={{ ml: 2 }}>
-                <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                  {account.FullName}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {account.Email}
-                </Typography>
-              </Box>
-            </AccountStyle>
-          ) : null}
+          <AccountStyle>
+            <Avatar src={account.photoURL} alt="photoURL" />
+            <Box sx={{ ml: 2 }}>
+              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                {account.displayName}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                {account.role}
+              </Typography>
+            </Box>
+          </AccountStyle>
         </Link>
       </Box>
 
@@ -99,26 +96,26 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         >
           <Box
             component="img"
-            src="/static/H.png"
+            src="/static/illustrations/illustration_avatar.png"
             sx={{ width: 100, position: 'absolute', top: -50 }}
           />
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">
-              Lê Trọng Hiếu
+              Get more?
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Hàng nội địa Nhật
+              From only $69
             </Typography>
           </Box>
 
           <Button
             fullWidth
-            href="https://www.facebook.com/eotihvn/"
+            href="https://material-ui.com/store/items/minimal-dashboard/"
             target="_blank"
             variant="contained"
           >
-            Go to the moon
+            Upgrade to Pro
           </Button>
         </Stack>
       </Box>

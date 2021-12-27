@@ -3,11 +3,11 @@ import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { ProductMoreMenu } from '.';
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 //
 import Label from '../../Label';
+import ColorPreview from '../../ColorPreview';
 
 // ----------------------------------------------------------------------
 
@@ -24,90 +24,40 @@ const ProductImgStyle = styled('img')({
 ShopProductCard.propTypes = {
   product: PropTypes.object
 };
-const convertQuantity = (quantity) => {
-  if (quantity === 0) {
-    return (
-      <>
-        <Label
-          variant="filled"
-          color="warning"
-          sx={{
-            zIndex: 9,
-            top: 16,
-            left: 16,
-            position: 'absolute',
-            textTransform: 'uppercase'
-          }}
-        >
-          Low stock
-        </Label>
-      </>
-    );
-  }
-  if (quantity < 5) {
-    return (
-      <Label
-        variant="filled"
-        color="warning"
-        sx={{
-          zIndex: 9,
-          top: 16,
-          left: 16,
-          position: 'absolute',
-          textTransform: 'uppercase'
-        }}
-      >
-        Low stock
-      </Label>
-    );
-  }
-  return (
-    <Label
-      variant="filled"
-      color="success"
-      sx={{
-        zIndex: 9,
-        top: 16,
-        left: 16,
-        position: 'absolute',
-        textTransform: 'uppercase'
-      }}
-    >
-      In stock
-    </Label>
-  );
-};
-const convertPriceToPriceSale = (price, priceSale) => price - price * priceSale;
+
 export default function ShopProductCard({ product }) {
-  const { ProductID, Name, Thumbnail, Price, Discount, ThuongHieu, Quantity, Slug } = product;
+  const { name, cover, price, colors, status, priceSale } = product;
+
   return (
-    <Card sx={{ height: '100%' }}>
+    <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        <Label
-          variant="filled"
-          sx={{
-            zIndex: 9,
-            top: 16,
-            right: 16,
-            position: 'absolute',
-            textTransform: 'uppercase'
-          }}
-        >
-          <ProductMoreMenu Product={product} />
-        </Label>
-        {convertQuantity(Quantity)}
-        <ProductImgStyle alt={Name} src={Thumbnail} />
+        {status && (
+          <Label
+            variant="filled"
+            color={(status === 'sale' && 'error') || 'info'}
+            sx={{
+              zIndex: 9,
+              top: 16,
+              right: 16,
+              position: 'absolute',
+              textTransform: 'uppercase'
+            }}
+          >
+            {status}
+          </Label>
+        )}
+        <ProductImgStyle alt={name} src={cover} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to={`./edit/${Slug}`} color="inherit" underline="hover" component={RouterLink}>
+        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
-            {Name}
+            {name}
           </Typography>
-          <img alt="thuong hieu" style={{ width: '100px', height: '100%' }} src={ThuongHieu} />
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <ColorPreview colors={colors} />
           <Typography variant="subtitle1">
             <Typography
               component="span"
@@ -117,10 +67,10 @@ export default function ShopProductCard({ product }) {
                 textDecoration: 'line-through'
               }}
             >
-              {Price && fCurrency(Price)}
+              {priceSale && fCurrency(priceSale)}
             </Typography>
             &nbsp;
-            {fCurrency(convertPriceToPriceSale(Price, Discount))}
+            {fCurrency(price)}
           </Typography>
         </Stack>
       </Stack>

@@ -1,17 +1,11 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-import * as React from 'react';
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
-import { LoadingButton } from '@mui/lab';
 // material
 import {
-  Input,
-  Box,
-  Modal,
   Card,
   Table,
   Stack,
@@ -24,8 +18,6 @@ import {
   Container,
   Typography,
   TableContainer,
-  TextField,
-  Select,
   TablePagination
 } from '@mui/material';
 // components
@@ -86,9 +78,6 @@ export default function User() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -141,17 +130,6 @@ export default function User() {
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
-
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
 
   return (
     <Page title="User | Minimal-UI">
@@ -233,51 +211,6 @@ export default function User() {
 
                           <TableCell align="right">
                             <UserMoreMenu />
-                            <Modal
-                              open={open}
-                              sx={{
-                                '& .MuiTextField-root': { m: 1, width: '25ch' },
-                                '& .MuiSelect-root': { m: 1, width: '10ch' }
-                              }}
-                              onClose={handleClose}
-                              aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description"
-                            >
-                              <Box sx={style}>
-                                <Typography id="modal-modal-title" variant="h6" component="h2">
-                                  Edit Account
-                                </Typography>
-                                <TextField label="FullName" variant="outlined" />
-                                <TextField label="Phone" variant="outlined" />
-                                <TextField label="Email" variant="outlined" />
-                                <TextField label="Password" variant="outlined" />
-                                <TextField label="Address" variant="outlined" />
-                                <Select label="Role" variant="outlined" />
-                                <label htmlFor="contained-button-file">
-                                  <Input
-                                    id="contained-button-file"
-                                    type="file"
-                                    onChange={(e) => {
-                                      const { files } = e.target;
-                                      const reader = new FileReader();
-                                      reader.readAsDataURL(files[0]);
-                                      reader.onload = (e) => {};
-                                    }}
-                                  />
-                                  <Button variant="contained" component="span">
-                                    Upload Image
-                                  </Button>
-                                </label>
-                                <LoadingButton
-                                  fullWidth
-                                  size="large"
-                                  type="submit"
-                                  variant="contained"
-                                >
-                                  Edit Account
-                                </LoadingButton>
-                              </Box>
-                            </Modal>
                           </TableCell>
                         </TableRow>
                       );

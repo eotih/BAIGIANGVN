@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { useRef, useState, useContext } from 'react';
+import { useRef, useState } from 'react';
 import homeFill from '@iconify/icons-eva/home-fill';
 import personFill from '@iconify/icons-eva/person-fill';
 import settings2Fill from '@iconify/icons-eva/settings-2-fill';
@@ -10,7 +10,7 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 // components
 import MenuPopover from '../../components/MenuPopover';
 //
-import { AccountContext } from '../../Context/AccountContext';
+import account from '../../_mocks_/account';
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ const MENU_OPTIONS = [
   {
     label: 'Profile',
     icon: personFill,
-    linkTo: '/dashboard/profile'
+    linkTo: '#'
   },
   {
     label: 'Settings',
@@ -35,9 +35,9 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
-  const account = useContext(AccountContext);
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -67,7 +67,7 @@ export default function AccountPopover() {
           })
         }}
       >
-        <Avatar src={account.Image} alt="photoURL" />
+        <Avatar src={account.photoURL} alt="photoURL" />
       </IconButton>
 
       <MenuPopover
@@ -76,16 +76,14 @@ export default function AccountPopover() {
         anchorEl={anchorRef.current}
         sx={{ width: 220 }}
       >
-        {account ? (
-          <Box sx={{ my: 1.5, px: 2.5 }}>
-            <Typography variant="subtitle1" noWrap>
-              {account.FullName}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-              {account.Email}
-            </Typography>
-          </Box>
-        ) : null}
+        <Box sx={{ my: 1.5, px: 2.5 }}>
+          <Typography variant="subtitle1" noWrap>
+            {account.displayName}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+            {account.email}
+          </Typography>
+        </Box>
 
         <Divider sx={{ my: 1 }} />
 

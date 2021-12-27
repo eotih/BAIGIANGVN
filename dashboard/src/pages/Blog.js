@@ -4,10 +4,10 @@ import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Grid, Button, Container, Stack, Typography } from '@mui/material';
 // components
-import Page from '../../components/Page';
-import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../../components/_dashboard/blog';
+import Page from '../components/Page';
+import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../components/_dashboard/blog';
 //
-import POSTS from '../../_mocks_/blog';
+import POSTS from '../_mocks_/blog';
 
 // ----------------------------------------------------------------------
 
