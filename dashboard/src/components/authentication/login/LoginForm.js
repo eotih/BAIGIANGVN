@@ -42,8 +42,8 @@ export default function LoginForm() {
         .post('/auth/login', formik.values)
         .then((res) => {
           if (res.status === 200) {
-            setToken(res.data.token);
             alert('Đăng nhập thành công!');
+            setToken(res.data.token);
             navigate('/');
           } else {
             alert('Login failed');
