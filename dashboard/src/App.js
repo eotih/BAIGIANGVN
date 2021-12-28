@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import useToken from './services/useToken';
 
 import { AccountProvider } from './context/AccountContext';
+import { UserContextProvider } from './context/UserContext/UserContext';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -24,10 +25,12 @@ export default function App() {
   return (
     <ThemeConfig>
       <AccountProvider removeToken={removeToken} token={token}>
-        <ScrollToTop />
-        <GlobalStyles />
-        <BaseOptionChartStyle />
-        <Router />
+        <UserContextProvider>
+          <ScrollToTop />
+          <GlobalStyles />
+          <BaseOptionChartStyle />
+          <Router />
+        </UserContextProvider>
       </AccountProvider>
     </ThemeConfig>
   );

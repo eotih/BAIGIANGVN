@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { isAdmin, isAuthenticated } = require('../utils/auth');
-const {show, getByUserId, getById, create, pay, deleteOrder} = require('../controllers/order.controller');
+const {show, getByUserId, getById, create, deleteOrder} = require('../controllers/order.controller');
 
 router.get('/', isAuthenticated, isAdmin, show)
 router.get('/:id', isAuthenticated, getById)
-router.put('/user/:id', isAuthenticated, getByUserId)
-router.post('/:id', isAuthenticated, create)
-router.put('/:id/pay', isAuthenticated, pay)
+router.post('/', isAuthenticated, create)
+router.get('/user/:id', isAuthenticated, getByUserId)
 router.delete('/:id', isAuthenticated, isAdmin, deleteOrder)
 
 

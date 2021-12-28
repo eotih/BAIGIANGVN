@@ -1,7 +1,8 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import * as Yup from 'yup';
+import { useFormik, Form, FormikProvider } from 'formik';
+import { useState, useContext, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -17,27 +18,36 @@ import {
   TableCell,
   Container,
   Typography,
+  Modal,
+  InputAdornment,
+  IconButton,
+  TextField,
+  Box,
   TableContainer,
   TablePagination
 } from '@mui/material';
 // components
+import { LoadingButton } from '@mui/lab';
+import eyeFill from '@iconify/icons-eva/eye-fill';
+import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
+import { UserContext } from '../context/UserContext/UserContext';
+import { getUser, createUser, deleteUser } from '../context/UserContext/ConnectApi';
+
 //
-import USERLIST from '../_mocks_/user';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: '' }
+  { _id: 'name', label: 'Name', alignRight: false },
+  { _id: 'email', label: 'email', alignRight: false },
+  { _id: 'mobile', label: 'Mobile', alignRight: false },
+  { _id: 'money', label: 'Money', alignRight: false },
+  { _id: 'isAdmin', label: 'IsAdmin', alignRight: false },
+  { _id: '' }
 ];
 
 // ----------------------------------------------------------------------
@@ -76,8 +86,16 @@ export default function User() {
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
+  const [open, setOpen] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [showPassword, setShowPassword] = useState(false);
+  const { user, dispatch } = useContext(UserContext);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  useEffect(() => {
+    getUser(dispatch);
+  }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -87,7 +105,7 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = user.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -124,21 +142,130 @@ export default function User() {
   const handleFilterByName = (event) => {
     setFilterName(event.target.value);
   };
+  const RegisterSchema = Yup.object().shape({
+    name: Yup.string().min(2, 'Quá ngắn!').max(50, 'Quá dài!').required('Vui lòng nhập họ và tên'),
+    mobile: Yup.string()
+      .min(10, 'Quá ngắn!')
+      .max(10, 'Quá dài!')
+      .required('Vui lòng nhập số điện thoại'),
+    email: Yup.string()
+      .email('Email phải là một địa chỉ email hợp lệ')
+      .required('Vui lòng nhập email'),
+    password: Yup.string().required('Password is required')
+  });
+  const style = {
+    position: 'relative',
+    borderRadius: '10px',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4
+  };
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      mobile: '',
+      password: ''
+    },
+    validationSchema: RegisterSchema,
+    onSubmit: async () => {
+      await createUser(dispatch, formik.values);
+    }
+  });
+  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - user.length) : 0;
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
-
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(user, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
     <Page title="User | Minimal-UI">
+      <Modal
+        open={open}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <FormikProvider value={formik}>
+          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <Box sx={style}>
+              <Stack spacing={1}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Add Degree
+                </Typography>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                  <TextField
+                    fullWidth
+                    label="Họ và tên"
+                    {...getFieldProps('name')}
+                    error={Boolean(touched.name && errors.name)}
+                    helperText={touched.name && errors.name}
+                  />
+
+                  <TextField
+                    fullWidth
+                    label="Số điện thoại"
+                    {...getFieldProps('mobile')}
+                    error={Boolean(touched.mobile && errors.mobile)}
+                    helperText={touched.mobile && errors.mobile}
+                  />
+                </Stack>
+
+                <TextField
+                  fullWidth
+                  autoComplete="username"
+                  type="email"
+                  label="Email address"
+                  {...getFieldProps('email')}
+                  error={Boolean(touched.email && errors.email)}
+                  helperText={touched.email && errors.email}
+                />
+
+                <TextField
+                  fullWidth
+                  autoComplete="current-password"
+                  type={showPassword ? 'text' : 'password'}
+                  label="Mật khẩu"
+                  {...getFieldProps('password')}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                          <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  error={Boolean(touched.password && errors.password)}
+                  helperText={touched.password && errors.password}
+                />
+                <LoadingButton
+                  loading={isSubmitting}
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                >
+                  Add Degree
+                </LoadingButton>
+              </Stack>
+            </Box>
+          </Form>
+        </FormikProvider>
+      </Modal>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
           <Button
+            onClick={handleOpen}
             variant="contained"
             component={RouterLink}
             to="#"
@@ -156,13 +283,13 @@ export default function User() {
           />
 
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer sx={{ minW_idth: 800 }}>
               <Table>
                 <UserListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={user.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -171,13 +298,13 @@ export default function User() {
                   {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                      const { _id, name, email, mobile, money, image, isAdmin } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
 
                       return (
                         <TableRow
                           hover
-                          key={id}
+                          key={_id}
                           tabIndex={-1}
                           role="checkbox"
                           selected={isItemSelected}
@@ -191,26 +318,18 @@ export default function User() {
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={name} src={avatarUrl} />
+                              <Avatar alt={name} src={image} />
                               <Typography variant="subtitle2" noWrap>
                                 {name}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{company}</TableCell>
-                          <TableCell align="left">{role}</TableCell>
-                          <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                          <TableCell align="left">
-                            <Label
-                              variant="ghost"
-                              color={(status === 'banned' && 'error') || 'success'}
-                            >
-                              {sentenceCase(status)}
-                            </Label>
-                          </TableCell>
-
+                          <TableCell align="left">{email}</TableCell>
+                          <TableCell align="left">{mobile}</TableCell>
+                          <TableCell align="left">{money}</TableCell>
+                          <TableCell align="left">{isAdmin ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="right">
-                            <UserMoreMenu />
+                            <UserMoreMenu data={row} />
                           </TableCell>
                         </TableRow>
                       );
@@ -237,7 +356,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={user.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
