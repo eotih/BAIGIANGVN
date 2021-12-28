@@ -48,6 +48,7 @@ class OrderController {
                         })
                         const createdOrder = await order.save();
                         user.money -= totalPrice;
+                        user.deposited += totalPrice;
                         await user.save();
                         return res.status(200).json({ message: 'Order created', order: createdOrder });
                     }

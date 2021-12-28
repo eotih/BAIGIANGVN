@@ -124,7 +124,7 @@ class LessonController {
                     category: category,
                 })
                     .then(lesson => {
-                        res.json(lesson);
+                        res.status(200).json(lesson);
                     })
                     .catch(next);
             }

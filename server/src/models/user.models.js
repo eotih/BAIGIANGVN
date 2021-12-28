@@ -9,6 +9,7 @@ const User = new Schema(
         image: { type: String, default: '' },
         mobile: { type: String, required: true },
         money: { type: Number, default: 0, min: 0 },
+        deposited: { type: Number, default: 0, min: 0 },
         isAdmin: { type: Boolean, default: false, required: true },
     },
     {
