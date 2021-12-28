@@ -13,13 +13,14 @@ class AuthController {
                     name: user.name,
                     email: user.email,
                     isAdmin: user.isAdmin,
-                    isSeller: user.isSeller,
                     token: generateToken(user),
                 });
                 return;
             } else {
                 res.status(401).send({ message: 'Invalid password' });
             }
+        } else {
+            res.status(404).send({ message: 'User not found' });
         }
 
     }
@@ -37,8 +38,6 @@ class AuthController {
             name: createdUser.name,
             email: createdUser.email,
             isAdmin: createdUser.isAdmin,
-            isSeller: user.isSeller,
-            token: generateToken(createdUser),
         });
     }
     async resetPassword(req, res, next) {
