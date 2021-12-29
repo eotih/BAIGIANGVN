@@ -1,7 +1,6 @@
 const User = require('../models/user.models');
 const { generateToken } = require('../utils/auth');
 const bcrypt = require('bcryptjs');
-
 class AuthController {
     async login(req, res, next) {
         const { email, password } = req.body;
@@ -9,11 +8,6 @@ class AuthController {
         if (user) {
             if (bcrypt.compareSync(password, user.password)) {
                 res.send({
-                    _id: user._id,
-                    name: user.name,
-                    image: user.image,
-                    email: user.email,
-                    isAdmin: user.isAdmin,
                     token: generateToken(user),
                 });
                 return;
@@ -44,6 +38,7 @@ class AuthController {
                 mobile: createdUser.mobile,
                 money: createdUser.money,
                 isAdmin: createdUser.isAdmin,
+                message: 'User created successfully',
             });
         }
     }
@@ -57,6 +52,7 @@ class AuthController {
         } else {
             res.status(404).send({ message: 'User not found' });
         }
-    }
+    }  
+    
 }
 module.exports = new AuthController();

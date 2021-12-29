@@ -21,14 +21,21 @@ class UserController {
                     });
                 }
                 else {
-                    user.name = req.body.name;
-                    user.email = req.body.email;
-                    user.mobile = req.body.mobile;
-                    user.save()
-                        .then(user => {
-                            res.json(user);
-                        })
-                        .catch(next);
+                    const { name, email, mobile } = req.body;
+                    if (!name || !email || !mobile) {
+                        res.status(400).json({
+                            message: 'Please provide all the required fields'
+                        });
+                    } else {
+                        user.name = name;
+                        user.email = email;
+                        user.mobile = mobile;
+                        user.save()
+                            .then(user => {
+                                res.json(user);
+                            })
+                            .catch(next);
+                    }
                 }
             })
             .catch(next);
@@ -63,19 +70,11 @@ class UserController {
     // [DELETE] /users/:id
     async deleteUser(req, res, next) {
         const user = await User.findById(req.params.id);
-        if (!user) {
-            res.status(404).json({
-                message: 'User not found'
-            });
-        }
-        else {
-            user.remove()
-                .then(() => {
-                    res.status(200).json({
-                        message: 'User deleted'
-                    });
-                })
-                .catch(next);
+        if (user) {
+            const deleteUser = await user.remove();
+            res.send({ message: 'User Deleted', user: deleteUser });
+        } else {
+            res.send({ message: 'User not found' });
         }
     }
     // [GET] /users/:id

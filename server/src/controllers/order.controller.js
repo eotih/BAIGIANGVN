@@ -16,7 +16,7 @@ class OrderController {
     }
     // [POST] /orders
     async create(req, res, next) {
-        const { orderItems, paymentMethod, itemsPrice, totalPrice, userId } = req.body;
+        const { orderItems, paymentMethod, itemsPrice, totalPrice } = req.body;
         if (orderItems.length === 0) {
             return res.status(400).json({
                 message: 'Order must have at least one item'
@@ -40,8 +40,7 @@ class OrderController {
                     for (let i = 0; i < orderItems.length; i++) {
                         const order = new Order({
                             orderItems: orderItems[i],
-                            // user: req.user._id,
-                            user: userId,
+                            user: req.user._id,
                             paymentMethod: paymentMethod,
                             totalPrice: totalPrice,
 
