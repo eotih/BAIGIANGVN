@@ -5,8 +5,14 @@ class NewController {
     // [GET] /News
     show(req, res, next) {
         New.find().sort({ createdAt: -1 })
-            .then(News => {
-                res.json(News);
+            .then(news => {
+                if (news) {
+                    res.status(200).json(News);
+                } else {
+                    res.status(404).json({
+                        message: 'News not found'
+                    });
+                }
             })
             .catch(next);
     }
@@ -107,7 +113,7 @@ class NewController {
         });
     }
     // [DELETE] /News/:id
-    async deleteNew(req, res, next) {
+    deleteNew(req, res, next) {
         // check in folder assets/ and remove file and image
         New.findById(req.params.id)
             .then(New => {
@@ -122,7 +128,7 @@ class NewController {
                         return ('File deleted successfully');
                     });
                 });
-                await New.remove();
+                New.remove();
                 res.status(200).json({
                     message: 'Delete New successfully'
                 });

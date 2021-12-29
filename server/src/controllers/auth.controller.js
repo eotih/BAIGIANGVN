@@ -41,6 +41,8 @@ class AuthController {
                 _id: createdUser._id,
                 name: createdUser.name,
                 email: createdUser.email,
+                mobile: createdUser.mobile,
+                money: createdUser.money,
                 isAdmin: createdUser.isAdmin,
             });
         }

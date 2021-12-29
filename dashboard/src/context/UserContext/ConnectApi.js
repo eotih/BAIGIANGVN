@@ -13,18 +13,15 @@ import {
   getUserSuccess
 } from './UserAction';
 import axios from '../../constants/axios';
+import { configNormal } from '../ConfigHeader';
 
 const getUser = async (dispatch) => {
   dispatch(getUserStart());
   try {
-    const user = await axios.get('/user', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    });
+    const user = await axios.get('/user', configNormal);
     dispatch(getUserSuccess(user.data));
   } catch (error) {
-    dispatch(getUserFailure());
+    dispatch(getUserFailure(error.response.data.message));
   }
 };
 const createUser = async (dispatch, user) => {
@@ -33,33 +30,26 @@ const createUser = async (dispatch, user) => {
     const newUser = await axios.post('/auth/register', user);
     dispatch(createUserSuccess(newUser.data));
   } catch (error) {
-    dispatch(createUserFailure(error));
+    dispatch(createUserFailure(error.response.data.message));
   }
 };
 const updateUser = async (dispatch, user) => {
   dispatch(updateUserStart());
   try {
-    const updatedUser = await axios.put(`/user/${user.id}`, user, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    });
+    const updatedUser = await axios.put(`/user/${user._id}`, user, configNormal);
     dispatch(updateUserSuccess(updatedUser.data));
   } catch (error) {
-    dispatch(updateUserFailure());
+    dispatch(updateUserFailure(error.response.data.message));
   }
 };
 const deleteUser = async (dispatch, user) => {
+  console.log(user);
   dispatch(deleteUserStart());
   try {
-    const deletedUser = await axios.delete(`/user/${user._id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    });
+    const deletedUser = await axios.delete(`/user/${user}`, configNormal);
     dispatch(deleteUserSuccess(deletedUser.data));
   } catch (error) {
-    dispatch(deleteUserFailure());
+    dispatch(deleteUserFailure(error.response.data.message));
   }
 };
 

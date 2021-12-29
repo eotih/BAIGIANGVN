@@ -2,7 +2,7 @@ import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -34,8 +34,7 @@ import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../components/_dashboard/user';
-import { UserContext } from '../context/UserContext/UserContext';
-import { getUser, createUser, deleteUser } from '../context/UserContext/ConnectApi';
+import { getUser, createUser, userContext, deleteUser, updateUser } from '../context/UserContext';
 
 //
 
@@ -90,11 +89,11 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showPassword, setShowPassword] = useState(false);
-  const { user, dispatch } = useContext(UserContext);
+  const { user, dispatch, error, loading } = userContext();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   useEffect(() => {
-    getUser(dispatch);
+    dispatch(getUser(dispatch));
   }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
@@ -169,7 +168,9 @@ export default function User() {
     },
     validationSchema: RegisterSchema,
     onSubmit: async () => {
-      await createUser(dispatch, formik.values);
+      await dispatch(createUser(dispatch, formik.values));
+      formik.resetForm();
+      setOpen(false);
     }
   });
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
@@ -286,6 +287,7 @@ export default function User() {
             <TableContainer sx={{ minW_idth: 800 }}>
               <Table>
                 <UserListHead
+                  key={user._id}
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -329,7 +331,12 @@ export default function User() {
                           <TableCell align="left">{money}</TableCell>
                           <TableCell align="left">{isAdmin ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="right">
-                            <UserMoreMenu data={row} />
+                            <UserMoreMenu
+                              data={row}
+                              dispatch={dispatch}
+                              onDelete={deleteUser}
+                              onEdit={updateUser}
+                            />
                           </TableCell>
                         </TableRow>
                       );

@@ -1,4 +1,5 @@
 const UserReducer = (state, action) => {
+  console.log(action);
   switch (action.type) {
     case 'GET_USER_START':
       return {
@@ -25,15 +26,14 @@ const UserReducer = (state, action) => {
       };
     case 'CREATE_USER_SUCCESS':
       return {
-        ...state,
         loading: false,
-        user: action.user
+        user: [...state.user, action.user]
       };
     case 'CREATE_USER_FAILURE':
       return {
         ...state,
         loading: false,
-        error: 'Error creating user'
+        error: action.error
       };
     case 'UPDATE_USER_START':
       return {
