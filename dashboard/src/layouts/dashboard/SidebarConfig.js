@@ -10,28 +10,42 @@ const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
 
 const sidebarConfig = [
   {
-    title: 'dashboard',
+    title: 'trang chủ',
     path: '/dashboard/app',
     admin: false,
     icon: getIcon(pieChart2Fill)
   },
   {
-    title: 'user',
-    path: '/dashboard/user',
-    admin: true,
-    icon: getIcon(peopleFill)
-  },
-  {
-    title: 'product',
+    title: 'sản phẩm',
     path: '/dashboard/products',
-    admin: true,
+    admin: false,
     icon: getIcon(shoppingBagFill)
   },
   {
-    title: 'blog',
+    title: 'tin tức',
     path: '/dashboard/blog',
     admin: false,
     icon: getIcon(fileTextFill)
+  },
+  {
+    title: 'admin',
+    path: '/admin',
+    admin: true,
+    icon: getIcon(peopleFill),
+    children: [
+      {
+        title: 'users',
+        path: '/admin/users'
+      },
+      {
+        title: 'lessons',
+        path: '/admin/lessons'
+      },
+      {
+        title: 'news',
+        path: '/admin/news'
+      }
+    ]
   }
 ];
 

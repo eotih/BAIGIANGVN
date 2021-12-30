@@ -82,7 +82,28 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       </Box>
 
       <NavSection navConfig={sidebarConfig} />
-
+      <Box sx={{ borderWidth: 1 }} />
+      <Box sx={{ px: 2.5, py: 3 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          component={RouterLink}
+          to="/login"
+          onClick={() => {
+            localStorage.removeItem('token');
+            window.location.reload();
+          }}
+          sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          Đăng xuất
+        </Button>
+      </Box>
       <Box sx={{ flexGrow: 1 }} />
 
       <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>

@@ -8,7 +8,9 @@ import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
-import User from './pages/User';
+import UserAdmin from './pages/Admin/User';
+import NewAdmin from './pages/Admin/New';
+import LessonAdmin from './pages/Admin/Lessons';
 import NotFound from './pages/Page404';
 import isAdmin from './services/auth';
 
@@ -24,14 +26,27 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <DashboardApp /> },
         {
-          path: 'user',
-          element: admin ? <User /> : <NotFound />
-        },
-        {
           path: 'products',
-          element: admin ? <Products /> : <NotFound />
+          element: <Products />
         },
         { path: 'blog', element: <Blog /> }
+      ]
+    },
+    {
+      path: '/admin',
+      element: <DashboardLayout />,
+      children: [
+        { element: <Navigate to="/dashboard/app" replace /> },
+        { path: 'app', element: <DashboardApp /> },
+        {
+          path: 'users',
+          element: admin ? <UserAdmin /> : <NotFound />
+        },
+        {
+          path: 'lessons',
+          element: admin ? <LessonAdmin /> : <NotFound />
+        },
+        { path: 'news', element: admin ? <NewAdmin /> : <NotFound /> }
       ]
     },
     {

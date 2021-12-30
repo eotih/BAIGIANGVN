@@ -1,99 +1,92 @@
 import faker from 'faker';
 import PropTypes from 'prop-types';
+import { Icon } from '@iconify/react';
+import { formatDistance } from 'date-fns';
+import { Link as RouterLink } from 'react-router-dom';
+import arrowIosForwardFill from '@iconify/icons-eva/arrow-ios-forward-fill';
 // material
-import { Card, Typography, CardHeader, CardContent } from '@mui/material';
-import {
-  Timeline,
-  TimelineItem,
-  TimelineContent,
-  TimelineConnector,
-  TimelineSeparator,
-  TimelineDot
-} from '@mui/lab';
+import { Box, Stack, Link, Card, Button, Divider, Typography, CardHeader } from '@mui/material';
 // utils
-import { fDateTime } from '../../../utils/formatTime';
+import { mockImgCover } from '../../../utils/mockImages';
+//
+import Scrollbar from '../../Scrollbar';
 
 // ----------------------------------------------------------------------
 
-const TIMELINES = [
-  {
-    title: '1983, orders, $4220',
-    time: faker.date.past(),
-    type: 'order1'
-  },
-  {
-    title: '12 Invoices have been paid',
-    time: faker.date.past(),
-    type: 'order2'
-  },
-  {
-    title: 'Order #37745 from September',
-    time: faker.date.past(),
-    type: 'order3'
-  },
-  {
-    title: 'New order placed #XF-2356',
-    time: faker.date.past(),
-    type: 'order4'
-  },
-  {
-    title: 'New order placed #XF-2346',
-    time: faker.date.past(),
-    type: 'order5'
-  }
-];
+const NEWS = [...Array(5)].map((_, index) => {
+  const setIndex = index + 1;
+  return {
+    title: faker.name.title(),
+    description: faker.lorem.paragraphs(),
+    week: faker.random.number(),
+    subject: faker.name.title(),
+    grade: faker.random.number(),
+    category: faker.commerce.department(),
+    image: mockImgCover(setIndex),
+    postedAt: faker.date.soon()
+  };
+});
 
 // ----------------------------------------------------------------------
 
-OrderItem.propTypes = {
-  item: PropTypes.object,
-  isLast: PropTypes.bool
+NewsItem.propTypes = {
+  news: PropTypes.object.isRequired
 };
 
-function OrderItem({ item, isLast }) {
-  const { type, title, time } = item;
+function NewsItem({ news }) {
+  const { image, title, week, postedAt, grade } = news;
+
   return (
-    <TimelineItem>
-      <TimelineSeparator>
-        <TimelineDot
-          sx={{
-            bgcolor:
-              (type === 'order1' && 'primary.main') ||
-              (type === 'order2' && 'success.main') ||
-              (type === 'order3' && 'info.main') ||
-              (type === 'order4' && 'warning.main') ||
-              'error.main'
-          }}
-        />
-        {isLast ? null : <TimelineConnector />}
-      </TimelineSeparator>
-      <TimelineContent>
-        <Typography variant="subtitle2">{title}</Typography>
-        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-          {fDateTime(time)}
+    <Stack direction="row" alignItems="center" spacing={2}>
+      <Box
+        component="img"
+        alt={title}
+        src={image}
+        sx={{ width: 48, height: 48, borderRadius: 1.5 }}
+      />
+      <Box sx={{ minWidth: 240 }}>
+        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
+          <Typography variant="subtitle2" noWrap>
+            {title}
+          </Typography>
+        </Link>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+          Tuần: {week}, Lớp: {grade}
         </Typography>
-      </TimelineContent>
-    </TimelineItem>
+      </Box>
+      <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
+        {formatDistance(postedAt, new Date())}
+      </Typography>
+    </Stack>
   );
 }
 
 export default function AppOrderTimeline() {
   return (
-    <Card
-      sx={{
-        '& .MuiTimelineItem-missingOppositeContent:before': {
-          display: 'none'
-        }
-      }}
-    >
-      <CardHeader title="Order Timeline" />
-      <CardContent>
-        <Timeline>
-          {TIMELINES.map((item, index) => (
-            <OrderItem key={item.title} item={item} isLast={index === TIMELINES.length - 1} />
+    <Card>
+      <CardHeader title="Sản phẩm đang sale!" />
+
+      <Scrollbar>
+        <Stack spacing={3} sx={{ p: 3, pr: 0 }}>
+          {NEWS.map((news) => (
+            <NewsItem key={news.title} news={news} />
           ))}
-        </Timeline>
-      </CardContent>
+        </Stack>
+      </Scrollbar>
+
+      <Divider />
+
+      <Box sx={{ p: 2, textAlign: 'right' }}>
+        <Button
+          to="#"
+          size="small"
+          color="inherit"
+          component={RouterLink}
+          endIcon={<Icon icon={arrowIosForwardFill} />}
+        >
+          Xem tất cả
+        </Button>
+      </Box>
     </Card>
   );
 }

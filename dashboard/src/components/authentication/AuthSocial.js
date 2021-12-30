@@ -11,7 +11,6 @@ export default function AuthSocial() {
   const responseGoogle = async (response) => {
     const res = await axios.post('/auth/google', response.profileObj);
     if (res.status === 200) {
-      alert('Đăng nhập thành công!');
       setToken(res.data.token);
       window.location.href = '/';
     } else {
