@@ -1,13 +1,14 @@
 const jwt = require('jsonwebtoken');
 
 const generateToken = (user) => {
+    const { _id, name, email, isAdmin, money, image, deposited } = user;
     return jwt.sign(
         {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            isAdmin: user.isAdmin,
-            isSeller: user.isSeller,
+            _id: _id,
+            name: name,
+            email: email,
+            isAdmin: isAdmin,
+            image: image,
         },
         process.env.JWT_SECRET || 'somethingsecret',
         {
@@ -42,5 +43,11 @@ const isAdmin = (req, res, next) => {
         res.status(401).send({ message: 'Invalid Admin Token' });
     }
 };
-
-module.exports = { generateToken, isAuthenticated, isAdmin };
+const googleAuth = (req, res, next) => {
+    if (req.user && req.user.google) {
+        next();
+    } else {
+        res.status(401).send({ message: 'Invalid Google Token' });
+    }
+}
+module.exports = { generateToken, isAuthenticated, isAdmin, googleAuth };

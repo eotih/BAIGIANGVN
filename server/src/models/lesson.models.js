@@ -5,14 +5,13 @@ const Schema = mongoose.Schema;
 const Lesson = new Schema(
     {
         name: { type: String, required: true },
-        description: { type: String, required: true },
+        description: { type: String, required: true },//
         image: { type: String, required: true },
         price: { type: Number, required: true },
-        slide: { type: Number, required: true }, // (Powerpoint đó có bao nhiêu slide)
-        week: { type: Number, required: true }, // Tuần thứ mấy (Tuần 1, Tuần 2, ...)
-        subject: { type: String, required: true }, // Môn học (Toán Văn Sử Địa)
-        grade: { type: String, required: true }, // Lớp mấy (1 - 5)
-        link: { type: String, required: true }, // Link để download file
+        week: { type: Number, required: true }, 
+        subject: { type: String, required: true }, 
+        grade: { type: String, required: true },
+        link: { type: String, required: true }, //
         category: { type: String, required: true },
         sale: { type: Number, required: true, default: 0 },
         isActive: { type: Boolean, default: true, required: true },

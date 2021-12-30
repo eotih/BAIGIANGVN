@@ -1,6 +1,5 @@
 const User = require('../models/user.models');
 const bcrypt = require('bcryptjs');
-const fs = require('fs');
 
 class UserController {
     // [GET] /users
@@ -21,14 +20,13 @@ class UserController {
                     });
                 }
                 else {
-                    const { name, email, mobile } = req.body;
+                    const { name, mobile } = req.body;
                     if (!name || !email || !mobile) {
                         res.status(400).json({
                             message: 'Please provide all the required fields'
                         });
                     } else {
                         user.name = name;
-                        user.email = email;
                         user.mobile = mobile;
                         user.save()
                             .then(user => {
@@ -81,7 +79,7 @@ class UserController {
     getById(req, res, next) {
         User.findById(req.params.id)
             .then(user => {
-                res.json(user);
+                res.status(200).json(user);
             })
             .catch(next);
     }

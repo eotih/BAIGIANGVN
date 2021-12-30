@@ -52,7 +52,32 @@ class AuthController {
         } else {
             res.status(404).send({ message: 'User not found' });
         }
-    }  
-    
+    }
+    async loginWithGoogle(req, res, next) {
+        const { email, name, imageUrl, googleId } = req.body;
+        const user = await User.findOne({ email: email });
+        if (user) {
+            if (!user.googleId) {
+                user.googleId = googleId;
+                user.image = imageUrl;
+                await user.save();
+            }
+            res.status(200).send({
+                token: generateToken(user),
+            });
+        } else {
+            const newUser = new User({
+                name: name,
+                email: email,
+                image: imageUrl,
+                googleId: googleId,
+            });
+            const createdUser = await newUser.save();
+            res.status(200).send({
+                token: generateToken(createdUser),
+                message: 'User created successfully',
+            });
+        }
+    }
 }
 module.exports = new AuthController();
