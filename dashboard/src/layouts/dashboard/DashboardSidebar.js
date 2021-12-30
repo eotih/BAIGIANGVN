@@ -42,6 +42,7 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const account = accountContext();
+  const { name, image, money } = account.user;
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -67,13 +68,13 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.image} alt="photoURL" />
+            <Avatar src={image} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.name}
+                {name}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                Số dư: {fCurrency(account.money)} VND
+                Số dư: {fCurrency(money)} VND
               </Typography>
             </Box>
           </AccountStyle>

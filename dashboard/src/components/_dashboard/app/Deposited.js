@@ -1,10 +1,10 @@
 import { Icon } from '@iconify/react';
-import appleFilled from '@iconify/icons-ant-design/apple-filled';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
 // utils
-import { fShortenNumber } from '../../../utils/formatNumber';
+import { fCurrency } from '../../../utils/formatNumber';
+import { accountContext } from '../../../context/Hooks';
 
 // ----------------------------------------------------------------------
 
@@ -34,17 +34,16 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 1352831;
-
-export default function AppNewUsers() {
+export default function Deposited() {
+  const account = accountContext();
   return (
     <RootStyle>
       <IconWrapperStyle>
-        <Icon icon={appleFilled} width={24} height={24} />
+        <Icon icon="emojione-monotone:money-with-wings" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fCurrency(account.user.deposited)} VND</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        New Users
+        Số tiền đã nạp
       </Typography>
     </RootStyle>
   );

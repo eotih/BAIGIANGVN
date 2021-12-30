@@ -1,10 +1,10 @@
 import { Icon } from '@iconify/react';
-import androidFilled from '@iconify/icons-ant-design/android-filled';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
 // utils
-import { fShortenNumber } from '../../../utils/formatNumber';
+import { fCurrency } from '../../../utils/formatNumber';
+import { accountContext } from '../../../context/Hooks';
 
 // ----------------------------------------------------------------------
 
@@ -34,17 +34,16 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 714000;
-
-export default function AppWeeklySales() {
+export default function Money() {
+  const account = accountContext();
   return (
     <RootStyle>
       <IconWrapperStyle>
-        <Icon icon={androidFilled} width={24} height={24} />
+        <Icon icon="dashicons:money-alt" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fCurrency(account.user.money)} VND</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        Weekly Sales
+        Số dư
       </Typography>
     </RootStyle>
   );

@@ -1,6 +1,8 @@
 import { useEffect, useState, createContext } from 'react';
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
+import axios from '../constants/axios';
+import { configNormal } from './ConfigHeader';
 
 const AccountContext = createContext();
 AccountProvider.propTypes = {
@@ -10,6 +12,7 @@ AccountProvider.propTypes = {
 };
 function AccountProvider({ children, token, removeToken }) {
   const [account, setAccount] = useState([]);
+  const [user, setUser] = useState([]);
   // check invalid token jwt
   useEffect(() => {
     if (token) {
@@ -18,10 +21,22 @@ function AccountProvider({ children, token, removeToken }) {
         removeToken();
       } else {
         setAccount(decoded);
+        axios.get(`/user/${decoded._id}`, configNormal).then((res) => {
+          setUser(res.data);
+        });
       }
     }
   }, [removeToken, token]);
 
-  return <AccountContext.Provider value={account}>{children}</AccountContext.Provider>;
+  return (
+    <AccountContext.Provider
+      value={{
+        account,
+        user
+      }}
+    >
+      {children}
+    </AccountContext.Provider>
+  );
 }
 export { AccountContext, AccountProvider };
