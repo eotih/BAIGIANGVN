@@ -24,16 +24,15 @@ const MENU_OPTIONS = [
     label: 'Profile',
     icon: personFill,
     linkTo: '#'
-  },
-  {
-    label: 'Settings',
-    icon: settings2Fill,
-    linkTo: '#'
   }
+  // {
+  //   label: 'Settings',
+  //   icon: settings2Fill,
+  //   linkTo: '#'
+  // }
 ];
 
 // ----------------------------------------------------------------------
-
 export default function AccountPopover() {
   const account = accountContext();
   const anchorRef = useRef(null);
@@ -45,7 +44,10 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.reload();
+  };
   return (
     <>
       <IconButton
@@ -111,7 +113,7 @@ export default function AccountPopover() {
         ))}
 
         <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined">
+          <Button onClick={handleLogout} fullWidth color="inherit" variant="outlined">
             Logout
           </Button>
         </Box>

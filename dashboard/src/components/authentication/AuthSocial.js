@@ -1,27 +1,32 @@
-import { Icon } from '@iconify/react';
-import googleFill from '@iconify/icons-eva/google-fill';
-import twitterFill from '@iconify/icons-eva/twitter-fill';
-import facebookFill from '@iconify/icons-eva/facebook-fill';
+import { Stack, Divider, Typography } from '@mui/material';
+import GoogleLogin from 'react-google-login';
+import axios from '../../constants/axios';
+import useToken from '../../services/useToken';
 // material
-import { Stack, Button, Divider, Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
 export default function AuthSocial() {
+  const { setToken } = useToken();
+  const responseGoogle = async (response) => {
+    const res = await axios.post('/auth/google', response.profileObj);
+    if (res.status === 200) {
+      alert('Đăng nhập thành công!');
+      setToken(res.data.token);
+      window.location.href = '/';
+    } else {
+      alert('Login failed');
+    }
+  };
   return (
     <>
       <Stack direction="row" spacing={2}>
-        <Button fullWidth size="large" color="inherit" variant="outlined">
-          <Icon icon={googleFill} color="#DF3E30" height={24} />
-        </Button>
-
-        <Button fullWidth size="large" color="inherit" variant="outlined">
-          <Icon icon={facebookFill} color="#1877F2" height={24} />
-        </Button>
-
-        <Button fullWidth size="large" color="inherit" variant="outlined">
-          <Icon icon={twitterFill} color="#1C9CEA" height={24} />
-        </Button>
+        <GoogleLogin
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+          cookiePolicy="single_host_origin"
+        />
       </Stack>
 
       <Divider sx={{ my: 3 }}>

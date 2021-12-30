@@ -1,5 +1,4 @@
 const UserReducer = (state, action) => {
-  console.log(action);
   switch (action.type) {
     case 'GET_USER_START':
       return {
@@ -61,7 +60,7 @@ const UserReducer = (state, action) => {
       };
     case 'DELETE_USER_SUCCESS':
       return {
-        user: state.user.filter((user) => user._id !== action.user._id),
+        user: state.user.filter((user) => user._id !== action.user.user._id),
         loading: false,
         error: null
       };

@@ -21,7 +21,7 @@ const getUser = async (dispatch) => {
     const user = await axios.get('/user', configNormal);
     dispatch(getUserSuccess(user.data));
   } catch (error) {
-    dispatch(getUserFailure(error.response.data.message));
+    dispatch(getUserFailure(error));
   }
 };
 const createUser = async (dispatch, user) => {
@@ -43,7 +43,6 @@ const updateUser = async (dispatch, user) => {
   }
 };
 const deleteUser = async (dispatch, user) => {
-  console.log(user);
   dispatch(deleteUserStart());
   try {
     const deletedUser = await axios.delete(`/user/${user}`, configNormal);

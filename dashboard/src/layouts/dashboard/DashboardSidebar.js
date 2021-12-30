@@ -11,6 +11,7 @@ import NavSection from '../../components/NavSection';
 import { MHidden } from '../../components/@material-extend';
 //
 import { accountContext } from '../../context/Hooks';
+import { fCurrency } from '../../utils/formatNumber';
 import sidebarConfig from './SidebarConfig';
 
 // ----------------------------------------------------------------------
@@ -66,13 +67,13 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={account.image} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
                 {account.name}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                Số dư: {fCurrency(account.money)} VND
               </Typography>
             </Box>
           </AccountStyle>
@@ -103,20 +104,20 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">
-              Get more?
+              Bạn cần hỗ trợ
             </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               From only $69
-            </Typography>
+            </Typography> */}
           </Box>
 
           <Button
             fullWidth
-            href="https://material-ui.com/store/items/minimal-dashboard/"
+            href="https://zaloapp.com/qr/p/x4zlp3jm10m6"
             target="_blank"
             variant="contained"
           >
-            Upgrade to Pro
+            Liên hệ ngay
           </Button>
         </Stack>
       </Box>

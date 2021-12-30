@@ -1,12 +1,13 @@
+const token = `Bearer ${localStorage.getItem('token')}`;
 const configNormal = {
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('token')}`
+    Authorization: token
   }
 };
 const configFormData = {
   headers: {
     'Content-Type': 'multipart/form-data',
-    Authorization: `Bearer ${localStorage.getItem('token')}`
+    Authorization: token
   }
 };
 export { configNormal, configFormData };

@@ -89,13 +89,12 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showPassword, setShowPassword] = useState(false);
-  const { user, dispatch, error, loading } = userContext();
+  const { user, dispatch } = userContext();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   useEffect(() => {
     dispatch(getUser(dispatch));
   }, [dispatch]);
-
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -169,7 +168,6 @@ export default function User() {
     validationSchema: RegisterSchema,
     onSubmit: async () => {
       await dispatch(createUser(dispatch, formik.values));
-      formik.resetForm();
       setOpen(false);
     }
   });
@@ -198,7 +196,7 @@ export default function User() {
             <Box sx={style}>
               <Stack spacing={1}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Degree
+                  Add User
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <TextField
@@ -253,7 +251,7 @@ export default function User() {
                   type="submit"
                   variant="contained"
                 >
-                  Add Degree
+                  Add User
                 </LoadingButton>
               </Stack>
             </Box>
@@ -284,14 +282,13 @@ export default function User() {
           />
 
           <Scrollbar>
-            <TableContainer sx={{ minW_idth: 800 }}>
+            <TableContainer sx={{ minWidth: 800 }}>
               <Table>
                 <UserListHead
-                  key={user._id}
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={user.length}
+                  rowCount={filteredUsers.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}

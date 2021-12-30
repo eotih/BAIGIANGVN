@@ -15,6 +15,7 @@ import {
   ListItemText
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import PropTypes from 'prop-types';
 import { useFormik, Form, FormikProvider } from 'formik';
 import editFill from '@iconify/icons-eva/edit-fill';
 import { Link as RouterLink } from 'react-router-dom';
@@ -22,7 +23,12 @@ import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 // ----------------------------------------------------------------------
-
+UserMoreMenu.propTypes = {
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired
+};
 export default function UserMoreMenu({ data, onDelete, onEdit, dispatch }) {
   const { _id, name, email, mobile } = data;
   const ref = useRef(null);
