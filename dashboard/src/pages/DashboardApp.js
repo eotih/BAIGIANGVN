@@ -55,11 +55,11 @@ export default function DashboardApp() {
             <AppCurrentSubject />
           </Grid> */}
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={6} lg={6}>
             <NewPosts />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6} lg={6}>
             <SaleLesson />
           </Grid>
 

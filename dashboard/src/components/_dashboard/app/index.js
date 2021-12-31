@@ -10,3 +10,5 @@ export { default as AppTasks } from './AppTasks';
 export { default as AppTrafficBySite } from './AppTrafficBySite';
 export { default as AppWebsiteVisits } from './AppWebsiteVisits';
 export { default as Money } from './Money';
+export { default as Invest } from './Invest';
+export { default as Banks } from './Banks';

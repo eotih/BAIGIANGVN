@@ -28,6 +28,24 @@ const sidebarConfig = [
     icon: getIcon(fileTextFill)
   },
   {
+    title: 'tài khoản',
+    path: '/dashboard/taikhoan',
+    admin: false,
+    icon: getIcon('vs:profile')
+  },
+  {
+    title: 'nạp tiền',
+    path: '/dashboard/naptien',
+    admin: false,
+    icon: getIcon('si-glyph:money-coin')
+  },
+  {
+    title: 'lịch sử',
+    path: '/dashboard/lichsu',
+    admin: false,
+    icon: getIcon('fontisto:history')
+  },
+  {
     title: 'admin',
     path: '/admin',
     admin: true,

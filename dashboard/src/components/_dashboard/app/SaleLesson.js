@@ -45,7 +45,7 @@ function SaleLesson({ lesson }) {
         </Typography>
       </Box>
       <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
-        {convertTime(createdAt)} giờ
+        {convertTime(createdAt)} tiếng trước
       </Typography>
     </Stack>
   );
