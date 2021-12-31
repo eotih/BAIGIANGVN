@@ -8,13 +8,17 @@ const {
   update,
   deleteNews,
   get5News,
+  restore,
+  destroy,
 } = require("../controllers/news.controller");
 
 router.get("/", isAuthenticated, show);
-router.get("/:id", isAuthenticated, getById);
 router.get("/newest", isAuthenticated, get5News);
+router.get("/:id", isAuthenticated, getById);
 router.post("/", isAuthenticated, isAdmin, create);
+router.put('/:id/restore', isAuthenticated, isAdmin, restore)
 router.put("/:id", isAuthenticated, isAdmin, update);
 router.delete("/:id", isAuthenticated, isAdmin, deleteNews);
+router.delete("/:id/delete", isAuthenticated, isAdmin, destroy);
 
 module.exports = router;

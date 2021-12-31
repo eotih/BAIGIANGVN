@@ -10,7 +10,7 @@ class LessonController {
     }
     // [POST] /lessons
     async create(req, res, next) {
-        const { name, description, price, slide, subject, grade, category, sale } = req.body;
+        const { name, description, price, week, subject, grade, category, sale } = req.body;
         const lesson = await Lesson.findOne({ name: name });
         if (lesson) {
             res.status(400).json({
@@ -22,17 +22,7 @@ class LessonController {
                     message: 'Missing fields'
                 });
             } else {
-                const newLesson = new Lesson({
-                    name,
-                    description,
-                    price,
-                    week,
-                    subject,
-                    grade,
-                    category,
-                    image,
-                    sale
-                });
+                const newLesson = new Lesson(req.body);
                 newLesson.save()
                     .then(lesson => {
                         res.status(201).json(lesson);
@@ -43,7 +33,7 @@ class LessonController {
     }
     // [PUT] /lessons/:id
     async update(req, res, next) {
-        const { name, description, price, slide, subject, grade, category, sale } = req.body;
+        const { name, description, price, week, subject, grade, category, sale } = req.body;
         await Lesson.findById(req.params.id)
             .then(lesson => {
                 if (!lesson) {
@@ -51,47 +41,37 @@ class LessonController {
                         message: 'Lesson not found'
                     });
                 } else {
-                    if (!name || !description || !price || !slide || !subject || !grade || !category || !sale) {
-                        res.status(400).json({
-                            message: 'Missing fields'
-                        });
-                    } else {
-                        lesson.name = name;
-                        lesson.description = description;
-                        lesson.price = price;
-                        lesson.week = week;
-                        lesson.subject = subject;
-                        lesson.grade = grade;
-                        lesson.category = category;
-                        lesson.sale = sale;
-                        lesson.save()
-                            .then(lesson => {
-                                res.status(201).json(lesson);
-                            })
-                            .catch(next);
-                    }
+                    // if (!name || !description || !price || !week || !subject || !grade || !category || !sale) {
+                    //     res.status(400).json({
+                    //         message: 'Missing fields'
+                    //     });
+                    // } else {
+                    lesson.name = name;
+                    lesson.description = description;
+                    lesson.price = price;
+                    lesson.week = week;
+                    lesson.subject = subject;
+                    lesson.grade = grade;
+                    lesson.category = category;
+                    lesson.sale = sale;
+                    lesson.save()
+                        .then(lesson => {
+                            res.status(201).json(lesson);
+                        })
+                        .catch(next);
+                    // }
                 }
             })
     }
     // [DELETE] /lessons/:id
-    deleteLesson(req, res, next) {
-        // check in folder assets/ and remove file and image
-        Lesson.findById(req.params.id)
-            .then(lesson => {
-                if (!lesson) {
-                    res.status(404).json({
-                        message: 'Lesson not found'
-                    });
-                } else {
-                    lesson.remove()
-                        .then(() => {
-                            res.status(200).json({
-                                message: 'Lesson deleted'
-                            });
-                        })
-                        .catch(next);
-                }
-            })
+    async deleteLesson(req, res, next) {
+        const lesson = await Lesson.findById(req.params.id);
+        if (lesson) {
+            const deleteLesson = await lesson.remove();
+            res.send({ message: 'Lesson Deleted', lesson: deleteLesson });
+        } else {
+            res.send({ message: 'Lesson not found' });
+        }
     }
     // [GET] /lessons/:id
     getById(req, res, next) {

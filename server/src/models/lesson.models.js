@@ -10,7 +10,7 @@ const Lesson = new Schema(
         price: { type: Number, required: true },
         week: { type: Number, required: true }, 
         subject: { type: String, required: true }, 
-        grade: { type: String, required: true },
+        grade: { type: Number, required: true },
         link: { type: String, required: true }, //
         category: { type: String, required: true },
         sale: { type: Number, required: true, default: 0 },

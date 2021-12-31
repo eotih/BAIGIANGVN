@@ -1,14 +1,12 @@
 const News = require("../models/news.models");
-var formidable = require("formidable");
-const fs = require("fs");
 class NewController {
   // [GET] /News
-  show(req, res, next) {
-    News.find()
+  async show(req, res, next) {
+    await News.findWithDeleted()
       .sort({ createdAt: -1 })
       .then((news) => {
         if (news) {
-          res.status(200).json(News);
+          res.status(200).json(news);
         } else {
           res.status(404).json({
             message: "News not found",
@@ -17,9 +15,18 @@ class NewController {
       })
       .catch(next);
   }
+  async destroy(req, res, next) {
+    const news = await News.findWithDeleted(req.params.id);
+    if (news) {
+      await News.deleteOne({ _id: req.params.id });
+      res.send({ message: 'News Deleted', news: news });
+    } else {
+      res.send({ message: 'News not found' });
+    }
+  }
   // [POST] /News
   async create(req, res, next) {
-    const { title, description, image, link } = req.body;
+    const { title, description, image, category } = req.body;
     await News.findOne({ title: title })
       .then((news) => {
         if (news) {
@@ -31,8 +38,8 @@ class NewController {
             user: req.user._id,
             title: title,
             description: description,
+            category: category,
             image: image,
-            link: link,
           });
           newNews
             .save()
@@ -45,9 +52,9 @@ class NewController {
       .catch(next);
   }
   // [PUT] /News/:id
-  update(req, res, next) {
+  async update(req, res, next) {
     const { title, description, image, link } = req.body;
-    News.findById(req.params.id)
+    await News.findById(req.params.id)
       .then((news) => {
         if (!news) {
           res.status(404).json({
@@ -69,24 +76,27 @@ class NewController {
       .catch(next);
   }
   // [DELETE] /News/:id
-  deleteNews(req, res, next) {
-    News.findByIdAndDelete(req.params.id)
-      .then((news) => {
-        if (!news) {
-          res.status(404).json({
-            message: "News not found",
-          });
-        } else {
-          res.status(200).json({
-            message: "Delete success",
-          });
-        }
-      })
-      .catch(next);
+  async deleteNews(req, res, next) {
+    const news = await News.findById(req.params.id);
+    if (news) {
+      const deleteNews = await news.delete();
+      res.send({ message: 'News Deleted', news: deleteNews });
+    } else {
+      res.send({ message: 'News not found' });
+    }
+  }
+  async restore(req, res, next) {
+    const news = await News.findById(req.params.id);
+    if (news) {
+      await News.restore({ _id: req.params.id });
+      res.send({ message: 'News Restored', news: news });
+    } else {
+      res.send({ message: 'News not found' });
+    }
   }
   // [GET] /News/:id
-  getById(req, res, next) {
-    News.findById(req.params.id)
+  async getById(req, res, next) {
+    await News.findById(req.params.id)
       .sort({ createdAt: -1 })
       .then((news) => {
         if (!news) {
@@ -99,8 +109,8 @@ class NewController {
       })
       .catch(next);
   }
-  get5News(req, res, next) {
-    News.find()
+  async get5News(req, res, next) {
+    await News.find()
       .sort({ createdAt: -1 })
       .limit(5)
       .then((news) => {
@@ -109,7 +119,7 @@ class NewController {
             message: "News not found",
           });
         } else {
-          res.json(news);
+          res.status(200).json(news);
         }
       })
       .catch(next);
