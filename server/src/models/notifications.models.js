@@ -6,6 +6,7 @@ const Notifications = new Schema(
     description: { type: String, required: true },
     status: { type: String, required: true },
     type: { type: String, required: true },
+    isActive: { type: Boolean, required: true, default: true },
   },
   {
     timestamps: true,
