@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable react/prop-types */
 // import { useEffect } from 'react';
 // import Alert from '@mui/material/Alert';
@@ -11,16 +12,41 @@ import Scrollbar from '../../Scrollbar';
 // ----------------------------------------------------------------------
 
 export default function Banks({ bank }) {
-  const { name, logo, chinhanh, stk } = bank;
+  const { name, logo, branch, account_number, qr_code } = bank;
   const account = accountContext();
   return (
     <Card>
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3, pr: 3 }}>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Box sx={{ width: '100%' }}>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
               <Typography variant="h6">Thông tin ngân hàng</Typography>
               <Typography variant="body2">Nạp tiền vào tài khoản của bạn.</Typography>
+            </Box>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'end',
+                flexDirection: 'column'
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: '100%',
+                  maxWidth: '100px',
+                  height: 'auto'
+                }}
+                variant="square"
+                src={logo}
+                alt={name}
+              />
             </Box>
           </Stack>
         </Stack>
@@ -46,7 +72,7 @@ export default function Banks({ bank }) {
                   height: 'auto'
                 }}
                 variant="square"
-                src={logo}
+                src={qr_code}
                 alt={name}
               />
             </Box>
@@ -63,10 +89,10 @@ export default function Banks({ bank }) {
                 <b>Tên ngân hàng:</b> {name}
               </Typography>
               <Typography variant="body">
-                <b>Số tài khoản:</b> {stk}
+                <b>Số tài khoản:</b> {account_number}
               </Typography>
               <Typography variant="body">
-                <b>Chi nhánh:</b> {chinhanh}
+                <b>Chi nhánh:</b> {branch}
               </Typography>
               <Typography variant="body">
                 <b>ND Chuyển Khoản:</b>

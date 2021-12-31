@@ -1,42 +1,24 @@
 /* eslint-disable react/prop-types */
 // import { useEffect } from 'react';
 import Alert from '@mui/material/Alert';
-
+import { useEffect, useState } from 'react';
 // material
 import { Box, Stack, Card, Divider, Typography } from '@mui/material';
+import axios from '../../../constants/axios';
+import { configNormal } from '../../../context/ConfigHeader';
 // utils
 //
 import Scrollbar from '../../Scrollbar';
 // ----------------------------------------------------------------------
-const NOTIFICATIONS = [
-  // {
-  //   id: 1,
-  //   description:
-  //     'Vui Lòng Nạp Đúng Cú Pháp Nạp Tiền Để được nhận tiền nhanh nhất. Sau 15 Phút chưa thấy tiền vào tài khoản thì liên hệ ADMIN để được hỗ trợ!',
-  //   status: 'warning'
-  // },
-  {
-    id: 1,
-    description: 'Đây là cảnh báo',
-    status: 'warning'
-  },
-  {
-    id: 1,
-    description: 'Đây là thông báo',
-    status: 'success'
-  },
-  {
-    id: 1,
-    description: 'Đây là lỗi của bạn',
-    status: 'error'
-  },
-  {
-    id: 1,
-    description: 'Đây là thông tin',
-    status: 'info'
-  }
-];
+
 export default function Invest() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    axios.get('/notifications', configNormal).then((res) => {
+      const activeNotifications = res.data.filter((item) => item.isActive === true);
+      setData(activeNotifications);
+    });
+  }, []);
   return (
     <Card>
       <Scrollbar>
@@ -54,11 +36,17 @@ export default function Invest() {
       <Scrollbar>
         <Stack sx={{ p: 2, pr: 2 }}>
           <Stack direction="column" spacing={2}>
-            {NOTIFICATIONS.map((notification) => (
-              <Alert key={notification.id} variant="filled" severity={notification.status}>
-                {notification.description}
+            {data.length > 0 ? (
+              data.map((notification) => (
+                <Alert key={notification._id} variant="filled" severity={notification.status}>
+                  {notification.description}
+                </Alert>
+              ))
+            ) : (
+              <Alert variant="filled" severity="info">
+                Chưa có thông báo nào
               </Alert>
-            ))}
+            )}
           </Stack>
         </Stack>
       </Scrollbar>
