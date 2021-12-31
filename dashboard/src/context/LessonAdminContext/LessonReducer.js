@@ -15,7 +15,7 @@ const LessonReducer = (state, action) => {
       return {
         lesson: [],
         loading: false,
-        error: 'Error getting lesson'
+        error: action.error
       };
     case 'CREATE_LESSON_START':
       return {
@@ -52,7 +52,7 @@ const LessonReducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        error: 'Error updating lesson'
+        error: action.error
       };
     case 'DELETE_LESSON_START':
       return {
@@ -70,7 +70,7 @@ const LessonReducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        error: 'Error deleting lesson'
+        error: action.error
       };
     default:
       return state;

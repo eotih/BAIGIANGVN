@@ -10,7 +10,10 @@ import {
   updateNewsFailure,
   deleteNewsStart,
   deleteNewsSuccess,
-  deleteNewsFailure
+  deleteNewsFailure,
+  restoreNewsStart,
+  restoreNewsSuccess,
+  restoreNewsFailure
 } from './NewsAction';
 import axios from '../../constants/axios';
 import { configNormal } from '../ConfigHeader';
@@ -19,6 +22,15 @@ const getNews = async (dispatch) => {
   dispatch(getNewsStart());
   try {
     const news = await axios.get('/news', configNormal);
+    dispatch(getNewsSuccess(news.data));
+  } catch (error) {
+    dispatch(getNewsFailure(error));
+  }
+};
+const get5News = async (dispatch) => {
+  dispatch(getNewsStart());
+  try {
+    const news = await axios.get('/news/newest', configNormal);
     dispatch(getNewsSuccess(news.data));
   } catch (error) {
     dispatch(getNewsFailure(error));
@@ -51,5 +63,23 @@ const deleteNews = async (dispatch, news) => {
     dispatch(deleteNewsFailure(error.response.data.message));
   }
 };
+const destroyNews = async (dispatch, news) => {
+  dispatch(deleteNewsStart());
+  try {
+    const deletedNews = await axios.delete(`/news/${news}/delete`, configNormal);
+    dispatch(deleteNewsSuccess(deletedNews.data));
+  } catch (error) {
+    dispatch(deleteNewsFailure(error.response.data.message));
+  }
+};
+const restoreNews = async (dispatch, news) => {
+  dispatch(restoreNewsStart());
+  try {
+    const deletedNews = await axios.put(`/news/${news}/restore`, configNormal);
+    dispatch(restoreNewsSuccess(deletedNews.data));
+  } catch (error) {
+    dispatch(restoreNewsFailure(error.response.data.message));
+  }
+};
 
-export { getNews, createNews, updateNews, deleteNews };
+export { getNews, createNews, updateNews, deleteNews, get5News, destroyNews, restoreNews };

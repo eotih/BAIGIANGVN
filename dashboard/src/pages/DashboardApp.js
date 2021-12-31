@@ -7,9 +7,9 @@ import {
   Deposited,
   // AppBugReports,
   // AppItemOrders,
-  AppNewsUpdate,
+  NewPosts,
   Money,
-  AppOrderTimeline
+  SaleLesson
   // AppCurrentVisits,
   // AppWebsiteVisits,
   // AppTrafficBySite,
@@ -56,11 +56,11 @@ export default function DashboardApp() {
           </Grid> */}
 
           <Grid item xs={12} md={6} lg={8}>
-            <AppNewsUpdate />
+            <NewPosts />
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
-            <AppOrderTimeline />
+            <SaleLesson />
           </Grid>
 
           {/* <Grid item xs={12} md={6} lg={4}>

@@ -15,7 +15,7 @@ const NewReducer = (state, action) => {
       return {
         news: [],
         loading: false,
-        error: 'Error getting news'
+        error: action.error
       };
     case 'CREATE_NEWS_START':
       return {
@@ -50,7 +50,7 @@ const NewReducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        error: 'Error updating news'
+        error: action.error
       };
     case 'DELETE_NEWS_START':
       return {
@@ -68,7 +68,25 @@ const NewReducer = (state, action) => {
       return {
         ...state,
         loading: false,
-        error: 'Error deleting news'
+        error: action.error
+      };
+    case 'RESTORE_NEWS_START':
+      return {
+        ...state,
+        loading: true,
+        error: null
+      };
+    case 'RESTORE_NEWS_SUCCESS':
+      return {
+        news: [...state.news, action.news],
+        loading: false,
+        error: null
+      };
+    case 'RESTORE_NEWS_FAILURE':
+      return {
+        ...state,
+        loading: false,
+        error: action.error
       };
     default:
       return state;

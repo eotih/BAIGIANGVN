@@ -27,7 +27,7 @@ const getLesson = async (dispatch) => {
 const createLesson = async (dispatch, lesson) => {
   dispatch(createLessonStart());
   try {
-    const newLesson = await axios.post('/auth/register', lesson);
+    const newLesson = await axios.post('/lesson', lesson, configNormal);
     dispatch(createLessonSuccess(newLesson.data));
   } catch (error) {
     dispatch(createLessonFailure(error.response.data.message));

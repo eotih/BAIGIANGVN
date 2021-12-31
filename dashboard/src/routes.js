@@ -8,11 +8,13 @@ import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
 import Products from './pages/Products';
 import Blog from './pages/Blog';
-import UserAdmin from './pages/Admin/User';
-import NewAdmin from './pages/Admin/New';
-import LessonAdmin from './pages/Admin/Lessons';
 import NotFound from './pages/Page404';
 import isAdmin from './services/auth';
+//
+import UserAdmin from './pages/Admin/User';
+import NewsAdmin from './pages/Admin/News';
+import TrashbinNewsAdmin from './pages/Admin/Trash-bin-news';
+import LessonAdmin from './pages/Admin/Lessons';
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +31,7 @@ export default function Router() {
           path: 'products',
           element: <Products />
         },
-        { path: 'blog', element: <Blog /> }
+        { path: 'news', element: <Blog /> }
       ]
     },
     {
@@ -46,7 +48,8 @@ export default function Router() {
           path: 'lessons',
           element: admin ? <LessonAdmin /> : <NotFound />
         },
-        { path: 'news', element: admin ? <NewAdmin /> : <NotFound /> }
+        { path: 'news', element: admin ? <NewsAdmin /> : <NotFound /> },
+        { path: 'news/trash_bin', element: admin ? <TrashbinNewsAdmin /> : <NotFound /> }
       ]
     },
     {

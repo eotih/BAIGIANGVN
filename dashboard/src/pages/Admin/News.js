@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { useFormik, Form, FormikProvider } from 'formik';
 import { useState, useEffect } from 'react';
+import { useFormik, Form, FormikProvider } from 'formik';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
+import trash from '@iconify/icons-eva/trash-2-fill';
 // material
 import {
   Card,
@@ -13,20 +14,28 @@ import {
   Avatar,
   Button,
   Checkbox,
+  Link,
+  Breadcrumbs,
   TableRow,
   TableBody,
   TableCell,
   Container,
   Typography,
   Modal,
-  Input,
+  FormControl,
   TextField,
   Box,
+  InputLabel,
+  Select,
+  MenuItem,
+  OutlinedInput,
+  ListItemText,
   TableContainer,
   TablePagination
 } from '@mui/material';
-// components
+import Badge from '@mui/material/Badge';
 import { LoadingButton } from '@mui/lab';
+// components
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
@@ -37,9 +46,9 @@ import {
 } from '../../components/_dashboard/Admin/news';
 import {
   getNews,
-  createNews,
   updateNews,
   deleteNews,
+  createNews,
   newsContext
 } from '../../context/NewsAdminContext';
 
@@ -48,16 +57,35 @@ import {
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { _id: 'name', label: 'Name', alignRight: false },
-  { _id: 'subject', label: 'subject', alignRight: false },
-  { _id: 'grade', label: 'grade', alignRight: false },
-  { _id: 'week', label: 'week', alignRight: false },
-  { _id: 'category', label: 'category', alignRight: false },
-  { _id: 'price', label: 'price', alignRight: false },
-  { _id: 'isActive', label: 'isActive', alignRight: false },
+  { _id: 'title', label: 'Title', alignRight: false },
+  { _id: 'category', label: 'Category', alignRight: false },
+  { _id: 'description', label: 'Description', alignRight: false },
   { _id: '' }
 ];
-
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+};
+const CATEGORY_LIST = [
+  {
+    value: '1',
+    label: 'News'
+  },
+  {
+    value: '2',
+    label: 'Events'
+  },
+  {
+    value: '3',
+    label: 'Announcements'
+  }
+];
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
@@ -84,25 +112,31 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function New() {
+export default function News() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
-  const [open, setOpen] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { lesson, dispatch } = newsContext();
-  const handleOpen = () => setOpen(true);
+  const { news, dispatch } = newsContext();
+  const [open, setOpen] = useState(false);
+  const [cate, setCategory] = useState([]);
   const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
+  const handleChangeCategory = (event) => {
+    formik.setFieldValue('category', event.target.value);
+    setCategory(event.target.value);
+  };
   useEffect(() => {
     dispatch(getNews(dispatch));
   }, [dispatch]);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -111,13 +145,33 @@ export default function New() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = lesson.map((n) => n.name);
+      const newSelecteds = news.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
-
+  const formik = useFormik({
+    initialValues: {
+      title: '',
+      description: '',
+      image: '',
+      category: ''
+    },
+    onSubmit: async () => {
+      await dispatch(createNews(dispatch, formik.values));
+      setOpen(false);
+      formik.resetForm();
+    }
+  });
+  const style = {
+    position: 'relative',
+    borderRadius: '10px',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4
+  };
+  const { handleSubmit, isSubmitting, getFieldProps } = formik;
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -149,40 +203,13 @@ export default function New() {
     setFilterName(event.target.value);
   };
 
-  const style = {
-    position: 'relative',
-    borderRadius: '10px',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      description: '',
-      image: '',
-      price: '',
-      week: '',
-      subject: '',
-      grade: '',
-      link: '',
-      category: '',
-      sale: ''
-    },
-    onSubmit: async () => {
-      await dispatch(createNews(dispatch, formik.values));
-      setOpen(false);
-    }
-  });
-  const { handleSubmit, isSubmitting, getFieldProps } = formik;
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lesson.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - news.length) : 0;
 
-  const filteredLessons = applySortFilter(lesson, getComparator(order, orderBy), filterName);
+  const filteredNews = applySortFilter(news, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredLessons.length === 0;
-
+  const isUserNotFound = filteredNews.length === 0;
   return (
-    <Page title="Lesson | Minimal-UI">
+    <Page title="News | Minimal-UI">
       <Modal
         open={open}
         sx={{
@@ -199,37 +226,32 @@ export default function New() {
             <Box sx={style}>
               <Stack spacing={2}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Lesson
+                  Add News
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lesson Name" {...getFieldProps('name')} />
-                  <TextField fullWidth label="Thể loại" {...getFieldProps('category')} />
+                  <TextField fullWidth label="Title" {...getFieldProps('title')} />
+                  <TextField fullWidth label="Image" {...getFieldProps('image')} />
                 </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Tuần" {...getFieldProps('week')} />
-                  <TextField fullWidth label="Môn" {...getFieldProps('subject')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lớp" {...getFieldProps('grade')} />
-                  <TextField fullWidth label="Link" {...getFieldProps('link')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Giá" {...getFieldProps('price')} />
-                  <TextField fullWidth label="Sale" {...getFieldProps('sale')} />
-                </Stack>
-                <Avatar src={formik.values.image} sx={{ width: 100, height: 100 }} />
-                <Input
-                  id="contained-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    const { files } = e.target;
-                    const reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onload = (e) => {
-                      formik.setFieldValue('image', e.target.result);
-                    };
-                  }}
-                />
+                <FormControl>
+                  <InputLabel id="Field-label">Category</InputLabel>
+                  <Select
+                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                    labelId="Field-label"
+                    id="category"
+                    {...getFieldProps('category')}
+                    value={cate}
+                    name="category"
+                    onChange={handleChangeCategory}
+                    input={<OutlinedInput label="Category" />}
+                    MenuProps={MenuProps}
+                  >
+                    {CATEGORY_LIST.map((name) => (
+                      <MenuItem key={name.value} value={name.label}>
+                        <ListItemText primary={name.label} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TextField fullWidth label="Description" {...getFieldProps('description')} />
                 <LoadingButton
                   loading={isSubmitting}
@@ -238,7 +260,7 @@ export default function New() {
                   type="submit"
                   variant="contained"
                 >
-                  Add Lesson
+                  Add News
                 </LoadingButton>
               </Stack>
             </Box>
@@ -247,20 +269,35 @@ export default function New() {
       </Modal>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Lesson
+          <Typography variant="h4" sx={{ mb: 5 }}>
+            News
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link underline="hover" color="inherit" href="/">
+                Admin
+              </Link>
+              <Typography color="text.primary">News</Typography>
+            </Breadcrumbs>
           </Typography>
-          <Button
-            onClick={handleOpen}
-            variant="contained"
-            component={RouterLink}
-            to="#"
-            startIcon={<Icon icon={plusFill} />}
-          >
-            New Lesson
-          </Button>
+          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
+            <Badge
+              color="warning"
+              badgeContent={news.filter((res) => res.deleted === true).length || '0'}
+            >
+              <Button onClick={handleOpen} variant="contained" startIcon={<Icon icon={plusFill} />}>
+                New Post
+              </Button>
+              <Button
+                color="secondary"
+                to="./trash_bin"
+                variant="contained"
+                component={RouterLink}
+                startIcon={<Icon icon={trash} />}
+              >
+                Trash
+              </Button>
+            </Badge>
+          </Stack>
         </Stack>
-
         <Card>
           <NewsListToolbar
             numSelected={selected.length}
@@ -275,18 +312,18 @@ export default function New() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={filteredLessons.length}
+                  rowCount={filteredNews.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredLessons
+                  {filteredNews
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .filter((item) => item.deleted === false)
                     .map((row) => {
-                      const { _id, name, subject, grade, week, category, price, image, isActive } =
-                        row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
+                      const { _id, title, category, image, description } = row;
+                      const isItemSelected = selected.indexOf(title) !== -1;
 
                       return (
                         <TableRow
@@ -300,26 +337,25 @@ export default function New() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, name)}
+                              onChange={(event) => handleClick(event, title)}
                             />
                           </TableCell>
                           <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={name} src={image} />
+                              <Avatar alt={title} src={image} />
                               <Typography variant="subtitle2" noWrap>
-                                {name}
+                                {title.slice(0, 50)}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{subject}</TableCell>
-                          <TableCell align="left">{grade}</TableCell>
-                          <TableCell align="left">{week}</TableCell>
                           <TableCell align="left">{category}</TableCell>
-                          <TableCell align="left">{price}</TableCell>
-                          <TableCell align="left">{isActive ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">{description.slice(0, 100)}</TableCell>
                           <TableCell align="right">
                             <NewsMoreMenu
                               data={row}
+                              MenuProps={MenuProps}
+                              style={style}
+                              CATEGORY_LIST={CATEGORY_LIST}
                               dispatch={dispatch}
                               onDelete={deleteNews}
                               onEdit={updateNews}
@@ -350,7 +386,7 @@ export default function New() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={lesson.length}
+            count={news.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

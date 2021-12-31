@@ -5,13 +5,15 @@ import {
   Stack,
   Typography,
   Modal,
-  Input,
+  FormControl,
   IconButton,
   TextField,
   Box,
-  Avatar,
+  InputLabel,
+  Select,
   Menu,
   MenuItem,
+  OutlinedInput,
   ListItemIcon,
   ListItemText
 } from '@mui/material';
@@ -28,25 +30,39 @@ NewsMoreMenu.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
+  CATEGORY_LIST: PropTypes.array.isRequired,
+  MenuProps: PropTypes.object.isRequired,
+  style: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired
 };
-export default function NewsMoreMenu({ data, onDelete, onEdit, dispatch }) {
-  const { _id, name, subject, grade, week, category, price, image, isActive } = data;
+
+export default function NewsMoreMenu({
+  data,
+  onDelete,
+  onEdit,
+  dispatch,
+  CATEGORY_LIST,
+  style,
+  MenuProps
+}) {
+  const { _id, title, description, category, image } = data;
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [cate, setCategory] = useState([]);
   const [open, setOpen] = useState(false);
+  const handleChangeCategory = (event) => {
+    formik.setFieldValue('category', event.target.value);
+    setCategory(event.target.value);
+  };
   const handleOpen = () => {
     setOpen(true);
     // set value for formik with data
-    formik.setFieldValue('name', name);
-    formik.setFieldValue('subject', subject);
-    formik.setFieldValue('grade', grade);
-    formik.setFieldValue('week', week);
+    formik.setFieldValue('title', title);
+    formik.setFieldValue('description', description);
     formik.setFieldValue('category', category);
-    formik.setFieldValue('price', price);
     formik.setFieldValue('image', image);
-    formik.setFieldValue('isActive', isActive);
     formik.setFieldValue('_id', _id);
+    setCategory(category);
   };
   const handleClose = () => setOpen(false);
   const handleDelete = async (id) => {
@@ -58,16 +74,10 @@ export default function NewsMoreMenu({ data, onDelete, onEdit, dispatch }) {
   const formik = useFormik({
     initialValues: {
       _id: '',
-      name: '',
+      title: '',
       description: '',
       image: '',
-      price: '',
-      week: '',
-      subject: '',
-      grade: '',
-      link: '',
-      category: '',
-      sale: ''
+      category: ''
     },
     onSubmit: async () => {
       await dispatch(onEdit(dispatch, formik.values));
@@ -77,13 +87,6 @@ export default function NewsMoreMenu({ data, onDelete, onEdit, dispatch }) {
   });
   const { handleSubmit, isSubmitting, getFieldProps } = formik;
 
-  const style = {
-    position: 'relative',
-    borderRadius: '10px',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -108,34 +111,29 @@ export default function NewsMoreMenu({ data, onDelete, onEdit, dispatch }) {
                   Edit Lesson
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lesson Name" {...getFieldProps('name')} />
-                  <TextField fullWidth label="Thể loại" {...getFieldProps('category')} />
+                  <TextField fullWidth label="Title" {...getFieldProps('title')} />
+                  <TextField fullWidth label="Image" {...getFieldProps('image')} />
                 </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Tuần" {...getFieldProps('week')} />
-                  <TextField fullWidth label="Môn" {...getFieldProps('subject')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lớp" {...getFieldProps('grade')} />
-                  <TextField fullWidth label="Link" {...getFieldProps('link')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Giá" {...getFieldProps('price')} />
-                  <TextField fullWidth label="Sale" {...getFieldProps('sale')} />
-                </Stack>
-                <Avatar src={formik.values.image} sx={{ width: 100, height: 100 }} />
-                <Input
-                  id="contained-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    const { files } = e.target;
-                    const reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onload = (e) => {
-                      formik.setFieldValue('image', e.target.result);
-                    };
-                  }}
-                />
+                <FormControl>
+                  <InputLabel id="Field-label">Category</InputLabel>
+                  <Select
+                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                    labelId="Field-label"
+                    id="category"
+                    {...getFieldProps('category')}
+                    value={cate}
+                    name="category"
+                    onChange={handleChangeCategory}
+                    input={<OutlinedInput label="Category" />}
+                    MenuProps={MenuProps}
+                  >
+                    {CATEGORY_LIST.map((name) => (
+                      <MenuItem key={name.value} value={name.label}>
+                        <ListItemText primary={name.label} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TextField fullWidth label="Description" {...getFieldProps('description')} />
                 <LoadingButton
                   loading={isSubmitting}

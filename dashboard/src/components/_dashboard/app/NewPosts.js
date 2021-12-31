@@ -1,41 +1,18 @@
-import faker from 'faker';
-import PropTypes from 'prop-types';
+/* eslint-disable react/prop-types */
+import { useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import { formatDistance } from 'date-fns';
 import { Link as RouterLink } from 'react-router-dom';
 import arrowIosForwardFill from '@iconify/icons-eva/arrow-ios-forward-fill';
 // material
 import { Box, Stack, Link, Card, Button, Divider, Typography, CardHeader } from '@mui/material';
 // utils
-import { mockImgCover } from '../../../utils/mockImages';
 //
 import Scrollbar from '../../Scrollbar';
-
+import { get5News, newsContext } from '../../../context/NewsAdminContext';
 // ----------------------------------------------------------------------
-
-const NEWS = [...Array(5)].map((_, index) => {
-  const setIndex = index + 1;
-  return {
-    title: faker.name.title(),
-    description: faker.lorem.paragraphs(),
-    week: faker.random.number(),
-    subject: faker.name.title(),
-    grade: faker.random.number(),
-    category: faker.commerce.department(),
-    image: mockImgCover(setIndex),
-    postedAt: faker.date.soon()
-  };
-});
-
-// ----------------------------------------------------------------------
-
-NewsItem.propTypes = {
-  news: PropTypes.object.isRequired
-};
 
 function NewsItem({ news }) {
-  const { image, title, week, postedAt, grade } = news;
-
+  const { image, title, description, createdAt } = news;
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
       <Box
@@ -51,24 +28,28 @@ function NewsItem({ news }) {
           </Typography>
         </Link>
         <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-          Tuần: {week}, Lớp: {grade}
+          {description}
         </Typography>
       </Box>
       <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
-        {formatDistance(postedAt, new Date())}
+        {createdAt}
       </Typography>
     </Stack>
   );
 }
 
-export default function AppOrderTimeline() {
+export default function NewPosts() {
+  const { news, dispatch } = newsContext();
+  useEffect(() => {
+    dispatch(get5News(dispatch));
+  }, [dispatch]);
   return (
     <Card>
-      <CardHeader title="Sản phẩm đang sale!" />
+      <CardHeader title="Tin tức mới nhất!" />
 
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3, pr: 0 }}>
-          {NEWS.map((news) => (
+          {news.map((news) => (
             <NewsItem key={news.title} news={news} />
           ))}
         </Stack>
@@ -78,7 +59,7 @@ export default function AppOrderTimeline() {
 
       <Box sx={{ p: 2, textAlign: 'right' }}>
         <Button
-          to="#"
+          to="/dashboard/news"
           size="small"
           color="inherit"
           component={RouterLink}

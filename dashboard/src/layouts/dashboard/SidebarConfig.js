@@ -23,7 +23,7 @@ const sidebarConfig = [
   },
   {
     title: 'tin tức',
-    path: '/dashboard/blog',
+    path: '/dashboard/news',
     admin: false,
     icon: getIcon(fileTextFill)
   },

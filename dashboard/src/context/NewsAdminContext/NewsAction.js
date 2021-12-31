@@ -42,6 +42,17 @@ const deleteNewsFailure = (error) => ({
   type: 'DELETE_NEWS_FAILURE',
   error
 });
+const restoreNewsStart = () => ({
+  type: 'RESTORE_NEWS_START'
+});
+const restoreNewsSuccess = (news) => ({
+  type: 'RESTORE_NEWS_SUCCESS',
+  news
+});
+const restoreNewsFailure = (error) => ({
+  type: 'RESTORE_NEWS_FAILURE',
+  error
+});
 
 export {
   getNewsStart,
@@ -55,5 +66,8 @@ export {
   updateNewsFailure,
   deleteNewsStart,
   deleteNewsSuccess,
-  deleteNewsFailure
+  deleteNewsFailure,
+  restoreNewsStart,
+  restoreNewsSuccess,
+  restoreNewsFailure
 };

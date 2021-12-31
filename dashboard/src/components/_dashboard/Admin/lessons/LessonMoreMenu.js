@@ -5,11 +5,9 @@ import {
   Stack,
   Typography,
   Modal,
-  Input,
   IconButton,
   TextField,
   Box,
-  Avatar,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -28,10 +26,24 @@ LessonMoreMenu.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
+  error: PropTypes.string,
   data: PropTypes.object.isRequired
 };
 export default function LessonMoreMenu({ data, onDelete, onEdit, dispatch }) {
-  const { _id, name, subject, grade, week, category, price, image, isActive } = data;
+  const {
+    _id,
+    name,
+    subject,
+    grade,
+    week,
+    category,
+    price,
+    image,
+    isActive,
+    sale,
+    link,
+    description
+  } = data;
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
@@ -43,7 +55,10 @@ export default function LessonMoreMenu({ data, onDelete, onEdit, dispatch }) {
     formik.setFieldValue('grade', grade);
     formik.setFieldValue('week', week);
     formik.setFieldValue('category', category);
+    formik.setFieldValue('description', description);
     formik.setFieldValue('price', price);
+    formik.setFieldValue('link', link);
+    formik.setFieldValue('sale', sale);
     formik.setFieldValue('image', image);
     formik.setFieldValue('isActive', isActive);
     formik.setFieldValue('_id', _id);
@@ -123,19 +138,7 @@ export default function LessonMoreMenu({ data, onDelete, onEdit, dispatch }) {
                   <TextField fullWidth label="Giá" {...getFieldProps('price')} />
                   <TextField fullWidth label="Sale" {...getFieldProps('sale')} />
                 </Stack>
-                <Avatar src={formik.values.image} sx={{ width: 100, height: 100 }} />
-                <Input
-                  id="contained-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    const { files } = e.target;
-                    const reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onload = (e) => {
-                      formik.setFieldValue('image', e.target.result);
-                    };
-                  }}
-                />
+                <TextField fullWidth label="Image" {...getFieldProps('image')} />
                 <TextField fullWidth label="Description" {...getFieldProps('description')} />
                 <LoadingButton
                   loading={isSubmitting}

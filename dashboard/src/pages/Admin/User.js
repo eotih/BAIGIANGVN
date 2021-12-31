@@ -1,6 +1,6 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
+import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
@@ -19,7 +19,8 @@ import {
   Container,
   Typography,
   Modal,
-  Input,
+  InputAdornment,
+  IconButton,
   TextField,
   Box,
   TableContainer,
@@ -27,21 +28,23 @@ import {
 } from '@mui/material';
 // components
 import { LoadingButton } from '@mui/lab';
+import eyeFill from '@iconify/icons-eva/eye-fill';
+import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
-  LessonListHead,
-  LessonListToolbar,
-  LessonMoreMenu
-} from '../../components/_dashboard/Admin/lessons';
+  UserListHead,
+  UserListToolbar,
+  UserMoreMenu
+} from '../../components/_dashboard/Admin/users';
 import {
-  getLesson,
-  createLesson,
-  updateLesson,
-  deleteLesson,
-  lessonContext
-} from '../../context/LessonAdminContext';
+  getUser,
+  createUser,
+  userContext,
+  deleteUser,
+  updateUser
+} from '../../context/UserAdminContext';
 
 //
 
@@ -49,12 +52,10 @@ import {
 
 const TABLE_HEAD = [
   { _id: 'name', label: 'Name', alignRight: false },
-  { _id: 'subject', label: 'subject', alignRight: false },
-  { _id: 'grade', label: 'grade', alignRight: false },
-  { _id: 'week', label: 'week', alignRight: false },
-  { _id: 'category', label: 'category', alignRight: false },
-  { _id: 'price', label: 'price', alignRight: false },
-  { _id: 'isActive', label: 'isActive', alignRight: false },
+  { _id: 'email', label: 'email', alignRight: false },
+  { _id: 'mobile', label: 'Mobile', alignRight: false },
+  { _id: 'money', label: 'Money', alignRight: false },
+  { _id: 'isAdmin', label: 'IsAdmin', alignRight: false },
   { _id: '' }
 ];
 
@@ -97,12 +98,14 @@ export default function User() {
   const [open, setOpen] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { lesson, dispatch } = lessonContext();
+  const [showPassword, setShowPassword] = useState(false);
+  const { user, dispatch } = userContext();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   useEffect(() => {
-    dispatch(getLesson(dispatch));
+    dispatch(getUser(dispatch));
   }, [dispatch]);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -111,7 +114,7 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = lesson.map((n) => n.name);
+      const newSelecteds = user.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -148,7 +151,17 @@ export default function User() {
   const handleFilterByName = (event) => {
     setFilterName(event.target.value);
   };
-
+  const RegisterSchema = Yup.object().shape({
+    name: Yup.string().min(2, 'Quá ngắn!').max(50, 'Quá dài!').required('Vui lòng nhập họ và tên'),
+    mobile: Yup.string()
+      .min(10, 'Quá ngắn!')
+      .max(10, 'Quá dài!')
+      .required('Vui lòng nhập số điện thoại'),
+    email: Yup.string()
+      .email('Email phải là một địa chỉ email hợp lệ')
+      .required('Vui lòng nhập email'),
+    password: Yup.string().required('Password is required')
+  });
   const style = {
     position: 'relative',
     borderRadius: '10px',
@@ -159,30 +172,26 @@ export default function User() {
   const formik = useFormik({
     initialValues: {
       name: '',
-      description: '',
-      image: '',
-      price: '',
-      week: '',
-      subject: '',
-      grade: '',
-      link: '',
-      category: '',
-      sale: ''
+      email: '',
+      mobile: '',
+      password: ''
     },
+    validationSchema: RegisterSchema,
     onSubmit: async () => {
-      await dispatch(createLesson(dispatch, formik.values));
+      await dispatch(createUser(dispatch, formik.values));
+      formik.resetForm();
       setOpen(false);
     }
   });
-  const { handleSubmit, isSubmitting, getFieldProps } = formik;
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - lesson.length) : 0;
+  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - user.length) : 0;
 
-  const filteredLessons = applySortFilter(lesson, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(user, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredLessons.length === 0;
+  const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="Lesson | Minimal-UI">
+    <Page title="User | Minimal-UI">
       <Modal
         open={open}
         sx={{
@@ -197,40 +206,56 @@ export default function User() {
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Box sx={style}>
-              <Stack spacing={2}>
+              <Stack spacing={1}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Lesson
+                  Add User
                 </Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lesson Name" {...getFieldProps('name')} />
-                  <TextField fullWidth label="Thể loại" {...getFieldProps('category')} />
+                  <TextField
+                    fullWidth
+                    label="Họ và tên"
+                    {...getFieldProps('name')}
+                    error={Boolean(touched.name && errors.name)}
+                    helperText={touched.name && errors.name}
+                  />
+
+                  <TextField
+                    fullWidth
+                    label="Số điện thoại"
+                    {...getFieldProps('mobile')}
+                    error={Boolean(touched.mobile && errors.mobile)}
+                    helperText={touched.mobile && errors.mobile}
+                  />
                 </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Tuần" {...getFieldProps('week')} />
-                  <TextField fullWidth label="Môn" {...getFieldProps('subject')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lớp" {...getFieldProps('grade')} />
-                  <TextField fullWidth label="Link" {...getFieldProps('link')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Giá" {...getFieldProps('price')} />
-                  <TextField fullWidth label="Sale" {...getFieldProps('sale')} />
-                </Stack>
-                <Avatar src={formik.values.image} sx={{ width: 100, height: 100 }} />
-                <Input
-                  id="contained-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    const { files } = e.target;
-                    const reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onload = (e) => {
-                      formik.setFieldValue('image', e.target.result);
-                    };
-                  }}
+
+                <TextField
+                  fullWidth
+                  autoComplete="username"
+                  type="email"
+                  label="Email address"
+                  {...getFieldProps('email')}
+                  error={Boolean(touched.email && errors.email)}
+                  helperText={touched.email && errors.email}
                 />
-                <TextField fullWidth label="Description" {...getFieldProps('description')} />
+
+                <TextField
+                  fullWidth
+                  autoComplete="current-password"
+                  type={showPassword ? 'text' : 'password'}
+                  label="Mật khẩu"
+                  {...getFieldProps('password')}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                          <Icon icon={showPassword ? eyeFill : eyeOffFill} />
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                  error={Boolean(touched.password && errors.password)}
+                  helperText={touched.password && errors.password}
+                />
                 <LoadingButton
                   loading={isSubmitting}
                   fullWidth
@@ -238,7 +263,7 @@ export default function User() {
                   type="submit"
                   variant="contained"
                 >
-                  Add Lesson
+                  Add User
                 </LoadingButton>
               </Stack>
             </Box>
@@ -248,7 +273,7 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Lesson
+            User
           </Typography>
           <Button
             onClick={handleOpen}
@@ -257,35 +282,35 @@ export default function User() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Lesson
+            New User
           </Button>
         </Stack>
 
         <Card>
-          <LessonListToolbar
+          <UserListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
           />
 
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer sx={{ minW_idth: 800 }}>
               <Table>
-                <LessonListHead
+                <UserListHead
+                  key={user._id}
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={filteredLessons.length}
+                  rowCount={user.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredLessons
+                  {filteredUsers
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { _id, name, subject, grade, week, category, price, image, isActive } =
-                        row;
+                      const { _id, name, email, mobile, money, image, isAdmin } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
 
                       return (
@@ -311,18 +336,16 @@ export default function User() {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{subject}</TableCell>
-                          <TableCell align="left">{grade}</TableCell>
-                          <TableCell align="left">{week}</TableCell>
-                          <TableCell align="left">{category}</TableCell>
-                          <TableCell align="left">{price}</TableCell>
-                          <TableCell align="left">{isActive ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">{email}</TableCell>
+                          <TableCell align="left">{mobile}</TableCell>
+                          <TableCell align="left">{money}</TableCell>
+                          <TableCell align="left">{isAdmin ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="right">
-                            <LessonMoreMenu
+                            <UserMoreMenu
                               data={row}
                               dispatch={dispatch}
-                              onDelete={deleteLesson}
-                              onEdit={updateLesson}
+                              onDelete={deleteUser}
+                              onEdit={updateUser}
                             />
                           </TableCell>
                         </TableRow>
@@ -350,7 +373,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={lesson.length}
+            count={user.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

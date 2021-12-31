@@ -1,72 +1,72 @@
-import faker from 'faker';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
-import { formatDistance } from 'date-fns';
 import { Link as RouterLink } from 'react-router-dom';
 import arrowIosForwardFill from '@iconify/icons-eva/arrow-ios-forward-fill';
 // material
 import { Box, Stack, Link, Card, Button, Divider, Typography, CardHeader } from '@mui/material';
 // utils
-import { mockImgCover } from '../../../utils/mockImages';
 //
 import Scrollbar from '../../Scrollbar';
 
 // ----------------------------------------------------------------------
-
-const NEWS = [...Array(5)].map((_, index) => {
-  const setIndex = index + 1;
-  return {
-    title: faker.name.title(),
-    description: faker.lorem.paragraphs(),
-    image: mockImgCover(setIndex),
-    postedAt: faker.date.soon()
-  };
-});
-
+import { getLesson, lessonContext } from '../../../context/LessonAdminContext';
 // ----------------------------------------------------------------------
 
-NewsItem.propTypes = {
-  news: PropTypes.object.isRequired
+SaleLesson.propTypes = {
+  lesson: PropTypes.object.isRequired
 };
 
-function NewsItem({ news }) {
-  const { image, title, description, postedAt } = news;
-
+function SaleLesson({ lesson }) {
+  const { image, name, week, createdAt, grade } = lesson;
+  const convertTime = (time) => {
+    const currentDate = new Date();
+    const createdDate = new Date(time);
+    const diff = currentDate.getTime() - createdDate.getTime();
+    const hour = Math.floor(diff / (1000 * 60 * 60));
+    return hour;
+  };
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
       <Box
         component="img"
-        alt={title}
+        alt={name}
         src={image}
         sx={{ width: 48, height: 48, borderRadius: 1.5 }}
       />
       <Box sx={{ minWidth: 240 }}>
         <Link to="#" color="inherit" underline="hover" component={RouterLink}>
           <Typography variant="subtitle2" noWrap>
-            {title}
+            {name}
           </Typography>
         </Link>
         <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-          {description}
+          Tuần: {week}, Lớp: {grade}
         </Typography>
       </Box>
       <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
-        {formatDistance(postedAt, new Date())}
+        {convertTime(createdAt)} giờ
       </Typography>
     </Stack>
   );
 }
 
-export default function AppNewsUpdate() {
+export default function AppOrderTimeline() {
+  const { lesson, dispatch } = lessonContext();
+  useEffect(() => {
+    dispatch(getLesson(dispatch));
+  }, [dispatch]);
   return (
     <Card>
-      <CardHeader title="Tin tức mới nhất!" />
+      <CardHeader title="Sản phẩm đang sale!" />
 
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3, pr: 0 }}>
-          {NEWS.map((news) => (
-            <NewsItem key={news.title} news={news} />
-          ))}
+          {lesson
+            .filter((item) => item.sale > 0)
+            .map((lesson) => (
+              <SaleLesson key={lesson._id} lesson={lesson} />
+            ))}
         </Stack>
       </Scrollbar>
 
@@ -74,7 +74,7 @@ export default function AppNewsUpdate() {
 
       <Box sx={{ p: 2, textAlign: 'right' }}>
         <Button
-          to="#"
+          to="/dashboard/products"
           size="small"
           color="inherit"
           component={RouterLink}
