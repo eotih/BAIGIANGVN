@@ -1,15 +1,16 @@
 const Bank = require("../models/Bank.models");
 
 class BankController {
-  // [GET] /users
+  // [GET] /bank
   show(req, res, next) {
     Bank.find()
       .sort({ createdAt: -1 })
-      .then((users) => {
-        res.json(users);
+      .then((bank) => {
+        res.json(bank);
       })
       .catch(next);
   }
+  //[POST] /bank
   create(req, res, next) {
     const { name, logo, qr_code, account_number, branch } = req.body;
     if (!name || !logo || !qr_code || !account_number || !branch) {
@@ -30,7 +31,7 @@ class BankController {
         .catch(next);
     }
   }
-  // [PUT] /users/:id
+  // [PUT] /bank/:id
   update(req, res, next) {
     Bank.findById(req.params.id)
       .then((bank) => {
@@ -61,17 +62,17 @@ class BankController {
       })
       .catch(next);
   }
-  // [DELETE] /users/:id
+  // [DELETE] /bank/:id
   async deleteBank(req, res, next) {
     const Bank = await Bank.findById(req.params.id);
     if (Bank) {
       const deleteBank = await Bank.remove();
-      res.send({ message: "Bank Deleted", user: deleteBank });
+      res.send({ message: "Bank Deleted", bank: deleteBank });
     } else {
       res.send({ message: "Bank not found" });
     }
   }
-  // [GET] /users/:id
+  // [GET] /bank/:id
   getById(req, res, next) {
     Bank.findById(req.params.id)
       .then((user) => {

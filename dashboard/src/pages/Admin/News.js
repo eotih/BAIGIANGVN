@@ -209,7 +209,7 @@ export default function News() {
 
   const isUserNotFound = filteredNews.length === 0;
   return (
-    <Page title="News | Minimal-UI">
+    <Page title="News | Bài Giảng VN">
       <Modal
         open={open}
         sx={{

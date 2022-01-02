@@ -191,7 +191,7 @@ export default function User() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="User | Minimal-UI">
+    <Page title="User | Bài Giảng VN">
       <Modal
         open={open}
         sx={{

@@ -63,7 +63,7 @@ class NotificationsController {
     const Notifications = await Notifications.findById(req.params.id);
     if (Notifications) {
       const deleteNotifications = await Notifications.remove();
-      res.send({ message: "Notifications Deleted", user: deleteNotifications });
+      res.send({ message: "Notifications Deleted", notifications: deleteNotifications });
     } else {
       res.send({ message: "Notifications not found" });
     }

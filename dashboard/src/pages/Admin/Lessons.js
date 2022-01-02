@@ -181,7 +181,7 @@ export default function Lesson() {
   const isUserNotFound = filteredLessons.length === 0;
 
   return (
-    <Page title="Lesson | Minimal-UI">
+    <Page title="Lesson | Bài Giảng VN">
       <Modal
         open={open}
         sx={{

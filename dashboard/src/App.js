@@ -13,6 +13,7 @@ import { AccountProvider } from './context/AccountContext';
 import { UserContextProvider } from './context/UserAdminContext/UserContext';
 import { LessonContextProvider } from './context/LessonAdminContext/LessonContext';
 import { NewsContextProvider } from './context/NewsAdminContext/NewsContext';
+import { HistoryContextProvider } from './context/HistoryContext/HistoryContext';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -30,10 +31,12 @@ export default function App() {
         <UserContextProvider>
           <LessonContextProvider>
             <NewsContextProvider>
-              <ScrollToTop />
-              <GlobalStyles />
-              <BaseOptionChartStyle />
-              <Router />
+              <HistoryContextProvider>
+                <ScrollToTop />
+                <GlobalStyles />
+                <BaseOptionChartStyle />
+                <Router />
+              </HistoryContextProvider>
             </NewsContextProvider>
           </LessonContextProvider>
         </UserContextProvider>

@@ -3,6 +3,8 @@ class NewController {
   // [GET] /News
   async show(req, res, next) {
     await News.findWithDeleted()
+      //populate with many info
+      .populate("user", { name: 1, image: 1 })  //populate with one info
       .sort({ createdAt: -1 })
       .then((news) => {
         if (news) {
@@ -111,8 +113,9 @@ class NewController {
   }
   async get5News(req, res, next) {
     await News.find()
+      .populate("user", { name: 1, image: 1 })
       .sort({ createdAt: -1 })
-      .limit(5)
+      .limit(3)
       .then((news) => {
         if (!news) {
           res.status(404).json({

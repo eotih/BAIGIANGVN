@@ -21,7 +21,7 @@ class UserController {
                 }
                 else {
                     const { name, mobile } = req.body;
-                    if (!name || !email || !mobile) {
+                    if (!name || !mobile) {
                         res.status(400).json({
                             message: 'Please provide all the required fields'
                         });
@@ -30,7 +30,11 @@ class UserController {
                         user.mobile = mobile;
                         user.save()
                             .then(user => {
-                                res.json(user);
+                                res.status(200).send({
+                                    message: 'User updated successfully',
+                                    status: 'success',
+                                    user
+                                });
                             })
                             .catch(next);
                     }
@@ -77,7 +81,9 @@ class UserController {
     }
     // [GET] /users/:id
     getById(req, res, next) {
-        User.findById(req.params.id)
+        // find with out password and googleId
+        User.findById(req.params.id) 
+            .select('-password -googleId')
             .then(user => {
                 res.status(200).json(user);
             })

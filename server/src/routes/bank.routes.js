@@ -9,7 +9,7 @@ const {
   create,
 } = require("../controllers/bank.controller");
 
-router.get("/", isAuthenticated, isAdmin, show);
+router.get("/", isAuthenticated, show);
 router.get("/:id", isAuthenticated, isAdmin, getById);
 router.post("/", isAuthenticated, isAdmin, create);
 router.put("/:id", isAuthenticated, isAdmin, update);
