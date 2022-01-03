@@ -21,9 +21,9 @@ class NewController {
     const news = await News.findWithDeleted(req.params.id);
     if (news) {
       await News.deleteOne({ _id: req.params.id });
-      res.send({ message: 'News Deleted', news: news });
+      res.status(200).json({ message: 'News Deleted'});
     } else {
-      res.send({ message: 'News not found' });
+      res.status(200).json({ message: 'News not found' });
     }
   }
   // [POST] /News
@@ -46,7 +46,7 @@ class NewController {
           newNews
             .save()
             .then((news) => {
-              res.status(201).json(news);
+              res.status(201).json({ message: "News created", news: news });
             })
             .catch(next);
         }
@@ -70,7 +70,10 @@ class NewController {
           news
             .save()
             .then((news) => {
-              res.status(200).json(news);
+              res.status(200).json({
+                message: "News updated",
+                news: news
+              });
             })
             .catch(next);
         }
@@ -82,18 +85,18 @@ class NewController {
     const news = await News.findById(req.params.id);
     if (news) {
       const deleteNews = await news.delete();
-      res.send({ message: 'News Deleted', news: deleteNews });
+      res.status(200).json({ message: 'News Deleted', news: deleteNews });
     } else {
-      res.send({ message: 'News not found' });
+      res.status(200).json({ message: 'News not found' });
     }
   }
   async restore(req, res, next) {
     const news = await News.findById(req.params.id);
     if (news) {
       await News.restore({ _id: req.params.id });
-      res.send({ message: 'News Restored', news: news });
+      res.status(200).json({ message: 'News Restored', news: news });
     } else {
-      res.send({ message: 'News not found' });
+      res.status(200).json({ message: 'News not found' });
     }
   }
   // [GET] /News/:id
@@ -106,7 +109,7 @@ class NewController {
             message: "News not found",
           });
         } else {
-          res.json(news);
+          res.status(200).json({ message: "News found", news: news });
         }
       })
       .catch(next);

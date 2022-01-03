@@ -5,8 +5,8 @@ class NotificationsController {
   show(req, res, next) {
     Notifications.find()
       .sort({ createdAt: -1 })
-      .then((users) => {
-        res.json(users);
+      .then((notifications) => {
+        res.status(200).json(notifications);
       })
       .catch(next);
   }
@@ -23,7 +23,7 @@ class NotificationsController {
         type,
       })
         .then((notification) => {
-          res.status(201).json(notification);
+          res.status(201).json({ message: "Notification created successfully", notification });
         })
         .catch(next);
     }
@@ -50,7 +50,10 @@ class NotificationsController {
             notification
               .save()
               .then((notification) => {
-                res.json(notification);
+                res.status(200).json({
+                  message: "Notification updated successfully",
+                  notification,
+                });
               })
               .catch(next);
           }
@@ -63,16 +66,16 @@ class NotificationsController {
     const Notifications = await Notifications.findById(req.params.id);
     if (Notifications) {
       const deleteNotifications = await Notifications.remove();
-      res.send({ message: "Notifications Deleted", notifications: deleteNotifications });
+      res.status(200).json({ message: "Notifications Deleted", notifications: deleteNotifications });
     } else {
-      res.send({ message: "Notifications not found" });
+      res.status(200).json({ message: "Notifications not found" });
     }
   }
   // [GET] /users/:id
   getById(req, res, next) {
     Notifications.findById(req.params.id)
-      .then((user) => {
-        res.status(200).json(Notifications);
+      .then((notifications) => {
+        res.status(200).json(notifications);
       })
       .catch(next);
   }

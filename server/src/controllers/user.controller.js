@@ -6,7 +6,7 @@ class UserController {
     show(req, res, next) {
         User.find().sort({ createdAt: -1 })
             .then(users => {
-                res.json(users);
+                res.status(200).json(users);
             })
             .catch(next);
     }
@@ -30,7 +30,7 @@ class UserController {
                         user.mobile = mobile;
                         user.save()
                             .then(user => {
-                                res.status(200).send({
+                                res.status(200).json({
                                     message: 'User updated successfully',
                                     status: 'success',
                                     user
@@ -73,10 +73,10 @@ class UserController {
     async deleteUser(req, res, next) {
         const user = await User.findById(req.params.id);
         if (user) {
-            const deleteUser = await user.remove();
-            res.send({ message: 'User Deleted', user: deleteUser });
+            await user.remove();
+            res.status(200).json({ message: 'User Deleted'});
         } else {
-            res.send({ message: 'User not found' });
+            res.json({ message: 'User not found' });
         }
     }
     // [GET] /users/:id
@@ -84,7 +84,7 @@ class UserController {
         // find with out password and googleId
         User.findById(req.params.id) 
             .select('-password -googleId')
-            .then(user => {
+            .then((user) => {
                 res.status(200).json(user);
             })
             .catch(next);

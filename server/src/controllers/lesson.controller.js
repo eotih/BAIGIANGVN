@@ -3,8 +3,8 @@ class LessonController {
     // [GET] /lessons
     show(req, res, next) {
         Lesson.find().sort({ createdAt: -1 })
-            .then(lessons => {
-                res.json(lessons);
+            .then((lessons) => {
+                res.status(200).json(lessons);
             })
             .catch(next);
     }
@@ -24,8 +24,11 @@ class LessonController {
             } else {
                 const newLesson = new Lesson(req.body);
                 newLesson.save()
-                    .then(lesson => {
-                        res.status(201).json(lesson);
+                    .then((lesson) => {
+                        res.status(201).json({
+                            message: 'Lesson created successfully',
+                            lesson
+                        });
                     })
                     .catch(next);
             }
@@ -55,8 +58,11 @@ class LessonController {
                     lesson.category = category;
                     lesson.sale = sale;
                     lesson.save()
-                        .then(lesson => {
-                            res.status(201).json(lesson);
+                        .then((lesson) => {
+                            res.status(201).json({
+                                message: 'Lesson updated successfully',
+                                lesson
+                            });
                         })
                         .catch(next);
                     // }
@@ -68,22 +74,22 @@ class LessonController {
         const lesson = await Lesson.findById(req.params.id);
         if (lesson) {
             const deleteLesson = await lesson.remove();
-            res.send({ message: 'Lesson Deleted', lesson: deleteLesson });
+            res.status(201).json({ message: 'Lesson Deleted', lesson: deleteLesson });
         } else {
-            res.send({ message: 'Lesson not found' });
+            res.status(201).json({ message: 'Lesson not found' });
         }
     }
     // [GET] /lessons/:id
     getById(req, res, next) {
         Lesson.findById(req.params.id)
-            .then(lesson => {
+            .then((lesson) => {
                 if (!lesson) {
                     res.status(404).json({
                         message: 'Lesson not found'
                     });
                 }
                 else {
-                    res.json(lesson);
+                    res.status(201).json(lesson);
                 }
             })
             .catch(next);
@@ -91,14 +97,14 @@ class LessonController {
     // [GET] /lessons/week/:id
     getByWeek(req, res, next) {
         Lesson.find({ week: req.params.id })
-            .then(lesson => {
+            .then((lesson) => {
                 if (!lesson) {
                     res.status(404).json({
                         message: 'Lesson not found'
                     });
                 }
                 else {
-                    res.json(lesson);
+                    res.status(201).json(lesson);
                 }
             })
             .catch(next);

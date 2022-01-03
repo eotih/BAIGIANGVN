@@ -6,7 +6,7 @@ class BankController {
     Bank.find()
       .sort({ createdAt: -1 })
       .then((bank) => {
-        res.json(bank);
+        res.status(200).json(bank);
       })
       .catch(next);
   }
@@ -26,7 +26,7 @@ class BankController {
         branch,
       })
         .then((bank) => {
-          res.json(bank);
+          res.status(200).json({ message: "Bank created successfully"});
         })
         .catch(next);
     }
@@ -54,7 +54,10 @@ class BankController {
             bank
               .save()
               .then((updatedBank) => {
-                res.json(updatedBank);
+                res.status(200).json({
+                  message: "Bank updated successfully",
+                  updatedBank,
+                });
               })
               .catch(next);
           }
@@ -67,21 +70,21 @@ class BankController {
     const Bank = await Bank.findById(req.params.id);
     if (Bank) {
       const deleteBank = await Bank.remove();
-      res.send({ message: "Bank Deleted", bank: deleteBank });
+      res.status(200).json({ message: "Bank Deleted", bank: deleteBank });
     } else {
-      res.send({ message: "Bank not found" });
+      res.status(200).json({ message: "Bank not found" });
     }
   }
   // [GET] /bank/:id
   getById(req, res, next) {
     Bank.findById(req.params.id)
-      .then((user) => {
-        if (!user) {
+      .then((bank) => {
+        if (!bank) {
           res.status(404).json({
             message: "User not found",
           });
         } else {
-          res.json(user);
+          res.status(200).json(bank);
         }
       })
       .catch(next);

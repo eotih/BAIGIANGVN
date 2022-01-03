@@ -40,14 +40,14 @@ const isAdmin = (req, res, next) => {
     if (req.user && req.user.isAdmin) {
         next();
     } else {
-        res.status(401).send({ message: 'Invalid Admin Token' });
+        res.status(401).json({ message: 'Invalid Admin Token' });
     }
 };
 const googleAuth = (req, res, next) => {
     if (req.user && req.user.google) {
         next();
     } else {
-        res.status(401).send({ message: 'Invalid Google Token' });
+        res.status(401).json({ message: 'Invalid Google Token' });
     }
 }
 module.exports = { generateToken, isAuthenticated, isAdmin, googleAuth };

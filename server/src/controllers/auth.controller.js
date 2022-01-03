@@ -7,22 +7,22 @@ class AuthController {
         const user = await User.findOne({ email: email })
         if (user) {
             if (bcrypt.compareSync(password, user.password)) {
-                res.send({
+                res.json({
                     token: generateToken(user),
                 });
                 return;
             } else {
-                res.status(401).send({ message: 'Invalid password' });
+                res.status(401).json({ message: 'Invalid password' });
             }
         } else {
-            res.status(404).send({ message: 'User not found' });
+            res.status(404).json({ message: 'User not found' });
         }
 
     }
     async register(req, res, next) {
         const { email, password, name, mobile } = req.body;
         if (await User.findOne({ email: email })) {
-            res.status(400).send({ message: 'User already exist' });
+            res.status(400).json({ message: 'User already exist' });
         } else {
             const user = new User({
                 name: name,
@@ -31,7 +31,7 @@ class AuthController {
                 mobile: mobile,
             });
             const createdUser = await user.save();
-            res.send({
+            res.json({
                 _id: createdUser._id,
                 name: createdUser.name,
                 email: createdUser.email,
@@ -48,9 +48,9 @@ class AuthController {
         if (user) {
             user.password = bcrypt.hashSync(password, 8);
             await user.save();
-            res.send({ message: 'Password reset successfully' });
+            res.json({ message: 'Password reset successfully' });
         } else {
-            res.status(404).send({ message: 'User not found' });
+            res.status(404).json({ message: 'User not found' });
         }
     }
     async loginWithGoogle(req, res, next) {
@@ -62,7 +62,7 @@ class AuthController {
                 user.image = imageUrl;
                 await user.save();
             }
-            res.status(200).send({
+            res.status(200).json({
                 token: generateToken(user),
             });
         } else {
@@ -73,7 +73,7 @@ class AuthController {
                 googleId: googleId,
             });
             const createdUser = await newUser.save();
-            res.status(200).send({
+            res.status(200).json({
                 token: generateToken(createdUser),
                 message: 'User created successfully',
             });

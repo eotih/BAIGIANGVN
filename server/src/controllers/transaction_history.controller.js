@@ -6,9 +6,9 @@ class TransactionHistoryController {
   show(req, res, next) {
     TransactionHistory.find()
       .sort({ createdAt: -1 })
-      .then((users) => {
-        if (users) {
-          res.json(users);
+      .then((transaction_history) => {
+        if (transaction_history) {
+          res.status(200).json(transaction_history);
         } else {
           res.status(404).json({
             message: "Transaction History not found",
@@ -48,7 +48,7 @@ class TransactionHistoryController {
           account_balance: new_account_balance,
           payment: payment,
         });
-        res.json(transactionHistory);
+        res.status(200).json({ message: "Transaction History created successfully", transactionHistory });
       }
     }
   }
@@ -60,12 +60,12 @@ class TransactionHistoryController {
     const transactionHistory = await TransactionHistory.findById(req.params.id);
     if (transactionHistory) {
       const deleteTransactionHistory = await TransactionHistory.remove();
-      res.send({
+      res.status(200).json({
         message: "Transaction History Deleted",
         transaction_history: deleteTransactionHistory,
       });
     } else {
-      res.send({ message: "Transaction History not found" });
+      res.json({ message: "Transaction History not found" });
     }
   }
   // [GET] /transaction_history/:id
@@ -78,7 +78,7 @@ class TransactionHistoryController {
             message: "Transaction History not found",
           });
         } else {
-          res.json(transactionHistory);
+          res.status(200).json(transactionHistory);
         }
       })
       .catch(next);
