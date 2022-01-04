@@ -194,6 +194,10 @@ export default function Notifications() {
     },
     onSubmit: async () => {
       const data = await createNotifications(dispatch, formik.values);
+      formik.resetForm();
+      setOpen(false);
+      setType('');
+      setStatus('');
       handleOpenToast({
         isOpen: true,
         horizontal: 'right',
@@ -201,8 +205,6 @@ export default function Notifications() {
         message: data.message,
         color: 'success'
       })();
-      formik.resetForm();
-      setOpen(false);
     }
   });
   const { handleSubmit, isSubmitting, getFieldProps } = formik;
