@@ -11,15 +11,15 @@ import {
   getUserFailure,
   getUserStart,
   getUserSuccess
-} from './UserAction';
+} from '../actions';
 import axios from '../../constants/axios';
 import { configNormal } from '../ConfigHeader';
 
 const getUser = async (dispatch) => {
   dispatch(getUserStart());
   try {
-    const user = await axios.get('/user', configNormal);
-    dispatch(getUserSuccess(user.data));
+    const { data } = await axios.get('/user', configNormal);
+    dispatch(getUserSuccess(data));
   } catch (error) {
     dispatch(getUserFailure(error));
   }
@@ -27,8 +27,8 @@ const getUser = async (dispatch) => {
 const createUser = async (dispatch, user) => {
   dispatch(createUserStart());
   try {
-    const newUser = await axios.post('/auth/register', user);
-    dispatch(createUserSuccess(newUser.data));
+    const { data } = await axios.post('/auth/register', user);
+    dispatch(createUserSuccess(data));
   } catch (error) {
     dispatch(createUserFailure(error.response.data.message));
   }
@@ -36,8 +36,8 @@ const createUser = async (dispatch, user) => {
 const updateUser = async (dispatch, user) => {
   dispatch(updateUserStart());
   try {
-    const updatedUser = await axios.put(`/user/${user._id}`, user, configNormal);
-    dispatch(updateUserSuccess(updatedUser.data));
+    const { data } = await axios.put(`/user/${user._id}`, user, configNormal);
+    dispatch(updateUserSuccess(data));
   } catch (error) {
     dispatch(updateUserFailure(error.response.data.message));
   }
@@ -45,8 +45,8 @@ const updateUser = async (dispatch, user) => {
 const deleteUser = async (dispatch, user) => {
   dispatch(deleteUserStart());
   try {
-    const deletedUser = await axios.delete(`/user/${user}`, configNormal);
-    dispatch(deleteUserSuccess(deletedUser.data));
+    const { data } = await axios.delete(`/user/${user}`, configNormal);
+    dispatch(deleteUserSuccess(data));
   } catch (error) {
     dispatch(deleteUserFailure(error.response.data.message));
   }

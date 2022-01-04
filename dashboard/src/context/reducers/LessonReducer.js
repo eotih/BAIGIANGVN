@@ -26,6 +26,7 @@ const LessonReducer = (state, action) => {
     case 'CREATE_LESSON_SUCCESS':
       return {
         loading: false,
+        message: action.message,
         lesson: [...state.lesson, action.lesson]
       };
     case 'CREATE_LESSON_FAILURE':
@@ -45,6 +46,7 @@ const LessonReducer = (state, action) => {
         lesson: state.lesson.map((lesson) =>
           lesson._id === action.lesson._id ? action.lesson : lesson
         ),
+        message: action.message,
         loading: false,
         error: null
       };
@@ -63,6 +65,7 @@ const LessonReducer = (state, action) => {
     case 'DELETE_LESSON_SUCCESS':
       return {
         lesson: state.lesson.filter((lesson) => lesson._id !== action.lesson.lesson._id),
+        message: action.message,
         loading: false,
         error: null
       };

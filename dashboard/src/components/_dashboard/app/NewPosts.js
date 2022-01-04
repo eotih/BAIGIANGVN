@@ -5,7 +5,7 @@ import { Box, Stack, Card, Divider, Typography, Avatar } from '@mui/material';
 // utils
 //
 import Scrollbar from '../../Scrollbar';
-import { get5News, newsContext } from '../../../context/NewsAdminContext';
+import { get5News, newsContext } from '../../../context';
 // ----------------------------------------------------------------------
 
 function NewsItem({ news }) {
@@ -60,7 +60,7 @@ function NewsItem({ news }) {
 export default function NewPosts() {
   const { news, dispatch } = newsContext();
   useEffect(() => {
-    dispatch(get5News(dispatch));
+    get5News(dispatch);
   }, [dispatch]);
   return (
     <Stack spacing={2}>

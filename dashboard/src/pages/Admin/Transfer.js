@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { useState, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
@@ -26,13 +27,8 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Page from '../../components/Page';
 // import { TransferListHead, TransferListToolbar } from '../../components/_dashboard/Admin/transfer';
-import {
-  getNews,
-  restoreNews,
-  destroyNews,
-  createNews,
-  newsContext
-} from '../../context/NewsAdminContext';
+
+import { getUser, userContext } from '../../context';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -44,50 +40,50 @@ const MenuProps = {
     }
   }
 };
-const CATEGORY_LIST = [
+const PAYMENT_LIST = [
   {
-    value: '1',
-    label: 'News'
+    _id: 1,
+    name: 'THANH TOÁN QUA VCB'
   },
-  {
-    value: '2',
-    label: 'Events'
-  },
-  {
-    value: '3',
-    label: 'Announcements'
-  }
+  { _id: 2, name: 'THANH TOÁN QUA MOMO' }
 ];
-//
-export default function TrashbinNews() {
+export default function Transer() {
   const [page, setPage] = useState(0);
+  const [email, setEmail] = useState('');
+  const [payment, setPayment] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { news, dispatch } = newsContext();
+  const { user, dispatch } = userContext();
   useEffect(() => {
-    dispatch(getNews(dispatch));
+    getUser(dispatch);
   }, [dispatch]);
-  const handleChangeCategory = (event) => {
-    formik.setFieldValue('category', event.target.value);
+  const handleChangeUser = (event) => {
+    setEmail(event.target.value);
+    formik.setFieldValue('email', event.target.value);
+  };
+  const handleChangePayment = (event) => {
+    setPayment(event.target.value);
+    formik.setFieldValue('payment', event.target.value);
   };
   const formik = useFormik({
     initialValues: {
-      title: '',
-      description: '',
-      image: '',
-      category: ''
+      email: '',
+      payment: '',
+      deposit_amount: ''
     },
     onSubmit: async () => {
-      await dispatch(createNews(dispatch, formik.values));
-      formik.resetForm();
+      if (
+        confirm(
+          `Bạn có chắc chắn muốn chuyển ${formik.values.deposit_amount} cho ${email} ${payment} `
+        )
+      ) {
+        console.log(formik.values);
+        setEmail('');
+        setPayment('');
+        // await dispatch(createNews(dispatch, formik.values));
+        formik.resetForm();
+      }
     }
   });
-  const style = {
-    position: 'relative',
-    borderRadius: '10px',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
   const { handleSubmit, isSubmitting, getFieldProps } = formik;
 
   const handleChangePage = (event, newPage) => {
@@ -117,7 +113,7 @@ export default function TrashbinNews() {
           <Grid item xs={12} md={5}>
             <Card>
               <CardHeader title="Chuyển tiền" />
-              <Box sx={{ p: 2, textAlign: 'right' }}>
+              <Box sx={{ p: 2 }}>
                 <FormikProvider value={formik}>
                   <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
                     <Stack spacing={2}>
@@ -128,15 +124,14 @@ export default function TrashbinNews() {
                           labelId="Field-label"
                           id="email"
                           {...getFieldProps('email')}
-                          value={news}
-                          name="email"
-                          onChange={handleChangeCategory}
+                          value={email}
+                          onChange={handleChangeUser}
                           input={<OutlinedInput label="Khách hàng" />}
                           MenuProps={MenuProps}
                         >
-                          {CATEGORY_LIST.map((name) => (
-                            <MenuItem key={name.value} value={name.label}>
-                              <ListItemText primary={name.label} />
+                          {user.map((name) => (
+                            <MenuItem key={name._id} value={name.email}>
+                              <ListItemText primary={name.email} />
                             </MenuItem>
                           ))}
                         </Select>
@@ -156,15 +151,15 @@ export default function TrashbinNews() {
                           labelId="Field-label"
                           id="payment"
                           {...getFieldProps('payment')}
-                          value={news}
-                          name="payment"
-                          onChange={handleChangeCategory}
+                          value={payment}
+                          name={payment}
+                          onChange={handleChangePayment}
                           input={<OutlinedInput label="Hình thức thanh toán" />}
                           MenuProps={MenuProps}
                         >
-                          {CATEGORY_LIST.map((name) => (
-                            <MenuItem key={name.value} value={name.label}>
-                              <ListItemText primary={name.label} />
+                          {PAYMENT_LIST.map((name) => (
+                            <MenuItem key={name._id} value={name.name}>
+                              <ListItemText primary={name.name} />
                             </MenuItem>
                           ))}
                         </Select>
@@ -190,7 +185,7 @@ export default function TrashbinNews() {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={news.length}
+                count={user.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

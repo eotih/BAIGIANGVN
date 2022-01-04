@@ -38,13 +38,7 @@ import {
   UserListToolbar,
   UserMoreMenu
 } from '../../components/_dashboard/Admin/users';
-import {
-  getUser,
-  createUser,
-  userContext,
-  deleteUser,
-  updateUser
-} from '../../context/UserAdminContext';
+import { getUser, createUser, userContext, deleteUser, updateUser } from '../../context';
 
 //
 

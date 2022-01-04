@@ -1,8 +1,8 @@
 import { useEffect, useState, createContext } from 'react';
 import jwtDecode from 'jwt-decode';
 import PropTypes from 'prop-types';
-import axios from '../constants/axios';
-import { configNormal } from './ConfigHeader';
+import axios from '../../constants/axios';
+import { configNormal } from '../ConfigHeader';
 
 const AccountContext = createContext();
 AccountProvider.propTypes = {

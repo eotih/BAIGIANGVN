@@ -26,6 +26,7 @@ const NewReducer = (state, action) => {
     case 'CREATE_NEWS_SUCCESS':
       return {
         loading: false,
+        message: action.message,
         news: [...state.news, action.news]
       };
     case 'CREATE_NEWS_FAILURE':
@@ -43,6 +44,7 @@ const NewReducer = (state, action) => {
     case 'UPDATE_NEWS_SUCCESS':
       return {
         news: state.news.map((news) => (news._id === action.news._id ? action.news : news)),
+        message: action.message,
         loading: false,
         error: null
       };
@@ -61,6 +63,7 @@ const NewReducer = (state, action) => {
     case 'DELETE_NEWS_SUCCESS':
       return {
         news: state.news.filter((news) => news._id !== action.news.news._id),
+        message: action.message,
         loading: false,
         error: null
       };
@@ -79,6 +82,7 @@ const NewReducer = (state, action) => {
     case 'RESTORE_NEWS_SUCCESS':
       return {
         news: [...state.news, action.news],
+        message: action.message,
         loading: false,
         error: null
       };

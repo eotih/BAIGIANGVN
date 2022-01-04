@@ -14,7 +14,8 @@ const createUserStart = () => ({
 });
 const createUserSuccess = (user) => ({
   type: 'CREATE_USER_SUCCESS',
-  user
+  message: user.message,
+  user: user.user
 });
 const createUserFailure = (error) => ({
   type: 'CREATE_USER_FAILURE',
@@ -25,7 +26,8 @@ const updateUserStart = () => ({
 });
 const updateUserSuccess = (user) => ({
   type: 'UPDATE_USER_SUCCESS',
-  user
+  message: user.message,
+  user: user.user
 });
 const updateUserFailure = (error) => ({
   type: 'UPDATE_USER_FAILURE',
@@ -36,7 +38,8 @@ const deleteUserStart = () => ({
 });
 const deleteUserSuccess = (user) => ({
   type: 'DELETE_USER_SUCCESS',
-  user
+  message: user.message,
+  user: user.user
 });
 const deleteUserFailure = (error) => ({
   type: 'DELETE_USER_FAILURE',

@@ -20,7 +20,7 @@ import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { HistoryListHead, HistoryListToolbar } from '../components/_dashboard/history';
-import { getHistoryByID, historyContext } from '../context/HistoryContext';
+import { getHistoryByID, historyContext } from '../context';
 import { accountContext } from '../context/Hooks';
 
 //

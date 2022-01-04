@@ -11,15 +11,15 @@ import {
   deleteLessonStart,
   deleteLessonSuccess,
   deleteLessonFailure
-} from './LessonAction';
+} from '../actions/LessonAction';
 import axios from '../../constants/axios';
 import { configNormal } from '../ConfigHeader';
 
 const getLesson = async (dispatch) => {
   dispatch(getLessonStart());
   try {
-    const lesson = await axios.get('/lesson', configNormal);
-    dispatch(getLessonSuccess(lesson.data));
+    const { data } = await axios.get('/lesson', configNormal);
+    dispatch(getLessonSuccess(data));
   } catch (error) {
     dispatch(getLessonFailure(error));
   }
@@ -27,8 +27,8 @@ const getLesson = async (dispatch) => {
 const createLesson = async (dispatch, lesson) => {
   dispatch(createLessonStart());
   try {
-    const newLesson = await axios.post('/lesson', lesson, configNormal);
-    dispatch(createLessonSuccess(newLesson.data));
+    const { data } = await axios.post('/lesson', lesson, configNormal);
+    dispatch(createLessonSuccess(data));
   } catch (error) {
     dispatch(createLessonFailure(error.response.data.message));
   }
@@ -36,8 +36,8 @@ const createLesson = async (dispatch, lesson) => {
 const updateLesson = async (dispatch, lesson) => {
   dispatch(updateLessonStart());
   try {
-    const updatedLesson = await axios.put(`/lesson/${lesson._id}`, lesson, configNormal);
-    dispatch(updateLessonSuccess(updatedLesson.data));
+    const { data } = await axios.put(`/lesson/${lesson._id}`, lesson, configNormal);
+    dispatch(updateLessonSuccess(data));
   } catch (error) {
     dispatch(updateLessonFailure(error.response.data.message));
   }
@@ -45,8 +45,8 @@ const updateLesson = async (dispatch, lesson) => {
 const deleteLesson = async (dispatch, lesson) => {
   dispatch(deleteLessonStart());
   try {
-    const deletedLesson = await axios.delete(`/lesson/${lesson}`, configNormal);
-    dispatch(deleteLessonSuccess(deletedLesson.data));
+    const { data } = await axios.delete(`/lesson/${lesson}`, configNormal);
+    dispatch(deleteLessonSuccess(data));
   } catch (error) {
     dispatch(deleteLessonFailure(error.response.data.message));
   }

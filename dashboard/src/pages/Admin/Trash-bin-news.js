@@ -43,13 +43,7 @@ import {
   TrashbinNewsListToolbar,
   TrashbinNewsMoreMenu
 } from '../../components/_dashboard/Admin/trash-bin-news';
-import {
-  getNews,
-  restoreNews,
-  destroyNews,
-  createNews,
-  newsContext
-} from '../../context/NewsAdminContext';
+import { getNews, restoreNews, destroyNews, createNews, newsContext } from '../../context';
 
 //
 

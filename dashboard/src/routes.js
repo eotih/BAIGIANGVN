@@ -16,6 +16,7 @@ import isAdmin from './services/auth';
 //
 import UserAdmin from './pages/Admin/User';
 import NewsAdmin from './pages/Admin/News';
+import Notifications from './pages/Admin/Notifications';
 import TrashbinNewsAdmin from './pages/Admin/Trash-bin-news';
 import Transfer from './pages/Admin/Transfer';
 import LessonAdmin from './pages/Admin/Lessons';
@@ -53,7 +54,7 @@ export default function Router() {
         },
         { path: 'news', element: admin ? <NewsAdmin /> : <NotFound /> },
         { path: 'news/trash_bin', element: admin ? <TrashbinNewsAdmin /> : <NotFound /> },
-        { path: 'notifications', element: admin ? <TrashbinNewsAdmin /> : <NotFound /> },
+        { path: 'notifications', element: admin ? <Notifications /> : <NotFound /> },
         { path: 'transfer', element: admin ? <Transfer /> : <NotFound /> },
         { path: 'bank', element: admin ? <TrashbinNewsAdmin /> : <NotFound /> }
       ]

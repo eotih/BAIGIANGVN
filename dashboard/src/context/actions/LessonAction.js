@@ -14,7 +14,8 @@ const createLessonStart = () => ({
 });
 const createLessonSuccess = (lesson) => ({
   type: 'CREATE_LESSON_SUCCESS',
-  lesson
+  message: lesson.message,
+  lesson: lesson.lesson
 });
 const createLessonFailure = (error) => ({
   type: 'CREATE_LESSON_FAILURE',
@@ -25,7 +26,8 @@ const updateLessonStart = () => ({
 });
 const updateLessonSuccess = (lesson) => ({
   type: 'UPDATE_LESSON_SUCCESS',
-  lesson
+  message: lesson.message,
+  lesson: lesson.lesson
 });
 const updateLessonFailure = (error) => ({
   type: 'UPDATE_LESSON_FAILURE',
@@ -36,7 +38,8 @@ const deleteLessonStart = () => ({
 });
 const deleteLessonSuccess = (lesson) => ({
   type: 'DELETE_LESSON_SUCCESS',
-  lesson
+  message: lesson.message,
+  lesson: lesson.lesson
 });
 const deleteLessonFailure = (error) => ({
   type: 'DELETE_LESSON_FAILURE',

@@ -1,12 +1,12 @@
-import { getHistoryStart, getHistorySuccess, getHistoryFailure } from './HistoryAction';
+import { getHistoryStart, getHistorySuccess, getHistoryFailure } from '../actions/HistoryAction';
 import axios from '../../constants/axios';
 import { configNormal } from '../ConfigHeader';
 
 const getHistory = async (dispatch) => {
   dispatch(getHistoryStart());
   try {
-    const history = await axios.get('/transaction_history', configNormal);
-    dispatch(getHistorySuccess(history.data));
+    const { data } = await axios.get('/transaction_history', configNormal);
+    dispatch(getHistorySuccess(data));
   } catch (error) {
     dispatch(getHistoryFailure(error));
   }
@@ -14,8 +14,8 @@ const getHistory = async (dispatch) => {
 const getHistoryByID = async (dispatch, history) => {
   dispatch(getHistoryStart());
   try {
-    const newHistory = await axios.get(`/transaction_history/${history}`, configNormal);
-    dispatch(getHistorySuccess(newHistory.data));
+    const { data } = await axios.get(`/transaction_history/${history}`, configNormal);
+    dispatch(getHistorySuccess(data));
   } catch (error) {
     dispatch(getHistoryFailure(error));
   }

@@ -1,85 +1,64 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { useState, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
+import { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
-import trash from '@iconify/icons-eva/trash-2-fill';
 // material
 import {
   Card,
   Table,
   Stack,
-  Avatar,
   Button,
   Checkbox,
-  Link,
-  Breadcrumbs,
+  InputLabel,
   TableRow,
+  ListItemText,
+  MenuItem,
   TableBody,
   TableCell,
+  OutlinedInput,
   Container,
+  FormControl,
+  Select,
   Typography,
   Modal,
-  FormControl,
   TextField,
   Box,
-  InputLabel,
-  Select,
-  MenuItem,
-  OutlinedInput,
-  ListItemText,
   TableContainer,
   TablePagination
 } from '@mui/material';
-import Badge from '@mui/material/Badge';
-import { LoadingButton } from '@mui/lab';
 // components
+import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
-  NewsListHead,
-  NewsListToolbar,
-  NewsMoreMenu
-} from '../../components/_dashboard/Admin/news';
-import { getNews, updateNews, deleteNews, createNews, newsContext } from '../../context';
+  NotificationsListHead,
+  NotificationsListToolbar,
+  NotificationsMoreMenu
+} from '../../components/_dashboard/Admin/notifications';
+import {
+  getNotifications,
+  createNotifications,
+  updateNotifications,
+  deleteNotifications,
+  notificationsContext
+} from '../../context';
 
 //
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { _id: 'title', label: 'Title', alignRight: false },
-  { _id: 'category', label: 'Category', alignRight: false },
   { _id: 'description', label: 'Description', alignRight: false },
+  { _id: 'type', label: 'Type', alignRight: false },
+  { _id: 'status', label: 'Status', alignRight: false },
+  { _id: 'isActive', label: 'isActive', alignRight: false },
   { _id: '' }
 ];
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
-const CATEGORY_LIST = [
-  {
-    value: '1',
-    label: 'News'
-  },
-  {
-    value: '2',
-    label: 'Events'
-  },
-  {
-    value: '3',
-    label: 'Announcements'
-  }
-];
+
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
@@ -106,31 +85,56 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.title.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.type.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
-
-export default function News() {
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+};
+const TYPE_LIST = [
+  { _id: '1', type: 'success' },
+  { _id: '2', type: 'info' },
+  { _id: '3', type: 'warning' },
+  { _id: '4', type: 'error' }
+];
+const STATUS_LIST = [
+  { _id: '1', status: 'Thông báo' },
+  { _id: '2', status: 'Thông tin' },
+  { _id: '3', status: 'Cảnh báo' },
+  { _id: '4', status: 'Lỗi' }
+];
+export default function Notifications() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
-  const [filterName, setFilterName] = useState('');
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { news, dispatch } = newsContext();
   const [open, setOpen] = useState(false);
-  const [cate, setCategory] = useState([]);
-  const handleClose = () => setOpen(false);
+  const [filterName, setFilterName] = useState('');
+  const [type, setType] = useState('');
+  const [status, setStatus] = useState('');
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const { notifications, message, dispatch } = notificationsContext();
   const handleOpen = () => setOpen(true);
-  const handleChangeCategory = (event) => {
-    formik.setFieldValue('category', event.target.value);
-    setCategory(event.target.value);
-  };
+  const handleClose = () => setOpen(false);
   useEffect(() => {
-    dispatch(getNews(dispatch));
+    getNotifications(dispatch);
   }, [dispatch]);
-
+  const handleChangeType = (event) => {
+    setType(event.target.value);
+    formik.setFieldValue('type', event.target.value);
+  };
+  const handleChangeStatus = (event) => {
+    setStatus(event.target.value);
+    formik.setFieldValue('status', event.target.value);
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -139,33 +143,13 @@ export default function News() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = news.map((n) => n.name);
+      const newSelecteds = notifications.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
-  const formik = useFormik({
-    initialValues: {
-      title: '',
-      description: '',
-      image: '',
-      category: ''
-    },
-    onSubmit: async () => {
-      await dispatch(createNews(dispatch, formik.values));
-      setOpen(false);
-      formik.resetForm();
-    }
-  });
-  const style = {
-    position: 'relative',
-    borderRadius: '10px',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
-  const { handleSubmit, isSubmitting, getFieldProps } = formik;
+
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -197,13 +181,38 @@ export default function News() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - news.length) : 0;
+  const style = {
+    position: 'relative',
+    borderRadius: '10px',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4
+  };
+  const formik = useFormik({
+    initialValues: {
+      status: '',
+      description: '',
+      type: ''
+    },
+    onSubmit: async () => {
+      await createNotifications(dispatch, formik.values);
+      console.log(message);
+      setOpen(false);
+    }
+  });
+  const { handleSubmit, isSubmitting, getFieldProps } = formik;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - notifications.length) : 0;
 
-  const filteredNews = applySortFilter(news, getComparator(order, orderBy), filterName);
+  const filteredNotifications = applySortFilter(
+    notifications,
+    getComparator(order, orderBy),
+    filterName
+  );
 
-  const isUserNotFound = filteredNews.length === 0;
+  const isUserNotFound = filteredNotifications.length === 0;
+
   return (
-    <Page title="News | Bài Giảng VN">
+    <Page title="Notifications | Bài Giảng VN">
       <Modal
         open={open}
         sx={{
@@ -220,33 +229,47 @@ export default function News() {
             <Box sx={style}>
               <Stack spacing={2}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add News
+                  Add Notifications
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Title" {...getFieldProps('title')} />
-                  <TextField fullWidth label="Image" {...getFieldProps('image')} />
-                </Stack>
+                <TextField fullWidth label="Description" {...getFieldProps('description')} />
                 <FormControl>
-                  <InputLabel id="Field-label">Category</InputLabel>
+                  <InputLabel id="Field-label">Status</InputLabel>
                   <Select
                     sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
                     labelId="Field-label"
-                    id="category"
-                    {...getFieldProps('category')}
-                    value={cate}
-                    name="category"
-                    onChange={handleChangeCategory}
-                    input={<OutlinedInput label="Category" />}
+                    id="status"
+                    {...getFieldProps('status')}
+                    value={status}
+                    onChange={handleChangeStatus}
+                    input={<OutlinedInput label="Status" />}
                     MenuProps={MenuProps}
                   >
-                    {CATEGORY_LIST.map((name) => (
-                      <MenuItem key={name.value} value={name.label}>
-                        <ListItemText primary={name.label} />
+                    {STATUS_LIST.map((name) => (
+                      <MenuItem key={name._id} value={name.status}>
+                        <ListItemText primary={name.status} />
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-                <TextField fullWidth label="Description" {...getFieldProps('description')} />
+                <FormControl>
+                  <InputLabel id="Field-label">Thể loại</InputLabel>
+                  <Select
+                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                    labelId="Field-label"
+                    id="type"
+                    {...getFieldProps('type')}
+                    value={type}
+                    onChange={handleChangeType}
+                    input={<OutlinedInput label="Thể loại" />}
+                    MenuProps={MenuProps}
+                  >
+                    {TYPE_LIST.map((name) => (
+                      <MenuItem key={name._id} value={name.type}>
+                        <ListItemText primary={name.type} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <LoadingButton
                   loading={isSubmitting}
                   fullWidth
@@ -254,7 +277,7 @@ export default function News() {
                   type="submit"
                   variant="contained"
                 >
-                  Add News
+                  Add Notifications
                 </LoadingButton>
               </Stack>
             </Box>
@@ -263,37 +286,22 @@ export default function News() {
       </Modal>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" sx={{ mb: 5 }}>
-            News
-            <Breadcrumbs aria-label="breadcrumb">
-              <Link underline="hover" color="inherit" href="/">
-                Admin
-              </Link>
-              <Typography color="text.primary">News</Typography>
-            </Breadcrumbs>
+          <Typography variant="h4" gutterBottom>
+            Notifications
           </Typography>
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            <Badge
-              color="warning"
-              badgeContent={news.filter((res) => res.deleted === true).length || '0'}
-            >
-              <Button onClick={handleOpen} variant="contained" startIcon={<Icon icon={plusFill} />}>
-                New Post
-              </Button>
-              <Button
-                color="secondary"
-                to="./trash_bin"
-                variant="contained"
-                component={RouterLink}
-                startIcon={<Icon icon={trash} />}
-              >
-                Trash
-              </Button>
-            </Badge>
-          </Stack>
+          <Button
+            onClick={handleOpen}
+            variant="contained"
+            component={RouterLink}
+            to="#"
+            startIcon={<Icon icon={plusFill} />}
+          >
+            New Notifications
+          </Button>
         </Stack>
+
         <Card>
-          <NewsListToolbar
+          <NotificationsListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -302,22 +310,21 @@ export default function News() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <NewsListHead
+                <NotificationsListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={filteredNews.length}
+                  rowCount={filteredNotifications.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredNews
+                  {filteredNotifications
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .filter((item) => item.deleted === false)
                     .map((row) => {
-                      const { _id, title, category, image, description } = row;
-                      const isItemSelected = selected.indexOf(title) !== -1;
+                      const { _id, description, status, type, isActive } = row;
+                      const isItemSelected = selected.indexOf(description) !== -1;
 
                       return (
                         <TableRow
@@ -331,28 +338,19 @@ export default function News() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, title)}
+                              onChange={(event) => handleClick(event, description)}
                             />
                           </TableCell>
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <Avatar alt={title} src={image} />
-                              <Typography variant="subtitle2" noWrap>
-                                {title.slice(0, 50)}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell align="left">{category}</TableCell>
-                          <TableCell align="left">{description.slice(0, 100)}</TableCell>
+                          <TableCell align="left">{description}</TableCell>
+                          <TableCell align="left">{type}</TableCell>
+                          <TableCell align="left">{status}</TableCell>
+                          <TableCell align="left">{isActive ? 'Yes' : 'No'}</TableCell>
                           <TableCell align="right">
-                            <NewsMoreMenu
+                            <NotificationsMoreMenu
                               data={row}
-                              MenuProps={MenuProps}
-                              style={style}
-                              CATEGORY_LIST={CATEGORY_LIST}
                               dispatch={dispatch}
-                              onDelete={deleteNews}
-                              onEdit={updateNews}
+                              onDelete={deleteNotifications}
+                              onEdit={updateNotifications}
                             />
                           </TableCell>
                         </TableRow>
@@ -380,7 +378,7 @@ export default function News() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={news.filter((res) => res.deleted === false).length}
+            count={notifications.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

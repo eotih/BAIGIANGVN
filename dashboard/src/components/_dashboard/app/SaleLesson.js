@@ -10,7 +10,7 @@ import { Box, Stack, Link, Card, Button, Divider, Typography, CardHeader } from 
 import Scrollbar from '../../Scrollbar';
 
 // ----------------------------------------------------------------------
-import { getLesson, lessonContext } from '../../../context/LessonAdminContext';
+import { getLesson, lessonContext } from '../../../context';
 // ----------------------------------------------------------------------
 
 SaleLesson.propTypes = {

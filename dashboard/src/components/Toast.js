@@ -4,6 +4,12 @@ import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import { Icon } from '@iconify/react';
 import MuiAlert from '@mui/material/Alert';
+import PropTypes from 'prop-types';
+
+Toast.propTypes = {
+  open: PropTypes.object.isRequired,
+  handleCloseToast: PropTypes.func.isRequired
+};
 
 export default function Toast({ open, handleCloseToast }) {
   const { vertical, horizontal, isOpen, message, color } = open;

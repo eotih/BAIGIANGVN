@@ -34,13 +34,7 @@ import {
   LessonListToolbar,
   LessonMoreMenu
 } from '../../components/_dashboard/Admin/lessons';
-import {
-  getLesson,
-  createLesson,
-  updateLesson,
-  deleteLesson,
-  lessonContext
-} from '../../context/LessonAdminContext';
+import { getLesson, createLesson, updateLesson, deleteLesson, lessonContext } from '../../context';
 
 //
 

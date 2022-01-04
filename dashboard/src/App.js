@@ -9,11 +9,12 @@ import { BaseOptionChartStyle } from './components/charts/BaseOptionChart';
 import Login from './pages/Login';
 import useToken from './services/useToken';
 
-import { AccountProvider } from './context/AccountContext';
-import { UserContextProvider } from './context/UserAdminContext/UserContext';
-import { LessonContextProvider } from './context/LessonAdminContext/LessonContext';
-import { NewsContextProvider } from './context/NewsAdminContext/NewsContext';
-import { HistoryContextProvider } from './context/HistoryContext/HistoryContext';
+import { AccountProvider } from './context/contexts/AccountContext';
+import { UserContextProvider } from './context/contexts/UserContext';
+import { LessonContextProvider } from './context/contexts/LessonContext';
+import { NewsContextProvider } from './context/contexts/NewsContext';
+import { NotificationsContextProvider } from './context/contexts/NotificationsContext';
+import { HistoryContextProvider } from './context/contexts/HistoryContext';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -32,10 +33,12 @@ export default function App() {
           <LessonContextProvider>
             <NewsContextProvider>
               <HistoryContextProvider>
-                <ScrollToTop />
-                <GlobalStyles />
-                <BaseOptionChartStyle />
-                <Router />
+                <NotificationsContextProvider>
+                  <ScrollToTop />
+                  <GlobalStyles />
+                  <BaseOptionChartStyle />
+                  <Router />
+                </NotificationsContextProvider>
               </HistoryContextProvider>
             </NewsContextProvider>
           </LessonContextProvider>
