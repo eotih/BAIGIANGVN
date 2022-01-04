@@ -9,7 +9,7 @@ import { configNormal } from '../context/ConfigHeader';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardApp() {
+export default function InvestDashboard() {
   const [banks, setBanks] = useState([]);
   useEffect(() => {
     axios.get('/bank', configNormal).then((res) => {

@@ -27,7 +27,7 @@ const updateNotificationsStart = () => ({
 const updateNotificationsSuccess = (notifications) => ({
   type: 'UPDATE_NOTIFICATIONS_SUCCESS',
   message: notifications.message,
-  notifications: notifications.notifications
+  notifications: notifications.notification
 });
 const updateNotificationsFailure = (error) => ({
   type: 'UPDATE_NOTIFICATIONS_FAILURE',
@@ -39,7 +39,7 @@ const deleteNotificationsStart = () => ({
 const deleteNotificationsSuccess = (notifications) => ({
   type: 'DELETE_NOTIFICATIONS_SUCCESS',
   message: notifications.message,
-  notifications: notifications.notifications
+  notifications: notifications.notification
 });
 const deleteNotificationsFailure = (error) => ({
   type: 'DELETE_NOTIFICATIONS_FAILURE',

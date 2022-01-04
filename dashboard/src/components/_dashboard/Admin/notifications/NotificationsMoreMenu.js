@@ -4,9 +4,13 @@ import { useRef, useState } from 'react';
 import {
   Stack,
   Typography,
+  OutlinedInput,
   Modal,
+  FormControl,
   IconButton,
   TextField,
+  Select,
+  InputLabel,
   Box,
   Menu,
   MenuItem,
@@ -27,65 +31,78 @@ NotificationsMoreMenu.propTypes = {
   onDelete: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   error: PropTypes.string,
+  handleOpenToast: PropTypes.func.isRequired,
+  STATUS_LIST: PropTypes.array.isRequired,
+  TYPE_LIST: PropTypes.array.isRequired,
+  MenuProps: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired
 };
-export default function NotificationsMoreMenu({ data, onDelete, onEdit, dispatch }) {
-  const {
-    _id,
-    name,
-    subject,
-    grade,
-    week,
-    category,
-    price,
-    image,
-    isActive,
-    sale,
-    link,
-    description
-  } = data;
+export default function NotificationsMoreMenu({
+  data,
+  onDelete,
+  onEdit,
+  STATUS_LIST,
+  MenuProps,
+  TYPE_LIST,
+  dispatch,
+  handleOpenToast
+}) {
+  const { _id, type, status, description, isActive } = data;
+  const [type2, setType2] = useState('');
+  const [status2, setStatus2] = useState('');
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
+  const handleChangeType = (event) => {
+    setType2(event.target.value);
+    formik.setFieldValue('type', event.target.value);
+  };
+  const handleChangeStatus = (event) => {
+    setStatus2(event.target.value);
+    formik.setFieldValue('status', event.target.value);
+  };
   const handleOpen = () => {
     setOpen(true);
     // set value for formik with data
-    formik.setFieldValue('name', name);
-    formik.setFieldValue('subject', subject);
-    formik.setFieldValue('grade', grade);
-    formik.setFieldValue('week', week);
-    formik.setFieldValue('category', category);
     formik.setFieldValue('description', description);
-    formik.setFieldValue('price', price);
-    formik.setFieldValue('link', link);
-    formik.setFieldValue('sale', sale);
-    formik.setFieldValue('image', image);
+    formik.setFieldValue('type', type);
+    formik.setFieldValue('status', status);
     formik.setFieldValue('isActive', isActive);
     formik.setFieldValue('_id', _id);
+    setStatus2(status);
+    setType2(type);
   };
   const handleClose = () => setOpen(false);
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this user?')) {
-      await dispatch(onDelete(dispatch, id));
+      const data = await onDelete(dispatch, id);
+      handleOpenToast({
+        isOpen: true,
+        horizontal: 'right',
+        vertical: 'top',
+        message: data.message,
+        color: 'warning'
+      })();
     }
   };
 
   const formik = useFormik({
     initialValues: {
       _id: '',
-      name: '',
-      description: '',
-      image: '',
-      price: '',
-      week: '',
-      subject: '',
-      grade: '',
-      link: '',
-      category: '',
-      sale: ''
+      type: '',
+      isActive: '',
+      status: '',
+      description: ''
     },
     onSubmit: async () => {
-      await dispatch(onEdit(dispatch, formik.values));
+      const data = await onEdit(dispatch, formik.values);
+      handleOpenToast({
+        isOpen: true,
+        horizontal: 'right',
+        vertical: 'top',
+        message: data.message,
+        color: 'info'
+      })();
       formik.resetForm();
       setOpen(false);
     }
@@ -120,26 +137,47 @@ export default function NotificationsMoreMenu({ data, onDelete, onEdit, dispatch
             <Box sx={style}>
               <Stack spacing={2}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Edit Lesson
+                  Edit Notifications
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lesson Name" {...getFieldProps('name')} />
-                  <TextField fullWidth label="Thể loại" {...getFieldProps('category')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Tuần" {...getFieldProps('week')} />
-                  <TextField fullWidth label="Môn" {...getFieldProps('subject')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lớp" {...getFieldProps('grade')} />
-                  <TextField fullWidth label="Link" {...getFieldProps('link')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Giá" {...getFieldProps('price')} />
-                  <TextField fullWidth label="Sale" {...getFieldProps('sale')} />
-                </Stack>
-                <TextField fullWidth label="Image" {...getFieldProps('image')} />
                 <TextField fullWidth label="Description" {...getFieldProps('description')} />
+                <FormControl>
+                  <InputLabel id="Field-label">Status</InputLabel>
+                  <Select
+                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                    labelId="Field-label"
+                    id="status"
+                    {...getFieldProps('status')}
+                    value={status2}
+                    onChange={handleChangeStatus}
+                    input={<OutlinedInput label="Status" />}
+                    MenuProps={MenuProps}
+                  >
+                    {STATUS_LIST.map((name) => (
+                      <MenuItem key={name._id} value={name.status}>
+                        <ListItemText primary={name.status} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl>
+                  <InputLabel id="Field-label">Thể loại</InputLabel>
+                  <Select
+                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
+                    labelId="Field-label"
+                    id="type"
+                    {...getFieldProps('type')}
+                    value={type2}
+                    onChange={handleChangeType}
+                    input={<OutlinedInput label="Thể loại" />}
+                    MenuProps={MenuProps}
+                  >
+                    {TYPE_LIST.map((name) => (
+                      <MenuItem key={name._id} value={name.type}>
+                        <ListItemText primary={name.type} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <LoadingButton
                   loading={isSubmitting}
                   fullWidth
@@ -147,7 +185,7 @@ export default function NotificationsMoreMenu({ data, onDelete, onEdit, dispatch
                   type="submit"
                   variant="contained"
                 >
-                  Edit Lesson
+                  Edit Notifications
                 </LoadingButton>
               </Stack>
             </Box>

@@ -33,6 +33,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
+import Toast from '../../components/Toast';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
   NotificationsListHead,
@@ -46,10 +47,7 @@ import {
   deleteNotifications,
   notificationsContext
 } from '../../context';
-
-//
-
-// ----------------------------------------------------------------------
+import { MenuProps } from '../../components/MenuProps';
 
 const TABLE_HEAD = [
   { _id: 'description', label: 'Description', alignRight: false },
@@ -58,8 +56,6 @@ const TABLE_HEAD = [
   { _id: 'isActive', label: 'isActive', alignRight: false },
   { _id: '' }
 ];
-
-// ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -89,27 +85,17 @@ function applySortFilter(array, comparator, query) {
   }
   return stabilizedThis.map((el) => el[0]);
 }
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
 const TYPE_LIST = [
-  { _id: '1', type: 'success' },
-  { _id: '2', type: 'info' },
-  { _id: '3', type: 'warning' },
-  { _id: '4', type: 'error' }
+  { _id: '1', type: 'Thông báo' },
+  { _id: '2', type: 'Thông tin' },
+  { _id: '3', type: 'Cảnh báo' },
+  { _id: '4', type: 'Lỗi' }
 ];
 const STATUS_LIST = [
-  { _id: '1', status: 'Thông báo' },
-  { _id: '2', status: 'Thông tin' },
-  { _id: '3', status: 'Cảnh báo' },
-  { _id: '4', status: 'Lỗi' }
+  { _id: '1', status: 'success' },
+  { _id: '2', status: 'info' },
+  { _id: '3', status: 'warning' },
+  { _id: '4', status: 'error' }
 ];
 export default function Notifications() {
   const [page, setPage] = useState(0);
@@ -121,7 +107,14 @@ export default function Notifications() {
   const [type, setType] = useState('');
   const [status, setStatus] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { notifications, message, dispatch } = notificationsContext();
+  const [openToast, setOpenToast] = useState({
+    isOpen: false,
+    vertical: 'top',
+    message: '',
+    color: '',
+    horizontal: 'right'
+  });
+  const { notifications, dispatch } = notificationsContext();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   useEffect(() => {
@@ -140,7 +133,12 @@ export default function Notifications() {
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
-
+  const handleOpenToast = (newState) => () => {
+    setOpenToast({ isOpen: true, ...newState });
+  };
+  const handleCloseToast = () => {
+    setOpenToast({ ...openToast, isOpen: false });
+  };
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = notifications.map((n) => n.name);
@@ -195,8 +193,15 @@ export default function Notifications() {
       type: ''
     },
     onSubmit: async () => {
-      await createNotifications(dispatch, formik.values);
-      console.log(message);
+      const data = await createNotifications(dispatch, formik.values);
+      handleOpenToast({
+        isOpen: true,
+        horizontal: 'right',
+        vertical: 'top',
+        message: data.message,
+        color: 'success'
+      })();
+      formik.resetForm();
       setOpen(false);
     }
   });
@@ -213,6 +218,7 @@ export default function Notifications() {
 
   return (
     <Page title="Notifications | Bài Giảng VN">
+      {openToast.isOpen === true && <Toast open={openToast} handleCloseToast={handleCloseToast} />}
       <Modal
         open={open}
         sx={{
@@ -348,6 +354,10 @@ export default function Notifications() {
                           <TableCell align="right">
                             <NotificationsMoreMenu
                               data={row}
+                              TYPE_LIST={TYPE_LIST}
+                              MenuProps={MenuProps}
+                              STATUS_LIST={STATUS_LIST}
+                              handleOpenToast={handleOpenToast}
                               dispatch={dispatch}
                               onDelete={deleteNotifications}
                               onEdit={updateNotifications}
