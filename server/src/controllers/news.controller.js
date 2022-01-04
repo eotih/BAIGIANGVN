@@ -21,7 +21,7 @@ class NewController {
     const news = await News.findWithDeleted(req.params.id);
     if (news) {
       await News.deleteOne({ _id: req.params.id });
-      res.status(200).json({ message: 'News Deleted'});
+      res.status(200).json({ message: 'News Deleted' });
     } else {
       res.status(200).json({ message: 'News not found' });
     }
@@ -29,29 +29,37 @@ class NewController {
   // [POST] /News
   async create(req, res, next) {
     const { title, description, image, category } = req.body;
-    await News.findOne({ title: title })
-      .then((news) => {
-        if (news) {
-          res.status(400).json({
-            message: "News already exists",
-          });
-        } else {
-          const newNews = new News({
-            user: req.user._id,
-            title: title,
-            description: description,
-            category: category,
-            image: image,
-          });
-          newNews
-            .save()
-            .then((news) => {
-              res.status(201).json({ message: "News created", news: news });
-            })
-            .catch(next);
-        }
-      })
-      .catch(next);
+    if (!title || !description || !image || !category) {
+      return res.status(400).json({
+        message: "Please fill all fields"
+      });
+    }
+    else {
+      await News.findOne({ title: title })
+        .then((news) => {
+          if (news) {
+            res.status(400).json({
+              message: "News already exists",
+            });
+          } else {
+            const newNews = new News({
+              user: req.user._id,
+              title: title,
+              description: description,
+              category: category,
+              image: image,
+            });
+            newNews
+              .save()
+              .then((news) => {
+                res.status(201).json({ message: "News created", news: news });
+              })
+              .catch(next);
+          }
+        })
+        .catch(next);
+
+    }
   }
   // [PUT] /News/:id
   async update(req, res, next) {
@@ -80,7 +88,7 @@ class NewController {
       })
       .catch(next);
   }
-  // [DELETE] /News/:id
+  // [DELETE] /news/:id
   async deleteNews(req, res, next) {
     const news = await News.findById(req.params.id);
     if (news) {
@@ -90,6 +98,7 @@ class NewController {
       res.status(200).json({ message: 'News not found' });
     }
   }
+  // [PUT] /news/:id/restore
   async restore(req, res, next) {
     const news = await News.findById(req.params.id);
     if (news) {

@@ -23,7 +23,7 @@ class NotificationsController {
         type,
       })
         .then((notification) => {
-          res.status(201).json({ message: "Notification created successfully", notification });
+          res.status(201).json({ message: "Notifications created successfully", notification });
         })
         .catch(next);
     }
@@ -63,10 +63,11 @@ class NotificationsController {
   }
   // [DELETE] /users/:id
   async deleteNotifications(req, res, next) {
-    const Notifications = await Notifications.findById(req.params.id);
-    if (Notifications) {
-      const deleteNotifications = await Notifications.remove();
-      res.status(200).json({ message: "Notifications Deleted", notifications: deleteNotifications });
+    const notification = await Notifications.findById(req.params.id);
+    if (notification) {
+      const deleteNotifications = await notification.remove();
+      console.log(deleteNotifications);
+      res.status(200).json({ message: "Notifications Deleted", notification: deleteNotifications });
     } else {
       res.status(200).json({ message: "Notifications not found" });
     }

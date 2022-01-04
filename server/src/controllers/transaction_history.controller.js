@@ -22,7 +22,7 @@ class TransactionHistoryController {
     const user = await User.findOne({ email }); // find user by email
     const admin = await User.findOne({ isAdmin: true, email: req.user.email }); // find admin
     const new_account_balance = user.money + Number(deposit_amount); // add deposit amount to user account balance
-    const adminBalance = admin.money - Number(deposit_amount); // deduct deposit amount from admin account balance
+    const adminBalance = admin.money + Number(deposit_amount); // deduct deposit amount from admin account balance
     if (!email || !deposit_amount || !payment) {
       // check if all fields are provided
       res.status(400).json({
