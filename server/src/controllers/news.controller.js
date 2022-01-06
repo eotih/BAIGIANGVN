@@ -21,9 +21,9 @@ class NewController {
     const news = await News.findWithDeleted(req.params.id);
     if (news) {
       await News.deleteOne({ _id: req.params.id });
-      res.status(200).json({ message: 'News Deleted' });
+      res.status(200).json({ message: 'News Deleted', status: 200 });
     } else {
-      res.status(200).json({ message: 'News not found' });
+      res.status(404).json({ message: 'News not found', status: 404 });
     }
   }
   // [POST] /News
@@ -40,6 +40,7 @@ class NewController {
           if (news) {
             res.status(400).json({
               message: "News already exists",
+              status: 400
             });
           } else {
             const newNews = new News({
@@ -52,7 +53,17 @@ class NewController {
             newNews
               .save()
               .then((news) => {
-                res.status(201).json({ message: "News created", news: news });
+                if (news) {
+                  res.status(200).json({
+                    message: "News created",
+                    news: news
+                  });
+                } else {
+                  res.status(400).json({
+                    message: "News not created",
+                    status: 400
+                  });
+                }
               })
               .catch(next);
           }
@@ -69,6 +80,7 @@ class NewController {
         if (!news) {
           res.status(404).json({
             message: "News not found",
+            status: 404
           });
         } else {
           news.title = title;
@@ -78,10 +90,18 @@ class NewController {
           news
             .save()
             .then((news) => {
-              res.status(200).json({
-                message: "News updated",
-                news: news
-              });
+              if (news) {
+                res.status(200).json({
+                  message: "News updated",
+                  status: 200,
+                  news: news
+                });
+              } else {
+                res.status(400).json({
+                  message: "News not updated",
+                  status: 400
+                });
+              }
             })
             .catch(next);
         }
@@ -93,9 +113,9 @@ class NewController {
     const news = await News.findById(req.params.id);
     if (news) {
       const deleteNews = await news.delete();
-      res.status(200).json({ message: 'News Deleted', news: deleteNews });
+      res.status(200).json({ message: 'News Deleted', news: deleteNews, status: 200 });
     } else {
-      res.status(200).json({ message: 'News not found' });
+      res.status(404).json({ message: 'News not found', status: 404 });
     }
   }
   // [PUT] /news/:id/restore
@@ -103,9 +123,9 @@ class NewController {
     const news = await News.findById(req.params.id);
     if (news) {
       await News.restore({ _id: req.params.id });
-      res.status(200).json({ message: 'News Restored', news: news });
+      res.status(200).json({ message: 'News Restored', news: news, status: 200 });
     } else {
-      res.status(200).json({ message: 'News not found' });
+      res.status(404).json({ message: 'News not found', status: 404 });
     }
   }
   // [GET] /News/:id
@@ -118,7 +138,7 @@ class NewController {
             message: "News not found",
           });
         } else {
-          res.status(200).json({ message: "News found", news: news });
+          res.status(200).json(news);
         }
       })
       .catch(next);

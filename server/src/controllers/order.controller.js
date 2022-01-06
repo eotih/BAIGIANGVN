@@ -9,7 +9,7 @@ class OrderController {
                 if (orders) {
                     res.status(200).json(orders);
                 } else {
-                    res.status(200).json({ message: 'No orders found' });
+                    res.status(404).json({ message: 'No orders found', status: 404 });
                 }
             })
             .catch(next);
@@ -27,12 +27,14 @@ class OrderController {
             const user = await User.findById(user);
             if (!user) {
                 res.status(400).json({
-                    message: 'User does not exist'
+                    message: 'User does not exist',
+                    status: 400
                 });
             }
             else if (user.money < totalPrice) {
                 res.status(400).json({
-                    message: 'User does not have enough money'
+                    message: 'User does not have enough money',
+                    status: 400
                 });
             }
             else {
@@ -49,11 +51,12 @@ class OrderController {
                         user.money -= totalPrice;
                         user.deposited += totalPrice;
                         await user.save();
-                        res.status(200).json({ message: 'Order created', order: createdOrder });
+                        res.status(200).json({ message: 'Order created', order: createdOrder, status: 200 });
                     }
                 } else {
                     res.status(400).json({
-                        message: 'Order must have at least one item'
+                        message: 'Order must have at least one item',
+                        status: 400
                     });
                 }
             }
@@ -64,10 +67,10 @@ class OrderController {
         Order.deleteOne({ _id: req.params.id })
             .then((order) => {
                 if (order) {
-                    res.status(200).json({ message: 'Order deleted', order });
+                    res.status(200).json({ message: 'Order deleted', order, status: 200 });
                 }
                 else {
-                    res.json({ message: 'Order not found' });
+                    res.json({ message: 'Order not found', status: 404 });
                 }
             })
             .catch(next);
@@ -77,7 +80,7 @@ class OrderController {
         Order.findById(req.params.id)
             .then((order) => {
                 if (order) {
-                    res.status(200).json({ message: 'Order found', order });
+                    res.status(200).json(order);
                 }
                 else {
                     res.json({ message: 'Order not found' });

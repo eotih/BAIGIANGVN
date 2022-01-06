@@ -14,21 +14,32 @@ class LessonController {
         const lesson = await Lesson.findOne({ name: name });
         if (lesson) {
             res.status(400).json({
-                message: 'Lesson already exists'
+                message: 'Lesson already exists',
+                status: 400
             });
         } else {
             if (!name || !description || !price || !week || !subject || !grade || !category || !sale) {
                 res.status(400).json({
-                    message: 'Missing fields'
+                    message: 'Missing fields',
+                    status: 400
                 });
             } else {
                 const newLesson = new Lesson(req.body);
                 newLesson.save()
                     .then((lesson) => {
-                        res.status(201).json({
-                            message: 'Lesson created successfully',
-                            lesson
-                        });
+                        if (lesson) {
+                            res.status(201).json({
+                                message: 'Lesson created successfully',
+                                status: 200,
+                                lesson
+                            });
+                        }
+                        else {
+                            res.status(400).json({
+                                message: 'Lesson not created',
+                                status: 400
+                            });
+                        }
                     })
                     .catch(next);
             }
@@ -59,10 +70,18 @@ class LessonController {
                     lesson.sale = sale;
                     lesson.save()
                         .then((lesson) => {
-                            res.status(201).json({
-                                message: 'Lesson updated successfully',
-                                lesson
-                            });
+                            if (lesson) {
+                                res.status(201).json({
+                                    message: 'Lesson updated successfully',
+                                    status: 200,
+                                    lesson
+                                });
+                            } else {
+                                res.status(400).json({
+                                    message: 'Lesson not updated',
+                                    status: 400
+                                });
+                            }
                         })
                         .catch(next);
                     // }
@@ -76,7 +95,7 @@ class LessonController {
             const deleteLesson = await lesson.remove();
             res.status(201).json({ message: 'Lesson Deleted', lesson: deleteLesson });
         } else {
-            res.status(201).json({ message: 'Lesson not found' });
+            res.status(404).json({ message: 'Lesson not found', status: 404 });
         }
     }
     // [GET] /lessons/:id

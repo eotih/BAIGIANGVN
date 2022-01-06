@@ -16,7 +16,7 @@ class UserController {
             .then(user => {
                 if (!user) {
                     res.status(404).json({
-                        message: 'User not found'
+                        message: 'User not found', status: 404
                     });
                 }
                 else {
@@ -30,11 +30,18 @@ class UserController {
                         user.mobile = mobile;
                         user.save()
                             .then(user => {
-                                res.status(200).json({
-                                    message: 'User updated successfully',
-                                    status: 'success',
-                                    user
-                                });
+                                if (!user) {
+                                    res.status(400).json({
+                                        message: 'User not found', status: 400
+                                    });
+                                }
+                                else {
+                                    res.status(200).json({
+                                        message: 'User updated successfully',
+                                        status: 200,
+                                        user
+                                    });
+                                }
                             })
                             .catch(next);
                     }
@@ -48,7 +55,7 @@ class UserController {
             .then(user => {
                 if (!user) {
                     res.status(404).json({
-                        message: 'User not found'
+                        message: 'User not found', status: 404
                     });
                 }
                 else {
@@ -56,13 +63,24 @@ class UserController {
                         user.password = bcrypt.hashSync(req.body.newPassword, 10);
                         user.save()
                             .then(user => {
-                                res.json(user);
+                                if (user) {
+                                    res.status(200).json({
+                                        message: 'Password updated successfully',
+                                        status: 200,
+                                        user
+                                    });
+                                } else {
+                                    res.status(400).json({
+                                        message: 'Password not updated',
+                                        status: 400
+                                    });
+                                }
                             })
                             .catch(next);
                     }
                     else {
                         res.status(400).json({
-                            message: 'Wrong password'
+                            message: 'Wrong password', status: 400
                         });
                     }
                 }
@@ -74,15 +92,15 @@ class UserController {
         const user = await User.findById(req.params.id);
         if (user) {
             await user.remove();
-            res.status(200).json({ message: 'User Deleted'});
+            res.status(200).json({ message: 'User Deleted', status: 200 });
         } else {
-            res.json({ message: 'User not found' });
+            res.status(400).json({ message: 'User not found', status: 404});
         }
     }
     // [GET] /users/:id
     getById(req, res, next) {
         // find with out password and googleId
-        User.findById(req.params.id) 
+        User.findById(req.params.id)
             .select('-password -googleId')
             .then((user) => {
                 res.status(200).json(user);

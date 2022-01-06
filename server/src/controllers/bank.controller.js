@@ -26,7 +26,11 @@ class BankController {
         branch,
       })
         .then((bank) => {
-          res.status(200).json({ message: "Bank created successfully"});
+          if (bank) {
+            res.status(201).json({ message: "Bank created successfully", bank, status: 200 });
+          } else {
+            res.status(400).json({ message: "Bank not created", status: 400 });
+          }
         })
         .catch(next);
     }
@@ -44,6 +48,7 @@ class BankController {
           if (!description || !status || !type) {
             res.status(400).json({
               message: "Please provide all the required fields",
+              status: 400
             });
           } else {
             bank.name = name;
@@ -54,10 +59,12 @@ class BankController {
             bank
               .save()
               .then((updatedBank) => {
-                res.status(200).json({
-                  message: "Bank updated successfully",
-                  updatedBank,
-                });
+                if (updatedBank) {
+                  res.status(200).json({ message: "Bank updated successfully", bank: updatedBank, status: 200 });
+                }
+                else {
+                  res.status(400).json({ message: "Bank not updated", status: 400 });
+                }
               })
               .catch(next);
           }
@@ -70,9 +77,9 @@ class BankController {
     const Bank = await Bank.findById(req.params.id);
     if (Bank) {
       const deleteBank = await Bank.remove();
-      res.status(200).json({ message: "Bank Deleted", bank: deleteBank });
+      res.status(200).json({ message: "Bank Deleted", bank: deleteBank, status: 200 });
     } else {
-      res.status(200).json({ message: "Bank not found" });
+      res.status(404).json({ message: "Bank not found", status: 404 });
     }
   }
   // [GET] /bank/:id

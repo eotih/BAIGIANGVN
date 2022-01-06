@@ -9,20 +9,22 @@ class AuthController {
             if (bcrypt.compareSync(password, user.password)) {
                 res.json({
                     token: generateToken(user),
+                    message: 'Login successfully',
+                    status: 200
                 });
                 return;
             } else {
-                res.status(401).json({ message: 'Invalid password' });
+                res.status(401).json({ message: 'Invalid password', status: 401 });
             }
         } else {
-            res.status(404).json({ message: 'User not found' });
+            res.status(404).json({ message: 'User not found', status: 404 });
         }
 
     }
     async register(req, res, next) {
         const { email, password, name, mobile } = req.body;
         if (await User.findOne({ email: email })) {
-            res.status(400).json({ message: 'User already exist' });
+            res.status(400).json({ message: 'User already exist', status: 400 });
         } else {
             const user = new User({
                 name: name,
@@ -31,15 +33,18 @@ class AuthController {
                 mobile: mobile,
             });
             const createdUser = await user.save();
-            res.json({
-                _id: createdUser._id,
-                name: createdUser.name,
-                email: createdUser.email,
-                mobile: createdUser.mobile,
-                money: createdUser.money,
-                isAdmin: createdUser.isAdmin,
-                message: 'User created successfully',
-            });
+            if (createdUser) {
+                res.status(201).json({
+                    message: 'User created successfully',
+                    status: 200,
+                    user: createdUser
+                });
+            } else {
+                res.status(400).json({
+                    message: 'User not created',
+                    status: 400
+                });
+            }
         }
     }
     async resetPassword(req, res, next) {
@@ -48,9 +53,9 @@ class AuthController {
         if (user) {
             user.password = bcrypt.hashSync(password, 8);
             await user.save();
-            res.json({ message: 'Password reset successfully' });
+            res.json({ message: 'Password reset successfully', status: 200 });
         } else {
-            res.status(404).json({ message: 'User not found' });
+            res.status(404).json({ message: 'User not found', status: 404});
         }
     }
     async loginWithGoogle(req, res, next) {

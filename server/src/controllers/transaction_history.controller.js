@@ -27,12 +27,14 @@ class TransactionHistoryController {
       // check if all fields are provided
       res.status(400).json({
         message: "Please provide all the required fields",
+        status: 400
       });
     } else {
       if (!user) {
         // check if user exists
         res.status(404).json({
           message: "User not found",
+          status: 404
         });
       } else {
         // save to account balance
@@ -48,7 +50,7 @@ class TransactionHistoryController {
           account_balance: new_account_balance,
           payment: payment,
         });
-        res.status(200).json({ message: "Transaction History created successfully", transactionHistory });
+        res.status(200).json({ message: "Transaction History created successfully", transactionHistory, status: 200 });
       }
     }
   }
@@ -63,9 +65,10 @@ class TransactionHistoryController {
       res.status(200).json({
         message: "Transaction History Deleted",
         transaction_history: deleteTransactionHistory,
+        status: 200
       });
     } else {
-      res.json({ message: "Transaction History not found" });
+      res.status(404).json({ message: "Transaction History not found", status: 404 });
     }
   }
   // [GET] /transaction_history/:id
