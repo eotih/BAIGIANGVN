@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
@@ -23,7 +24,7 @@ import {
   TablePagination
 } from '@mui/material';
 import Badge from '@mui/material/Badge';
-import Toast from '../../components/Toast';
+import { toastOpen } from '../../components/Toast';
 // components
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
@@ -67,29 +68,14 @@ export default function TrashbinNews() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [openToast, setOpenToast] = useState({
-    isOpen: false,
-    vertical: 'top',
-    message: '',
-    color: '',
-    horizontal: 'right'
-  });
-  const handleOpenToast = (newState) => () => {
-    setOpenToast({ isOpen: true, ...newState });
-  };
-  const handleCloseToast = () => {
-    setOpenToast({ ...openToast, isOpen: false });
-  };
   const { news, status, message, dispatch } = newsContext();
+  const { openToast, handleOpenToast, renderToast } = toastOpen();
   useEffect(() => {
     dispatch(getNews(dispatch));
     if (message) {
       handleOpenToast({
-        isOpen: true,
         message,
-        color: status === 200 ? 'success' : 'error',
-        vertical: 'top',
-        horizontal: 'right'
+        color: status === 200 ? 'success' : 'error'
       })();
     }
   }, [dispatch, message, status]);
@@ -146,7 +132,7 @@ export default function TrashbinNews() {
   const isUserNotFound = filteredNews.length === 0;
   return (
     <Page title="Trashbin | Bài Giảng VN">
-      {openToast.isOpen === true && <Toast open={openToast} handleCloseToast={handleCloseToast} />}
+      {openToast.isOpen === true && renderToast()}
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" sx={{ mb: 5 }}>

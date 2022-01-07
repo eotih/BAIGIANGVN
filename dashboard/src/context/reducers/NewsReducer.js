@@ -1,5 +1,4 @@
 const NewReducer = (state, action) => {
-  console.log('NewsReducer', action);
   switch (action.type) {
     case 'GET_NEWS_START':
       return {
