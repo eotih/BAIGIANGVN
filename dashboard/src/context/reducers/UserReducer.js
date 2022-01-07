@@ -27,6 +27,7 @@ const UserReducer = (state, action) => {
       return {
         loading: false,
         message: action.message,
+        status: action.status,
         user: [...state.user, action.user]
       };
     case 'CREATE_USER_FAILURE':
@@ -45,6 +46,7 @@ const UserReducer = (state, action) => {
       return {
         user: state.user.map((user) => (user._id === action.user._id ? action.user : user)),
         message: action.message,
+        status: action.status,
         loading: false,
         error: null
       };
@@ -62,8 +64,9 @@ const UserReducer = (state, action) => {
       };
     case 'DELETE_USER_SUCCESS':
       return {
-        user: state.user.filter((user) => user._id !== action.user.user._id),
+        user: state.user.filter((user) => user._id !== action.user._id),
         message: action.message,
+        status: action.status,
         loading: false,
         error: null
       };

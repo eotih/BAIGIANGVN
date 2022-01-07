@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import closeFill from '@iconify/icons-eva/close-fill';
-import * as React from 'react';
+import { useState, forwardRef } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import { Icon } from '@iconify/react';
@@ -13,7 +14,7 @@ Toast.propTypes = {
 
 export default function Toast({ open, handleCloseToast }) {
   const { vertical, horizontal, isOpen, message, color } = open;
-  const Alert = React.forwardRef((props, ref) => (
+  const Alert = forwardRef((props, ref) => (
     <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
   ));
   return (
@@ -38,4 +39,25 @@ export default function Toast({ open, handleCloseToast }) {
       </Snackbar>
     </>
   );
+}
+export function toastOpen() {
+  const [openToast, setOpenToast] = useState({
+    isOpen: false,
+    vertical: 'top',
+    message: '',
+    color: '',
+    horizontal: 'right'
+  });
+  const handleOpenToast = (newState) => () => {
+    setOpenToast({ isOpen: true, vertical: 'top', horizontal: 'right', ...newState });
+  };
+  const handleCloseToast = () => {
+    setOpenToast({ ...openToast, isOpen: false });
+  };
+  const renderToast = () => <Toast open={openToast} handleCloseToast={handleCloseToast} />;
+  return {
+    openToast,
+    renderToast,
+    handleOpenToast
+  };
 }

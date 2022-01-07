@@ -2,7 +2,6 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import { useState, useEffect } from 'react';
-import { useFormik, Form, FormikProvider } from 'formik';
 import { Link as RouterLink } from 'react-router-dom';
 import trash from '@iconify/icons-eva/arrow-back-fill';
 // material
@@ -20,20 +19,11 @@ import {
   TableCell,
   Container,
   Typography,
-  Modal,
-  FormControl,
-  TextField,
-  Box,
-  InputLabel,
-  Select,
-  MenuItem,
-  OutlinedInput,
-  ListItemText,
   TableContainer,
   TablePagination
 } from '@mui/material';
 import Badge from '@mui/material/Badge';
-import { LoadingButton } from '@mui/lab';
+import Toast from '../../components/Toast';
 // components
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
@@ -43,8 +33,8 @@ import {
   TrashbinNewsListToolbar,
   TrashbinNewsMoreMenu
 } from '../../components/_dashboard/Admin/trash-bin-news';
-import { getNews, restoreNews, destroyNews, createNews, newsContext } from '../../context';
-
+import { getNews, restoreNews, destroyNews, newsContext } from '../../context';
+import { getComparator } from '../../components/tableListComponents';
 //
 
 // ----------------------------------------------------------------------
@@ -55,47 +45,7 @@ const TABLE_HEAD = [
   { _id: 'description', label: 'Description', alignRight: false },
   { _id: '' }
 ];
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
-const CATEGORY_LIST = [
-  {
-    value: '1',
-    label: 'News'
-  },
-  {
-    value: '2',
-    label: 'Events'
-  },
-  {
-    value: '3',
-    label: 'Announcements'
-  }
-];
 // ----------------------------------------------------------------------
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 function applySortFilter(array, comparator, query) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -117,17 +67,32 @@ export default function TrashbinNews() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { news, dispatch } = newsContext();
-  const [open, setOpen] = useState(false);
-  const [cate, setCategory] = useState([]);
-  const handleClose = () => setOpen(false);
-  const handleChangeCategory = (event) => {
-    formik.setFieldValue('category', event.target.value);
-    setCategory(event.target.value);
+  const [openToast, setOpenToast] = useState({
+    isOpen: false,
+    vertical: 'top',
+    message: '',
+    color: '',
+    horizontal: 'right'
+  });
+  const handleOpenToast = (newState) => () => {
+    setOpenToast({ isOpen: true, ...newState });
   };
+  const handleCloseToast = () => {
+    setOpenToast({ ...openToast, isOpen: false });
+  };
+  const { news, status, message, dispatch } = newsContext();
   useEffect(() => {
     dispatch(getNews(dispatch));
-  }, [dispatch]);
+    if (message) {
+      handleOpenToast({
+        isOpen: true,
+        message,
+        color: status === 200 ? 'success' : 'error',
+        vertical: 'top',
+        horizontal: 'right'
+      })();
+    }
+  }, [dispatch, message, status]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -143,27 +108,6 @@ export default function TrashbinNews() {
     }
     setSelected([]);
   };
-  const formik = useFormik({
-    initialValues: {
-      title: '',
-      description: '',
-      image: '',
-      category: ''
-    },
-    onSubmit: async () => {
-      await dispatch(createNews(dispatch, formik.values));
-      setOpen(false);
-      formik.resetForm();
-    }
-  });
-  const style = {
-    position: 'relative',
-    borderRadius: '10px',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
-  const { handleSubmit, isSubmitting, getFieldProps } = formik;
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -201,64 +145,8 @@ export default function TrashbinNews() {
 
   const isUserNotFound = filteredNews.length === 0;
   return (
-    <Page title="News | Bài Giảng VN">
-      <Modal
-        open={open}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <FormikProvider value={formik}>
-          <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            <Box sx={style}>
-              <Stack spacing={2}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add News
-                </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Title" {...getFieldProps('title')} />
-                  <TextField fullWidth label="Image" {...getFieldProps('image')} />
-                </Stack>
-                <FormControl>
-                  <InputLabel id="Field-label">Category</InputLabel>
-                  <Select
-                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                    labelId="Field-label"
-                    id="category"
-                    {...getFieldProps('category')}
-                    value={cate}
-                    name="category"
-                    onChange={handleChangeCategory}
-                    input={<OutlinedInput label="Category" />}
-                    MenuProps={MenuProps}
-                  >
-                    {CATEGORY_LIST.map((name) => (
-                      <MenuItem key={name.value} value={name.label}>
-                        <ListItemText primary={name.label} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <TextField fullWidth label="Description" {...getFieldProps('description')} />
-                <LoadingButton
-                  loading={isSubmitting}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                >
-                  Add News
-                </LoadingButton>
-              </Stack>
-            </Box>
-          </Form>
-        </FormikProvider>
-      </Modal>
+    <Page title="Trashbin | Bài Giảng VN">
+      {openToast.isOpen === true && <Toast open={openToast} handleCloseToast={handleCloseToast} />}
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" sx={{ mb: 5 }}>

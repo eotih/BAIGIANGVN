@@ -22,12 +22,12 @@ export default function TrashbinNewsMoreMenu({ data, onDelete, dispatch, onResto
 
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this news?')) {
-      await dispatch(onDelete(dispatch, id));
+      await onDelete(dispatch, id);
     }
   };
   const handleRestore = async (id) => {
     if (confirm('Are you sure you want to restore this news?')) {
-      await dispatch(onRestore(dispatch, id));
+      await onRestore(dispatch, id);
     }
   };
 

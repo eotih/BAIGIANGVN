@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
@@ -28,7 +29,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
-import Toast from '../../components/Toast';
+import { toastOpen } from '../../components/Toast';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
   BankListHead,
@@ -68,31 +69,16 @@ export default function Bank() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { bank, status, message, dispatch } = bankContext();
+  const { openToast, handleOpenToast, renderToast } = toastOpen();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [openToast, setOpenToast] = useState({
-    isOpen: false,
-    vertical: 'top',
-    message: '',
-    color: '',
-    horizontal: 'right'
-  });
-  const handleOpenToast = (newState) => () => {
-    setOpenToast({ isOpen: true, ...newState });
-  };
-  const handleCloseToast = () => {
-    setOpenToast({ ...openToast, isOpen: false });
-  };
   useEffect(() => {
     getBank(dispatch);
     // if have message
     if (message) {
       handleOpenToast({
-        isOpen: true,
         message,
-        color: status === 200 ? 'success' : 'error',
-        vertical: 'top',
-        horizontal: 'right'
+        color: status === 200 ? 'success' : 'error'
       })();
     }
   }, [dispatch, message, status]);
@@ -168,7 +154,7 @@ export default function Bank() {
 
   return (
     <Page title="Bank | Bài Giảng VN">
-      {openToast.isOpen === true && <Toast open={openToast} handleCloseToast={handleCloseToast} />}
+      {openToast.isOpen === true && renderToast()}
       <Modal
         open={open}
         sx={{

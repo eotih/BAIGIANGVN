@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
@@ -33,7 +34,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
-import Toast from '../../components/Toast';
+import { toastOpen } from '../../components/Toast';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
   NotificationsListHead,
@@ -52,7 +53,7 @@ import { getComparator, styleModal, MenuProps } from '../../components/tableList
 const TABLE_HEAD = [
   { _id: 'description', label: 'Description', alignRight: false },
   { _id: 'type', label: 'Type', alignRight: false },
-  { _id: 'status', label: 'Status', alignRight: false },
+  { _id: 'status', label: 'status', alignRight: false },
   { _id: 'isActive', label: 'isActive', alignRight: false },
   { _id: '' }
 ];
@@ -89,42 +90,27 @@ export default function Notifications() {
   const [open, setOpen] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [type, setType] = useState('');
-  const [status, setStatus] = useState('');
+  const [statusList, setStatusList] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { notifications, message, dispatch } = notificationsContext();
+  const { notifications, status, message, dispatch } = notificationsContext();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [openToast, setOpenToast] = useState({
-    isOpen: false,
-    vertical: 'top',
-    message: '',
-    color: '',
-    horizontal: 'right'
-  });
-  const handleOpenToast = (newState) => () => {
-    setOpenToast({ isOpen: true, ...newState });
-  };
-  const handleCloseToast = () => {
-    setOpenToast({ ...openToast, isOpen: false });
-  };
+  const { openToast, handleOpenToast, renderToast } = toastOpen();
   useEffect(() => {
     getNotifications(dispatch);
     if (message) {
       handleOpenToast({
-        isOpen: true,
-        horizontal: 'right',
-        vertical: 'top',
         message,
-        color: 'success'
+        color: status === 200 ? 'success' : 'error'
       })();
     }
-  }, [dispatch, message]);
+  }, [dispatch, message, status]);
   const handleChangeType = (event) => {
     setType(event.target.value);
     formik.setFieldValue('type', event.target.value);
   };
-  const handleChangeStatus = (event) => {
-    setStatus(event.target.value);
+  const handleChangeStatusList = (event) => {
+    setStatusList(event.target.value);
     formik.setFieldValue('status', event.target.value);
   };
   const handleRequestSort = (event, property) => {
@@ -172,7 +158,7 @@ export default function Notifications() {
     formik.resetForm();
     setOpen(false);
     setType('');
-    setStatus('');
+    setStatusList('');
     setSubmitting(false);
   };
   const handleFilterByName = (event) => {
@@ -203,7 +189,7 @@ export default function Notifications() {
 
   return (
     <Page title="Notifications | Bài Giảng VN">
-      {openToast.isOpen === true && <Toast open={openToast} handleCloseToast={handleCloseToast} />}
+      {openToast.isOpen === true && renderToast()}
       <Modal
         open={open}
         sx={{
@@ -230,9 +216,9 @@ export default function Notifications() {
                     labelId="Field-label"
                     id="status"
                     {...getFieldProps('status')}
-                    value={status}
-                    onChange={handleChangeStatus}
-                    input={<OutlinedInput label="Status" />}
+                    value={statusList}
+                    onChange={handleChangeStatusList}
+                    input={<OutlinedInput label="status" />}
                     MenuProps={MenuProps}
                   >
                     {STATUS_LIST.map((name) => (

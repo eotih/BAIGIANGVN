@@ -6,6 +6,7 @@ import logger from '../logger';
 const INITIAL_STATE = {
   news: [],
   loading: true,
+  status: null,
   message: null,
   error: ''
 };
@@ -13,12 +14,13 @@ const INITIAL_STATE = {
 const NewsContext = createContext(INITIAL_STATE);
 const NewsContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(logger(NewsReducer), INITIAL_STATE);
-  const { news, message, loading, error } = state;
+  const { news, status, message, loading, error } = state;
   return (
     <NewsContext.Provider
       value={{
         news,
         loading,
+        status,
         message,
         error,
         dispatch

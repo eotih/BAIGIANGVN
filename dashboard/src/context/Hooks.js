@@ -13,20 +13,21 @@ const accountContext = () => {
   return account;
 };
 const notificationsContext = () => {
-  const { notifications, message, dispatch, error, loading } = useContext(NotificationsContext);
-  return { notifications, message, dispatch, error, loading };
+  const { notifications, status, message, dispatch, error, loading } =
+    useContext(NotificationsContext);
+  return { notifications, status, message, dispatch, error, loading };
 };
 const userContext = () => {
-  const { user, dispatch, message, error, loading } = useContext(UserContext);
-  return { user, dispatch, message, error, loading };
+  const { user, status, dispatch, message, error, loading } = useContext(UserContext);
+  return { user, status, dispatch, message, error, loading };
 };
 const newsContext = () => {
-  const { news, dispatch, message, error, loading } = useContext(NewsContext);
-  return { news, dispatch, message, error, loading };
+  const { news, status, dispatch, message, error, loading } = useContext(NewsContext);
+  return { news, status, dispatch, message, error, loading };
 };
 const lessonContext = () => {
-  const { lesson, dispatch, message, error, loading } = useContext(LessonContext);
-  return { lesson, dispatch, message, error, loading };
+  const { lesson, status, dispatch, message, error, loading } = useContext(LessonContext);
+  return { lesson, status, dispatch, message, error, loading };
 };
 const historyContext = () => {
   const { history, dispatch, message, error, loading } = useContext(HistoryContext);

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
@@ -27,7 +28,7 @@ import {
 // components
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
-import Toast from '../../components/Toast';
+import { toastOpen } from '../../components/Toast';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
@@ -75,34 +76,19 @@ export default function Lesson() {
   const [open, setOpen] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { lesson, message, dispatch } = lessonContext();
+  const { lesson, message, status, dispatch } = lessonContext();
+  const { openToast, handleOpenToast, renderToast } = toastOpen();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [openToast, setOpenToast] = useState({
-    isOpen: false,
-    vertical: 'top',
-    message: '',
-    color: '',
-    horizontal: 'right'
-  });
-  const handleOpenToast = (newState) => () => {
-    setOpenToast({ isOpen: true, ...newState });
-  };
-  const handleCloseToast = () => {
-    setOpenToast({ ...openToast, isOpen: false });
-  };
   useEffect(() => {
     getLesson(dispatch);
     if (message) {
       handleOpenToast({
-        isOpen: true,
-        horizontal: 'right',
-        vertical: 'top',
         message,
-        color: 'success'
+        color: status === 200 ? 'success' : 'error'
       })();
     }
-  }, [dispatch, message]);
+  }, [dispatch, message, status]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -177,7 +163,7 @@ export default function Lesson() {
 
   return (
     <Page title="Lesson | Bài Giảng VN">
-      {openToast.isOpen === true && <Toast open={openToast} handleCloseToast={handleCloseToast} />}
+      {openToast.isOpen === true && renderToast()}
       <Modal
         open={open}
         sx={{

@@ -63,15 +63,8 @@ const updateNews = async (dispatch, news) => {
 const deleteNews = async (dispatch, news) => {
   dispatch(deleteNewsStart());
   try {
-    axios
-      .delete(`/news/${news}`, configNormal)
-      .then((response) => {
-        dispatch(deleteNewsSuccess(response.data));
-      })
-      .catch((error) => {
-        dispatch(deleteNewsFailure(error.response.data.message));
-      });
-    // dispatch(deleteNewsSuccess(deletedNews.data));
+    const { data } = await axios.delete(`/news/${news}`, configNormal);
+    dispatch(deleteNewsSuccess(data));
   } catch (error) {
     dispatch(deleteNewsFailure(error.response.data.message));
   }

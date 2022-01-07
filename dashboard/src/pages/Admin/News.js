@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
@@ -44,7 +45,9 @@ import {
   NewsListToolbar,
   NewsMoreMenu
 } from '../../components/_dashboard/Admin/news';
+import { toastOpen } from '../../components/Toast';
 import { getNews, updateNews, deleteNews, createNews, newsContext } from '../../context';
+import { getComparator, styleModal, MenuProps } from '../../components/tableListComponents';
 
 //
 
@@ -56,16 +59,7 @@ const TABLE_HEAD = [
   { _id: 'description', label: 'Description', alignRight: false },
   { _id: '' }
 ];
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
+
 const CATEGORY_LIST = [
   {
     value: '1',
@@ -81,22 +75,6 @@ const CATEGORY_LIST = [
   }
 ];
 // ----------------------------------------------------------------------
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 function applySortFilter(array, comparator, query) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -118,18 +96,25 @@ export default function News() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { news, dispatch } = newsContext();
+  const { news, status, message, dispatch } = newsContext();
   const [open, setOpen] = useState(false);
   const [cate, setCategory] = useState([]);
   const handleClose = () => setOpen(false);
   const handleOpen = () => setOpen(true);
+  const { openToast, handleOpenToast, renderToast } = toastOpen();
   const handleChangeCategory = (event) => {
     formik.setFieldValue('category', event.target.value);
     setCategory(event.target.value);
   };
   useEffect(() => {
     dispatch(getNews(dispatch));
-  }, [dispatch]);
+    if (message) {
+      handleOpenToast({
+        message,
+        color: status === 200 ? 'success' : 'error'
+      })();
+    }
+  }, [dispatch, message, status]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -159,13 +144,7 @@ export default function News() {
       formik.resetForm();
     }
   });
-  const style = {
-    position: 'relative',
-    borderRadius: '10px',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
+
   const { handleSubmit, isSubmitting, getFieldProps, setSubmitting } = formik;
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -205,6 +184,7 @@ export default function News() {
   const isUserNotFound = filteredNews.length === 0;
   return (
     <Page title="News | Bài Giảng VN">
+      {openToast.isOpen === true && renderToast()}
       <Modal
         open={open}
         sx={{
@@ -218,7 +198,7 @@ export default function News() {
       >
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            <Box sx={style}>
+            <Box sx={styleModal}>
               <Stack spacing={2}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                   Add News
@@ -235,7 +215,6 @@ export default function News() {
                     id="category"
                     {...getFieldProps('category')}
                     value={cate}
-                    name="category"
                     onChange={handleChangeCategory}
                     input={<OutlinedInput label="Category" />}
                     MenuProps={MenuProps}
@@ -349,7 +328,7 @@ export default function News() {
                             <NewsMoreMenu
                               data={row}
                               MenuProps={MenuProps}
-                              style={style}
+                              style={styleModal}
                               CATEGORY_LIST={CATEGORY_LIST}
                               dispatch={dispatch}
                               onDelete={deleteNews}

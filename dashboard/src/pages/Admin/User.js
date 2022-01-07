@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import * as Yup from 'yup';
@@ -39,6 +40,8 @@ import {
   UserMoreMenu
 } from '../../components/_dashboard/Admin/users';
 import { getUser, createUser, userContext, deleteUser, updateUser } from '../../context';
+import { toastOpen } from '../../components/Toast';
+import { getComparator, styleModal } from '../../components/tableListComponents';
 
 //
 
@@ -54,22 +57,6 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 function applySortFilter(array, comparator, query) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -93,12 +80,19 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showPassword, setShowPassword] = useState(false);
-  const { user, dispatch } = userContext();
+  const { user, message, status, dispatch } = userContext();
+  const { openToast, handleOpenToast, renderToast } = toastOpen();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   useEffect(() => {
-    dispatch(getUser(dispatch));
-  }, [dispatch]);
+    getUser(dispatch);
+    if (message) {
+      handleOpenToast({
+        message,
+        color: status === 200 ? 'success' : 'error'
+      })();
+    }
+  }, [dispatch, message, status]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -156,13 +150,6 @@ export default function User() {
       .required('Vui lòng nhập email'),
     password: Yup.string().required('Password is required')
   });
-  const style = {
-    position: 'relative',
-    borderRadius: '10px',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -186,6 +173,7 @@ export default function User() {
 
   return (
     <Page title="User | Bài Giảng VN">
+      {openToast.isOpen === true && renderToast()}
       <Modal
         open={open}
         sx={{
@@ -199,7 +187,7 @@ export default function User() {
       >
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            <Box sx={style}>
+            <Box sx={styleModal}>
               <Stack spacing={1}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                   Add User

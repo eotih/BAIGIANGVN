@@ -15,6 +15,7 @@ const createNewsStart = () => ({
 const createNewsSuccess = (news) => ({
   type: 'CREATE_NEWS_SUCCESS',
   message: news.message,
+  status: news.status,
   news: news.news
 });
 const createNewsFailure = (error) => ({
@@ -27,6 +28,7 @@ const updateNewsStart = () => ({
 const updateNewsSuccess = (news) => ({
   type: 'UPDATE_NEWS_SUCCESS',
   message: news.message,
+  status: news.status,
   news: news.news
 });
 const updateNewsFailure = (error) => ({
@@ -39,6 +41,7 @@ const deleteNewsStart = () => ({
 const deleteNewsSuccess = (news) => ({
   type: 'DELETE_NEWS_SUCCESS',
   message: news.message,
+  status: news.status,
   news: news.news
 });
 const deleteNewsFailure = (error) => ({
@@ -51,6 +54,7 @@ const restoreNewsStart = () => ({
 const restoreNewsSuccess = (news) => ({
   type: 'RESTORE_NEWS_SUCCESS',
   message: news.message,
+  status: news.status,
   news: news.news
 });
 const restoreNewsFailure = (error) => ({

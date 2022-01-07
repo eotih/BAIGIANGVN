@@ -122,7 +122,6 @@ export default function NewsMoreMenu({
                     id="category"
                     {...getFieldProps('category')}
                     value={cate}
-                    name="category"
                     onChange={handleChangeCategory}
                     input={<OutlinedInput label="Category" />}
                     MenuProps={MenuProps}

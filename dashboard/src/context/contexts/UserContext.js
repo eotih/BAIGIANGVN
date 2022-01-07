@@ -7,18 +7,20 @@ const INITIAL_STATE = {
   user: [],
   loading: true,
   message: null,
+  state: null,
   error: null
 };
 
 const UserContext = createContext(INITIAL_STATE);
 const UserContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(logger(UserReducer), INITIAL_STATE);
-  const { user, message, loading, error } = state;
+  const { user, status, message, loading, error } = state;
   return (
     <UserContext.Provider
       value={{
         user,
         loading,
+        status,
         message,
         error,
         dispatch

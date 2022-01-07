@@ -27,6 +27,7 @@ const NotificationsReducer = (state, action) => {
       return {
         loading: false,
         message: action.message,
+        status: action.status,
         notifications: [...state.notifications, action.notifications]
       };
     case 'CREATE_NOTIFICATIONS_FAILURE':
@@ -47,6 +48,7 @@ const NotificationsReducer = (state, action) => {
           notifications._id === action.notifications._id ? action.notifications : notifications
         ),
         message: action.message,
+        status: action.status,
         loading: false,
         error: null
       };
@@ -68,6 +70,7 @@ const NotificationsReducer = (state, action) => {
           (notifications) => notifications._id !== action.notifications._id
         ),
         loading: false,
+        status: action.status,
         message: action.message,
         error: null
       };

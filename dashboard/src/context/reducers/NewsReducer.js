@@ -1,4 +1,5 @@
 const NewReducer = (state, action) => {
+  console.log('NewsReducer', action);
   switch (action.type) {
     case 'GET_NEWS_START':
       return {
@@ -27,6 +28,7 @@ const NewReducer = (state, action) => {
       return {
         loading: false,
         message: action.message,
+        status: action.status,
         news: [...state.news, action.news]
       };
     case 'CREATE_NEWS_FAILURE':
@@ -45,6 +47,7 @@ const NewReducer = (state, action) => {
       return {
         news: state.news.map((news) => (news._id === action.news._id ? action.news : news)),
         message: action.message,
+        status: action.status,
         loading: false,
         error: null
       };
@@ -62,8 +65,9 @@ const NewReducer = (state, action) => {
       };
     case 'DELETE_NEWS_SUCCESS':
       return {
-        news: state.news.filter((news) => news._id !== action.news.news._id),
+        news: state.news.filter((news) => news._id !== action.news._id),
         message: action.message,
+        status: action.status,
         loading: false,
         error: null
       };
@@ -83,6 +87,7 @@ const NewReducer = (state, action) => {
       return {
         news: [...state.news, action.news],
         message: action.message,
+        status: action.status,
         loading: false,
         error: null
       };
