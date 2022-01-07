@@ -12,10 +12,10 @@ class NewController {
       .catch(next);
   }
   async destroy(req, res, next) {
-    const news = await News.findWithDeleted(req.params.id);
+    const news = await News.findDeleted({ _id: req.params.id });
     if (news) {
       await News.deleteOne({ _id: req.params.id });
-      res.status(200).json({ message: 'News Deleted', status: 200 });
+      res.status(200).json({ message: 'News Deleted', news, status: 200 });
     } else {
       res.status(404).json({ message: 'News not found', status: 404 });
     }
@@ -115,7 +115,7 @@ class NewController {
   }
   // [PUT] /news/:id/restore
   async restore(req, res, next) {
-    const news = await News.findById(req.params.id);
+    const news = await News.findDeleted({ _id: req.params.id });
     if (news) {
       await News.restore({ _id: req.params.id });
       res.status(200).json({ message: 'News Restored', news: news, status: 200 });

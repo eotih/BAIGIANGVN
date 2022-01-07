@@ -16,7 +16,7 @@ router.get("/", isAuthenticated, show);
 router.get("/newest", isAuthenticated, get5News);
 router.get("/:id", isAuthenticated, getById);
 router.post("/", isAuthenticated, isAdmin, create);
-router.put('/:id/restore', isAuthenticated, isAdmin, restore)
+router.put('/:id/restore', restore)
 router.put("/:id", isAuthenticated, isAdmin, update);
 router.delete("/:id", isAuthenticated, isAdmin, deleteNews);
 router.delete("/:id/delete", isAuthenticated, isAdmin, destroy);
