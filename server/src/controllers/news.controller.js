@@ -50,6 +50,7 @@ class NewController {
                 if (news) {
                   res.status(200).json({
                     message: "News created",
+                    status: 200,
                     news: news
                   });
                 } else {
