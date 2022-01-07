@@ -154,6 +154,7 @@ export default function News() {
     },
     onSubmit: async () => {
       await dispatch(createNews(dispatch, formik.values));
+      setSubmitting(false);
       setOpen(false);
       formik.resetForm();
     }
@@ -165,7 +166,7 @@ export default function News() {
     boxShadow: 24,
     p: 4
   };
-  const { handleSubmit, isSubmitting, getFieldProps } = formik;
+  const { handleSubmit, isSubmitting, getFieldProps, setSubmitting } = formik;
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];

@@ -1,75 +1,76 @@
-const LessonReducer = (state, action) => {
+const BankReducer = (state, action) => {
   switch (action.type) {
-    case 'GET_LESSON_START':
+    case 'GET_BANK_START':
       return {
-        lesson: [],
+        bank: [],
         loading: true,
         error: null
       };
-    case 'GET_LESSON_SUCCESS':
+    case 'GET_BANK_SUCCESS':
       return {
         loading: false,
-        lesson: action.lesson
+        bank: action.bank
       };
-    case 'GET_LESSON_FAILURE':
+    case 'GET_BANK_FAILURE':
       return {
-        lesson: [],
+        bank: [],
         loading: false,
         error: action.error
       };
-    case 'CREATE_LESSON_START':
+    case 'CREATE_BANK_START':
       return {
         ...state,
         loading: true,
         error: null
       };
-    case 'CREATE_LESSON_SUCCESS':
+    case 'CREATE_BANK_SUCCESS':
       return {
         loading: false,
         message: action.message,
-        lesson: [...state.lesson, action.lesson]
+        status: action.status,
+        bank: [...state.bank, action.bank]
       };
-    case 'CREATE_LESSON_FAILURE':
-      return {
-        ...state,
-        loading: false,
-        error: action.error
-      };
-    case 'UPDATE_LESSON_START':
-      return {
-        ...state,
-        loading: true,
-        error: null
-      };
-    case 'UPDATE_LESSON_SUCCESS':
-      return {
-        lesson: state.lesson.map((lesson) =>
-          lesson._id === action.lesson._id ? action.lesson : lesson
-        ),
-        message: action.message,
-        loading: false,
-        error: null
-      };
-    case 'UPDATE_LESSON_FAILURE':
+    case 'CREATE_BANK_FAILURE':
       return {
         ...state,
         loading: false,
         error: action.error
       };
-    case 'DELETE_LESSON_START':
+    case 'UPDATE_BANK_START':
       return {
         ...state,
         loading: true,
         error: null
       };
-    case 'DELETE_LESSON_SUCCESS':
+    case 'UPDATE_BANK_SUCCESS':
       return {
-        lesson: state.lesson.filter((lesson) => lesson._id !== action.lesson._id),
+        bank: state.bank.map((bank) => (bank._id === action.bank._id ? action.bank : bank)),
+        message: action.message,
+        status: action.status,
+        loading: false,
+        error: null
+      };
+    case 'UPDATE_BANK_FAILURE':
+      return {
+        ...state,
+        loading: false,
+        error: action.error
+      };
+    case 'DELETE_BANK_START':
+      return {
+        ...state,
+        loading: true,
+        error: null
+      };
+    case 'DELETE_BANK_SUCCESS':
+      return {
+        bank: state.bank.filter((bank) => bank._id !== action.bank._id),
+        status: action.status,
         message: action.message,
         loading: false,
         error: null
       };
-    case 'DELETE_LESSON_FAILURE':
+    case 'DELETE_BANK_FAILURE':
       return {
         ...state,
         loading: false,
@@ -79,4 +80,4 @@ const LessonReducer = (state, action) => {
       return state;
   }
 };
-export default LessonReducer;
+export default BankReducer;

@@ -42,3 +42,17 @@ export {
   deleteUserSuccess,
   deleteUserFailure
 } from './UserAction';
+export {
+  getBankStart,
+  getBankSuccess,
+  getBankFailure,
+  createBankStart,
+  createBankSuccess,
+  createBankFailure,
+  updateBankStart,
+  updateBankSuccess,
+  updateBankFailure,
+  deleteBankStart,
+  deleteBankSuccess,
+  deleteBankFailure
+} from './BankAction';

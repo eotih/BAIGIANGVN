@@ -27,6 +27,7 @@ import {
 // components
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
+import Toast from '../../components/Toast';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
@@ -35,7 +36,7 @@ import {
   LessonMoreMenu
 } from '../../components/_dashboard/Admin/lessons';
 import { getLesson, createLesson, updateLesson, deleteLesson, lessonContext } from '../../context';
-
+import { getComparator, styleModal } from '../../components/tableListComponents';
 //
 
 // ----------------------------------------------------------------------
@@ -52,22 +53,6 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 function applySortFilter(array, comparator, query) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -90,12 +75,34 @@ export default function Lesson() {
   const [open, setOpen] = useState(false);
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { lesson, dispatch } = lessonContext();
+  const { lesson, message, dispatch } = lessonContext();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [openToast, setOpenToast] = useState({
+    isOpen: false,
+    vertical: 'top',
+    message: '',
+    color: '',
+    horizontal: 'right'
+  });
+  const handleOpenToast = (newState) => () => {
+    setOpenToast({ isOpen: true, ...newState });
+  };
+  const handleCloseToast = () => {
+    setOpenToast({ ...openToast, isOpen: false });
+  };
   useEffect(() => {
-    dispatch(getLesson(dispatch));
-  }, [dispatch]);
+    getLesson(dispatch);
+    if (message) {
+      handleOpenToast({
+        isOpen: true,
+        horizontal: 'right',
+        vertical: 'top',
+        message,
+        color: 'success'
+      })();
+    }
+  }, [dispatch, message]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -142,13 +149,6 @@ export default function Lesson() {
     setFilterName(event.target.value);
   };
 
-  const style = {
-    position: 'relative',
-    borderRadius: '10px',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4
-  };
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -163,7 +163,8 @@ export default function Lesson() {
       sale: ''
     },
     onSubmit: async () => {
-      await dispatch(createLesson(dispatch, formik.values));
+      await createLesson(dispatch, formik.values);
+      formik.resetForm();
       setOpen(false);
     }
   });
@@ -176,6 +177,7 @@ export default function Lesson() {
 
   return (
     <Page title="Lesson | Bài Giảng VN">
+      {openToast.isOpen === true && <Toast open={openToast} handleCloseToast={handleCloseToast} />}
       <Modal
         open={open}
         sx={{
@@ -189,7 +191,7 @@ export default function Lesson() {
       >
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-            <Box sx={style}>
+            <Box sx={styleModal}>
               <Stack spacing={2}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                   Add Lesson
@@ -211,19 +213,6 @@ export default function Lesson() {
                   <TextField fullWidth label="Sale" {...getFieldProps('sale')} />
                 </Stack>
                 <TextField fullWidth label="Image" {...getFieldProps('image')} />
-                {/* <Avatar src={formik.values.image} sx={{ width: 100, height: 100 }} />
-                <Input
-                  id="contained-button-file"
-                  type="file"
-                  onChange={(e) => {
-                    const { files } = e.target;
-                    const reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-                    reader.onload = (e) => {
-                      formik.setFieldValue('image', e.target.result);
-                    };
-                  }}
-                /> */}
                 <TextField fullWidth label="Description" {...getFieldProps('description')} />
                 <LoadingButton
                   loading={isSubmitting}
@@ -315,6 +304,7 @@ export default function Lesson() {
                             <LessonMoreMenu
                               data={row}
                               dispatch={dispatch}
+                              styleModal={styleModal}
                               onDelete={deleteLesson}
                               onEdit={updateLesson}
                             />

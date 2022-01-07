@@ -12,16 +12,11 @@ import {
   Stack,
   Button,
   Checkbox,
-  InputLabel,
   TableRow,
-  ListItemText,
-  MenuItem,
+  Avatar,
   TableBody,
   TableCell,
-  OutlinedInput,
   Container,
-  FormControl,
-  Select,
   Typography,
   Modal,
   TextField,
@@ -36,24 +31,18 @@ import Scrollbar from '../../components/Scrollbar';
 import Toast from '../../components/Toast';
 import SearchNotFound from '../../components/SearchNotFound';
 import {
-  NotificationsListHead,
-  NotificationsListToolbar,
-  NotificationsMoreMenu
-} from '../../components/_dashboard/Admin/notifications';
-import {
-  getNotifications,
-  createNotifications,
-  updateNotifications,
-  deleteNotifications,
-  notificationsContext
-} from '../../context';
+  BankListHead,
+  BankListToolbar,
+  BankMoreMenu
+} from '../../components/_dashboard/Admin/bank';
+import { getBank, createBank, bankContext, updateBank, deleteBank } from '../../context';
 import { getComparator, styleModal, MenuProps } from '../../components/tableListComponents';
 
 const TABLE_HEAD = [
-  { _id: 'description', label: 'Description', alignRight: false },
-  { _id: 'type', label: 'Type', alignRight: false },
-  { _id: 'status', label: 'Status', alignRight: false },
-  { _id: 'isActive', label: 'isActive', alignRight: false },
+  { _id: 'name', label: 'Name', alignRight: false },
+  { _id: 'stk', label: 'Account number', alignRight: false },
+  { _id: 'brach', label: 'Chi nhánh', alignRight: false },
+  { _id: 'qr', label: 'QR Code', alignRight: false },
   { _id: '' }
 ];
 
@@ -65,33 +54,20 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.type.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
-const TYPE_LIST = [
-  { _id: '1', type: 'Thông báo' },
-  { _id: '2', type: 'Thông tin' },
-  { _id: '3', type: 'Cảnh báo' },
-  { _id: '4', type: 'Lỗi' }
-];
-const STATUS_LIST = [
-  { _id: '1', status: 'success' },
-  { _id: '2', status: 'info' },
-  { _id: '3', status: 'warning' },
-  { _id: '4', status: 'error' }
-];
-export default function Notifications() {
+
+export default function Bank() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('createdAt');
   const [open, setOpen] = useState(false);
   const [filterName, setFilterName] = useState('');
-  const [type, setType] = useState('');
-  const [status, setStatus] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const { notifications, message, dispatch } = notificationsContext();
+  const { bank, status, message, dispatch } = bankContext();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [openToast, setOpenToast] = useState({
@@ -108,25 +84,18 @@ export default function Notifications() {
     setOpenToast({ ...openToast, isOpen: false });
   };
   useEffect(() => {
-    getNotifications(dispatch);
+    getBank(dispatch);
+    // if have message
     if (message) {
       handleOpenToast({
         isOpen: true,
-        horizontal: 'right',
-        vertical: 'top',
         message,
-        color: 'success'
+        color: status === 200 ? 'success' : 'error',
+        vertical: 'top',
+        horizontal: 'right'
       })();
     }
-  }, [dispatch, message]);
-  const handleChangeType = (event) => {
-    setType(event.target.value);
-    formik.setFieldValue('type', event.target.value);
-  };
-  const handleChangeStatus = (event) => {
-    setStatus(event.target.value);
-    formik.setFieldValue('status', event.target.value);
-  };
+  }, [dispatch, message, status]);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -135,7 +104,7 @@ export default function Notifications() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = notifications.map((n) => n.description);
+      const newSelecteds = bank.map((n) => n.description);
       setSelected(newSelecteds);
       return;
     }
@@ -171,8 +140,6 @@ export default function Notifications() {
   const handleClear = () => {
     formik.resetForm();
     setOpen(false);
-    setType('');
-    setStatus('');
     setSubmitting(false);
   };
   const handleFilterByName = (event) => {
@@ -181,28 +148,26 @@ export default function Notifications() {
 
   const formik = useFormik({
     initialValues: {
-      status: '',
-      description: '',
-      type: ''
+      name: '',
+      logo: '',
+      account_number: '',
+      branch: '',
+      qr_code: ''
     },
     onSubmit: async () => {
-      await createNotifications(dispatch, formik.values);
+      await createBank(dispatch, formik.values);
       handleClear();
     }
   });
   const { handleSubmit, isSubmitting, getFieldProps, setSubmitting } = formik;
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - notifications.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - bank.length) : 0;
 
-  const filteredNotifications = applySortFilter(
-    notifications,
-    getComparator(order, orderBy),
-    filterName
-  );
+  const filteredBank = applySortFilter(bank, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredNotifications.length === 0;
+  const isUserNotFound = filteredBank.length === 0;
 
   return (
-    <Page title="Notifications | Bài Giảng VN">
+    <Page title="Bank | Bài Giảng VN">
       {openToast.isOpen === true && <Toast open={openToast} handleCloseToast={handleCloseToast} />}
       <Modal
         open={open}
@@ -220,47 +185,13 @@ export default function Notifications() {
             <Box sx={styleModal}>
               <Stack spacing={2}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Add Notifications
+                  Add Bank
                 </Typography>
-                <TextField fullWidth label="Description" {...getFieldProps('description')} />
-                <FormControl>
-                  <InputLabel id="Field-label">Status</InputLabel>
-                  <Select
-                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                    labelId="Field-label"
-                    id="status"
-                    {...getFieldProps('status')}
-                    value={status}
-                    onChange={handleChangeStatus}
-                    input={<OutlinedInput label="Status" />}
-                    MenuProps={MenuProps}
-                  >
-                    {STATUS_LIST.map((name) => (
-                      <MenuItem key={name._id} value={name.status}>
-                        <ListItemText primary={name.status} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl>
-                  <InputLabel id="Field-label">Thể loại</InputLabel>
-                  <Select
-                    sx={{ bgcolor: '#ffffff', borderRadius: 1 }}
-                    labelId="Field-label"
-                    id="type"
-                    {...getFieldProps('type')}
-                    value={type}
-                    onChange={handleChangeType}
-                    input={<OutlinedInput label="Thể loại" />}
-                    MenuProps={MenuProps}
-                  >
-                    {TYPE_LIST.map((name) => (
-                      <MenuItem key={name._id} value={name.type}>
-                        <ListItemText primary={name.type} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <TextField fullWidth label="Name" {...getFieldProps('name')} />
+                <TextField fullWidth label="Logo" {...getFieldProps('logo')} />
+                <TextField fullWidth label="Account number" {...getFieldProps('account_number')} />
+                <TextField fullWidth label="Branch" {...getFieldProps('branch')} />
+                <TextField fullWidth label="Qr Code Image" {...getFieldProps('qr_code')} />
                 <LoadingButton
                   loading={isSubmitting}
                   fullWidth
@@ -268,7 +199,7 @@ export default function Notifications() {
                   type="submit"
                   variant="contained"
                 >
-                  Add Notifications
+                  Add Bank
                 </LoadingButton>
               </Stack>
             </Box>
@@ -278,7 +209,7 @@ export default function Notifications() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Notifications
+            Bank
           </Typography>
           <Button
             onClick={handleOpen}
@@ -287,12 +218,12 @@ export default function Notifications() {
             to="#"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Notifications
+            New Bank
           </Button>
         </Stack>
 
         <Card>
-          <NotificationsListToolbar
+          <BankListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
@@ -301,21 +232,21 @@ export default function Notifications() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <NotificationsListHead
+                <BankListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={filteredNotifications.length}
+                  rowCount={filteredBank.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredNotifications
+                  {filteredBank
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { _id, description, status, type, isActive } = row;
-                      const isItemSelected = selected.indexOf(description) !== -1;
+                      const { _id, name, logo, account_number: stk, branch, qr_code: qr } = row;
+                      const isItemSelected = selected.indexOf(name) !== -1;
                       return (
                         <TableRow
                           hover
@@ -328,22 +259,30 @@ export default function Notifications() {
                           <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, description)}
+                              onChange={(event) => handleClick(event, name)}
                             />
                           </TableCell>
-                          <TableCell align="left">{description}</TableCell>
-                          <TableCell align="left">{type}</TableCell>
-                          <TableCell align="left">{status}</TableCell>
-                          <TableCell align="left">{isActive ? 'Yes' : 'No'}</TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Avatar alt={name} src={logo} />
+                              <Typography variant="subtitle2" noWrap>
+                                {name}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">{stk}</TableCell>
+                          <TableCell align="left">{branch}</TableCell>
+                          <TableCell align="left">
+                            <Avatar alt={name} src={qr} />
+                          </TableCell>
                           <TableCell align="right">
-                            <NotificationsMoreMenu
+                            <BankMoreMenu
                               data={row}
-                              TYPE_LIST={TYPE_LIST}
                               MenuProps={MenuProps}
-                              STATUS_LIST={STATUS_LIST}
+                              styleModal={styleModal}
                               dispatch={dispatch}
-                              onDelete={deleteNotifications}
-                              onEdit={updateNotifications}
+                              onDelete={deleteBank}
+                              onEdit={updateBank}
                             />
                           </TableCell>
                         </TableRow>
@@ -371,7 +310,7 @@ export default function Notifications() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={notifications.length}
+            count={bank.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

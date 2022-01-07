@@ -9,7 +9,6 @@ const INITIAL_STATE = {
   message: null,
   error: null
 };
-
 const LessonContext = createContext(INITIAL_STATE);
 const LessonContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(logger(LessonReducer), INITIAL_STATE);

@@ -1,19 +1,28 @@
-export { getUser, createUser, updateUser, deleteUser } from './connects/UserConnect';
-export { getHistory, getHistoryByID } from './connects/HistoryConnect';
-export { getLesson, createLesson, updateLesson, deleteLesson } from './connects/LessonConnect';
 export {
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
   getNews,
   createNews,
   updateNews,
   deleteNews,
   get5News,
   destroyNews,
-  restoreNews
-} from './connects/NewsConnect';
-export {
+  restoreNews,
+  getHistory,
+  getHistoryByID,
+  getLesson,
+  createLesson,
+  updateLesson,
+  deleteLesson,
   getNotifications,
   createNotifications,
   updateNotifications,
-  deleteNotifications
-} from './connects/NotificationsConnect';
+  deleteNotifications,
+  getBank,
+  createBank,
+  updateBank,
+  deleteBank
+} from './connects';
 export * from './Hooks';

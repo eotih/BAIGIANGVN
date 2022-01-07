@@ -16,3 +16,4 @@ export {
   deleteNotifications
 } from './NotificationsConnect';
 export { getUser, createUser, updateUser, deleteUser } from './UserConnect';
+export { getBank, createBank, updateBank, deleteBank } from './BankConnect';

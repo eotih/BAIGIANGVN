@@ -31,7 +31,6 @@ NotificationsMoreMenu.propTypes = {
   onDelete: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   error: PropTypes.string,
-  handleOpenToast: PropTypes.func.isRequired,
   STATUS_LIST: PropTypes.array.isRequired,
   TYPE_LIST: PropTypes.array.isRequired,
   MenuProps: PropTypes.object.isRequired,
@@ -44,8 +43,7 @@ export default function NotificationsMoreMenu({
   STATUS_LIST,
   MenuProps,
   TYPE_LIST,
-  dispatch,
-  handleOpenToast
+  dispatch
 }) {
   const { _id, type, status, description, isActive } = data;
   const [type2, setType2] = useState('');
@@ -75,14 +73,7 @@ export default function NotificationsMoreMenu({
   const handleClose = () => setOpen(false);
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this user?')) {
-      const data = await onDelete(dispatch, id);
-      handleOpenToast({
-        isOpen: true,
-        horizontal: 'right',
-        vertical: 'top',
-        message: data.message,
-        color: 'warning'
-      })();
+      await onDelete(dispatch, id);
     }
   };
 
@@ -95,16 +86,7 @@ export default function NotificationsMoreMenu({
       description: ''
     },
     onSubmit: async () => {
-      const data = await onEdit(dispatch, formik.values);
-      handleOpenToast({
-        isOpen: true,
-        horizontal: 'right',
-        vertical: 'top',
-        message: data.message,
-        color: 'info'
-      })();
-      formik.resetForm();
-      setOpen(false);
+      await onEdit(dispatch, formik.values);
     }
   });
   const { handleSubmit, isSubmitting, getFieldProps } = formik;

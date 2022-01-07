@@ -22,7 +22,7 @@ import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 // material
 // ----------------------------------------------------------------------
-LessonMoreMenu.propTypes = {
+BankMoreMenu.propTypes = {
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
@@ -30,21 +30,8 @@ LessonMoreMenu.propTypes = {
   styleModal: PropTypes.object,
   data: PropTypes.object.isRequired
 };
-export default function LessonMoreMenu({ data, onDelete, onEdit, dispatch, styleModal }) {
-  const {
-    _id,
-    name,
-    subject,
-    grade,
-    week,
-    category,
-    price,
-    image,
-    isActive,
-    sale,
-    link,
-    description
-  } = data;
+export default function BankMoreMenu({ data, onDelete, styleModal, onEdit, dispatch }) {
+  const { _id, name, logo, account_number: stk, branch, qr_code: qr } = data;
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
@@ -52,21 +39,15 @@ export default function LessonMoreMenu({ data, onDelete, onEdit, dispatch, style
     setOpen(true);
     // set value for formik with data
     formik.setFieldValue('name', name);
-    formik.setFieldValue('subject', subject);
-    formik.setFieldValue('grade', grade);
-    formik.setFieldValue('week', week);
-    formik.setFieldValue('category', category);
-    formik.setFieldValue('description', description);
-    formik.setFieldValue('price', price);
-    formik.setFieldValue('link', link);
-    formik.setFieldValue('sale', sale);
-    formik.setFieldValue('image', image);
-    formik.setFieldValue('isActive', isActive);
+    formik.setFieldValue('logo', logo);
+    formik.setFieldValue('account_number', stk);
+    formik.setFieldValue('branch', branch);
+    formik.setFieldValue('qr_code', qr);
     formik.setFieldValue('_id', _id);
   };
   const handleClose = () => setOpen(false);
   const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to delete this user?')) {
+    if (confirm('Are you sure you want to delete this bank?')) {
       await onDelete(dispatch, id);
     }
   };
@@ -75,24 +56,16 @@ export default function LessonMoreMenu({ data, onDelete, onEdit, dispatch, style
     initialValues: {
       _id: '',
       name: '',
-      description: '',
-      image: '',
-      price: '',
-      week: '',
-      subject: '',
-      grade: '',
-      link: '',
-      category: '',
-      sale: ''
+      logo: '',
+      account_number: '',
+      branch: '',
+      qr_code: ''
     },
     onSubmit: async () => {
       await onEdit(dispatch, formik.values);
-      formik.resetForm();
-      setOpen(false);
     }
   });
   const { handleSubmit, isSubmitting, getFieldProps } = formik;
-
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -114,26 +87,13 @@ export default function LessonMoreMenu({ data, onDelete, onEdit, dispatch, style
             <Box sx={styleModal}>
               <Stack spacing={2}>
                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Edit Lesson
+                  Edit Bank
                 </Typography>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lesson Name" {...getFieldProps('name')} />
-                  <TextField fullWidth label="Thể loại" {...getFieldProps('category')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Tuần" {...getFieldProps('week')} />
-                  <TextField fullWidth label="Môn" {...getFieldProps('subject')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Lớp" {...getFieldProps('grade')} />
-                  <TextField fullWidth label="Link" {...getFieldProps('link')} />
-                </Stack>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <TextField fullWidth label="Giá" {...getFieldProps('price')} />
-                  <TextField fullWidth label="Sale" {...getFieldProps('sale')} />
-                </Stack>
-                <TextField fullWidth label="Image" {...getFieldProps('image')} />
-                <TextField fullWidth label="Description" {...getFieldProps('description')} />
+                <TextField fullWidth label="Name" {...getFieldProps('name')} />
+                <TextField fullWidth label="Logo" {...getFieldProps('logo')} />
+                <TextField fullWidth label="Account number" {...getFieldProps('account_number')} />
+                <TextField fullWidth label="Branch" {...getFieldProps('branch')} />
+                <TextField fullWidth label="Qr Code Image" {...getFieldProps('qr_code')} />
                 <LoadingButton
                   loading={isSubmitting}
                   fullWidth
@@ -141,7 +101,7 @@ export default function LessonMoreMenu({ data, onDelete, onEdit, dispatch, style
                   type="submit"
                   variant="contained"
                 >
-                  Edit Lesson
+                  Edit Bank
                 </LoadingButton>
               </Stack>
             </Box>

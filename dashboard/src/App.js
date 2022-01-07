@@ -10,11 +10,7 @@ import Login from './pages/Login';
 import useToken from './services/useToken';
 
 import { AccountProvider } from './context/contexts/AccountContext';
-import { UserContextProvider } from './context/contexts/UserContext';
-import { LessonContextProvider } from './context/contexts/LessonContext';
-import { NewsContextProvider } from './context/contexts/NewsContext';
-import { NotificationsContextProvider } from './context/contexts/NotificationsContext';
-import { HistoryContextProvider } from './context/contexts/HistoryContext';
+import { MasterProvider } from './context/AppContextProvider';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -29,20 +25,12 @@ export default function App() {
   return (
     <ThemeConfig>
       <AccountProvider removeToken={removeToken} token={token}>
-        <UserContextProvider>
-          <LessonContextProvider>
-            <NewsContextProvider>
-              <HistoryContextProvider>
-                <NotificationsContextProvider>
-                  <ScrollToTop />
-                  <GlobalStyles />
-                  <BaseOptionChartStyle />
-                  <Router />
-                </NotificationsContextProvider>
-              </HistoryContextProvider>
-            </NewsContextProvider>
-          </LessonContextProvider>
-        </UserContextProvider>
+        <MasterProvider>
+          <ScrollToTop />
+          <GlobalStyles />
+          <BaseOptionChartStyle />
+          <Router />
+        </MasterProvider>
       </AccountProvider>
     </ThemeConfig>
   );

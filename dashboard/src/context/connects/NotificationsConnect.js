@@ -24,30 +24,26 @@ const getNotifications = async (dispatch) => {
     dispatch(getNotificationsFailure(error));
   }
 };
-const createNotifications = async (dispatch, Notifications) => {
+const createNotifications = async (dispatch, notifications) => {
   dispatch(createNotificationsStart());
   try {
-    const { data } = await axios.post('/notifications', Notifications, configNormal);
+    const { data } = await axios.post('/notifications', notifications, configNormal);
     dispatch(createNotificationsSuccess(data));
-    return data;
   } catch (error) {
     dispatch(createNotificationsFailure(error));
-    return error;
   }
 };
-const updateNotifications = async (dispatch, Notifications) => {
+const updateNotifications = async (dispatch, notifications) => {
   dispatch(updateNotificationsStart());
   try {
     const { data } = await axios.put(
-      `/notifications/${Notifications._id}`,
-      Notifications,
+      `/notifications/${notifications._id}`,
+      notifications,
       configNormal
     );
     dispatch(updateNotificationsSuccess(data));
-    return data;
   } catch (error) {
     dispatch(updateNotificationsFailure(error.response.data.message));
-    return error;
   }
 };
 const deleteNotifications = async (dispatch, notifications) => {
@@ -55,10 +51,8 @@ const deleteNotifications = async (dispatch, notifications) => {
   try {
     const { data } = await axios.delete(`/notifications/${notifications}`, configNormal);
     dispatch(deleteNotificationsSuccess(data));
-    return data;
   } catch (error) {
     dispatch(deleteNotificationsFailure(error.response.data.message));
-    return error;
   }
 };
 

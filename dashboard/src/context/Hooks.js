@@ -6,6 +6,7 @@ import { UserContext } from './contexts/UserContext';
 import { NewsContext } from './contexts/NewsContext';
 import { LessonContext } from './contexts/LessonContext';
 import { HistoryContext } from './contexts/HistoryContext';
+import { BankContext } from './contexts/BankContext';
 
 const accountContext = () => {
   const account = useContext(AccountContext);
@@ -16,20 +17,24 @@ const notificationsContext = () => {
   return { notifications, message, dispatch, error, loading };
 };
 const userContext = () => {
-  const { user, dispatch, error, loading } = useContext(UserContext);
-  return { user, dispatch, error, loading };
+  const { user, dispatch, message, error, loading } = useContext(UserContext);
+  return { user, dispatch, message, error, loading };
 };
 const newsContext = () => {
-  const { news, dispatch, error, loading } = useContext(NewsContext);
-  return { news, dispatch, error, loading };
+  const { news, dispatch, message, error, loading } = useContext(NewsContext);
+  return { news, dispatch, message, error, loading };
 };
 const lessonContext = () => {
-  const { lesson, dispatch, error, loading } = useContext(LessonContext);
-  return { lesson, dispatch, error, loading };
+  const { lesson, dispatch, message, error, loading } = useContext(LessonContext);
+  return { lesson, dispatch, message, error, loading };
 };
 const historyContext = () => {
-  const { history, dispatch, error, loading } = useContext(HistoryContext);
-  return { history, dispatch, error, loading };
+  const { history, dispatch, message, error, loading } = useContext(HistoryContext);
+  return { history, dispatch, message, error, loading };
+};
+const bankContext = () => {
+  const { bank, status, dispatch, message, error, loading } = useContext(BankContext);
+  return { bank, status, dispatch, message, error, loading };
 };
 export {
   accountContext,
@@ -37,5 +42,6 @@ export {
   userContext,
   lessonContext,
   newsContext,
+  bankContext,
   historyContext
 };
