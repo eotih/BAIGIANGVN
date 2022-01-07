@@ -34,7 +34,7 @@ class AuthController {
             });
             const createdUser = await user.save();
             if (createdUser) {
-                res.status(201).json({
+                res.status(200).json({
                     message: 'User created successfully',
                     status: 200,
                     user: createdUser

@@ -16,6 +16,7 @@ class BankController {
     if (!name || !logo || !qr_code || !account_number || !branch) {
       res.status(400).json({
         message: "Please provide all the required fields",
+        status: 400
       });
     } else {
       Bank.create({
@@ -27,7 +28,7 @@ class BankController {
       })
         .then((bank) => {
           if (bank) {
-            res.status(201).json({ message: "Bank created successfully", bank, status: 200 });
+            res.status(200).json({ message: "Bank created successfully", bank, status: 200 });
           } else {
             res.status(400).json({ message: "Bank not created", status: 400 });
           }
@@ -42,10 +43,11 @@ class BankController {
         if (!bank) {
           res.status(404).json({
             message: "Bank not found",
+            status: 404
           });
         } else {
           const { name, logo, qr_code, account_number, branch } = req.body;
-          if (!description || !status || !type) {
+          if (!name || !logo || !qr_code || !account_number || !branch) {
             res.status(400).json({
               message: "Please provide all the required fields",
               status: 400
@@ -86,13 +88,7 @@ class BankController {
   getById(req, res, next) {
     Bank.findById(req.params.id)
       .then((bank) => {
-        if (!bank) {
-          res.status(404).json({
-            message: "User not found",
-          });
-        } else {
-          res.status(200).json(bank);
-        }
+        res.status(200).json(bank);
       })
       .catch(next);
   }

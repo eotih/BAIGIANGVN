@@ -7,13 +7,7 @@ class NewController {
       .populate("user", { name: 1, image: 1 })  //populate with one info
       .sort({ createdAt: -1 })
       .then((news) => {
-        if (news) {
-          res.status(200).json(news);
-        } else {
-          res.status(404).json({
-            message: "News not found",
-          });
-        }
+        res.status(200).json(news);
       })
       .catch(next);
   }
@@ -133,13 +127,7 @@ class NewController {
     await News.findById(req.params.id)
       .sort({ createdAt: -1 })
       .then((news) => {
-        if (!news) {
-          res.status(404).json({
-            message: "News not found",
-          });
-        } else {
-          res.status(200).json(news);
-        }
+        res.status(200).json(news);
       })
       .catch(next);
   }
@@ -149,13 +137,7 @@ class NewController {
       .sort({ createdAt: -1 })
       .limit(3)
       .then((news) => {
-        if (!news) {
-          res.status(404).json({
-            message: "News not found",
-          });
-        } else {
-          res.status(200).json(news);
-        }
+        res.status(200).json(news);
       })
       .catch(next);
   }

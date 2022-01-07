@@ -28,7 +28,7 @@ class LessonController {
                 newLesson.save()
                     .then((lesson) => {
                         if (lesson) {
-                            res.status(201).json({
+                            res.status(200).json({
                                 message: 'Lesson created successfully',
                                 status: 200,
                                 lesson
@@ -71,7 +71,7 @@ class LessonController {
                     lesson.save()
                         .then((lesson) => {
                             if (lesson) {
-                                res.status(201).json({
+                                res.status(200).json({
                                     message: 'Lesson updated successfully',
                                     status: 200,
                                     lesson
@@ -93,7 +93,7 @@ class LessonController {
         const lesson = await Lesson.findById(req.params.id);
         if (lesson) {
             const deleteLesson = await lesson.remove();
-            res.status(201).json({ message: 'Lesson Deleted', lesson: deleteLesson });
+            res.status(200).json({ message: 'Lesson Deleted', lesson: deleteLesson, status: 200 });
         } else {
             res.status(404).json({ message: 'Lesson not found', status: 404 });
         }
@@ -102,14 +102,7 @@ class LessonController {
     getById(req, res, next) {
         Lesson.findById(req.params.id)
             .then((lesson) => {
-                if (!lesson) {
-                    res.status(404).json({
-                        message: 'Lesson not found'
-                    });
-                }
-                else {
-                    res.status(201).json(lesson);
-                }
+                res.status(200).json(lesson);
             })
             .catch(next);
     }
@@ -117,14 +110,7 @@ class LessonController {
     getByWeek(req, res, next) {
         Lesson.find({ week: req.params.id })
             .then((lesson) => {
-                if (!lesson) {
-                    res.status(404).json({
-                        message: 'Lesson not found'
-                    });
-                }
-                else {
-                    res.status(201).json(lesson);
-                }
+                res.status(200).json(lesson);
             })
             .catch(next);
     }

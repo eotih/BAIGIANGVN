@@ -25,7 +25,7 @@ class NotificationsController {
       })
         .then((notification) => {
           if (notification) {
-            res.status(201).json({ message: "Notifications created successfully", notification, status: 200 });
+            res.status(200).json({ message: "Notifications created successfully", notification, status: 200 });
           }
           else {
             res.status(400).json({ message: "Notifications not created", status: 400 });
