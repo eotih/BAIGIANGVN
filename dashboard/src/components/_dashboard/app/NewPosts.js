@@ -12,47 +12,57 @@ function NewsItem({ news }) {
   const { image, title, description, createdAt, user } = news;
   return (
     <Stack>
-      <Stack sx={{ p: 2, pr: 2 }} direction="row" alignItems="center" spacing={2}>
-        <Box
-          component="img"
-          alt={title}
-          src={user.image}
-          sx={{ width: 48, height: 48, borderRadius: 1.5 }}
-        />
-        <Box sx={{ minWidth: 240 }}>
+      {news ? (
+        <>
+          <Stack sx={{ p: 2, pr: 2 }} direction="row" alignItems="center" spacing={2}>
+            <Box
+              component="img"
+              alt={title}
+              src={user.image}
+              sx={{ width: 48, height: 48, borderRadius: 1.5 }}
+            />
+            <Box sx={{ minWidth: 240 }}>
+              <Typography variant="subtitle2" noWrap>
+                {user.name}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+                {createdAt}
+              </Typography>
+            </Box>
+          </Stack>
+          <Divider />
+          <Stack spacing={2} sx={{ p: 2, pr: 2 }}>
+            <Stack direction="row" alignItems="center">
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                <Typography variant="body">{description}</Typography>
+                <Avatar
+                  sx={{
+                    width: '100%',
+                    pt: 2,
+                    borderRadius: 2,
+                    height: 'auto'
+                  }}
+                  variant="square"
+                  src={image}
+                  alt={title}
+                />
+              </Box>
+            </Stack>
+          </Stack>
+        </>
+      ) : (
+        <Box sx={{ p: 2, pr: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {user.name}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {createdAt}
+            Loading...
           </Typography>
         </Box>
-      </Stack>
-      <Divider />
-      <Stack spacing={2} sx={{ p: 2, pr: 2 }}>
-        <Stack direction="row" alignItems="center">
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column'
-            }}
-          >
-            <Typography variant="body">{description}</Typography>
-            <Avatar
-              sx={{
-                width: '100%',
-                pt: 2,
-                borderRadius: 2,
-                height: 'auto'
-              }}
-              variant="square"
-              src={image}
-              alt={title}
-            />
-          </Box>
-        </Stack>
-      </Stack>
+      )}
     </Stack>
   );
 }
@@ -67,18 +77,20 @@ export default function NewPosts() {
       <Box>
         <Typography variant="h4">Tin tức mới nhất!</Typography>
       </Box>
-      {news.map((news) => (
-        <>
-          <Card>
-            <Scrollbar>
-              <Stack spacing={2} sx={{ p: 2, pr: 2 }}>
-                <NewsItem key={news._id} news={news} />
-              </Stack>
-            </Scrollbar>
-            <Divider />
-          </Card>
-        </>
-      ))}
+      {news
+        .filter((res) => res.deleted === false)
+        .map((news) => (
+          <>
+            <Card>
+              <Scrollbar>
+                <Stack spacing={2} sx={{ p: 2, pr: 2 }}>
+                  <NewsItem key={news._id} news={news} />
+                </Stack>
+              </Scrollbar>
+              <Divider />
+            </Card>
+          </>
+        ))}
     </Stack>
   );
 }

@@ -7,6 +7,7 @@ import { NewsContext } from './contexts/NewsContext';
 import { LessonContext } from './contexts/LessonContext';
 import { HistoryContext } from './contexts/HistoryContext';
 import { BankContext } from './contexts/BankContext';
+import { TransactionContext } from './contexts/TransactionContext';
 
 const accountContext = () => {
   const account = useContext(AccountContext);
@@ -37,6 +38,11 @@ const bankContext = () => {
   const { bank, status, dispatch, message, error, loading } = useContext(BankContext);
   return { bank, status, dispatch, message, error, loading };
 };
+const transactionContext = () => {
+  const { transaction, status, dispatchTransaction, message, error, loading } =
+    useContext(TransactionContext);
+  return { transaction, status, dispatchTransaction, message, error, loading };
+};
 export {
   accountContext,
   notificationsContext,
@@ -44,5 +50,6 @@ export {
   lessonContext,
   newsContext,
   bankContext,
+  transactionContext,
   historyContext
 };

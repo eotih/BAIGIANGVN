@@ -5,6 +5,7 @@ import {
   NewsContextProvider,
   NotificationsContextProvider,
   BankContextProvider,
+  TransactionContextProvider,
   HistoryContextProvider
 } from './contexts';
 
@@ -16,4 +17,5 @@ providers.push(NewsContextProvider);
 providers.push(NotificationsContextProvider);
 providers.push(HistoryContextProvider);
 providers.push(BankContextProvider);
+providers.push(TransactionContextProvider);
 export const MasterProvider = providers.master();

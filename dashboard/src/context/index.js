@@ -23,6 +23,9 @@ export {
   getBank,
   createBank,
   updateBank,
+  getTransaction,
+  createTransaction,
+  getTransactionByEmail,
   deleteBank
 } from './connects';
 export * from './Hooks';

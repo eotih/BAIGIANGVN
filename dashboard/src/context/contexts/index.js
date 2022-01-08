@@ -5,3 +5,4 @@ export { NotificationsContext, NotificationsContextProvider } from './Notificati
 export { UserContext, UserContextProvider } from './UserContext';
 export { AccountContext, AccountProvider } from './AccountContext';
 export { BankContext, BankContextProvider } from './BankContext';
+export { TransactionContext, TransactionContextProvider } from './TransactionContext';
