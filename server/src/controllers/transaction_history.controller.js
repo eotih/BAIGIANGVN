@@ -12,6 +12,7 @@ class TransactionHistoryController {
         } else {
           res.status(404).json({
             message: "Transaction History not found",
+            status: 404
           });
         }
       })
@@ -38,10 +39,11 @@ class TransactionHistoryController {
         });
       } else {
         // save to account balance
-        user.account_balance = new_account_balance;
+        user.money = new_account_balance;
+        user.deposited += Number(deposit_amount); 
         user.save();
         // save to admin balance
-        admin.money = adminBalance;
+        admin.deposited += Number(deposit_amount);
         admin.save();
         // save to transaction history
         const transactionHistory = await TransactionHistory.create({
@@ -50,7 +52,7 @@ class TransactionHistoryController {
           account_balance: new_account_balance,
           payment: payment,
         });
-        res.status(200).json({ message: "Transaction History created successfully", transactionHistory, status: 200 });
+        res.status(200).json({ message: "Transaction History created successfully", transaction_history: transactionHistory, status: 200 });
       }
     }
   }
@@ -79,6 +81,7 @@ class TransactionHistoryController {
         if (!transactionHistory) {
           res.status(404).json({
             message: "Transaction History not found",
+            status: 404
           });
         } else {
           res.status(200).json(transactionHistory);
