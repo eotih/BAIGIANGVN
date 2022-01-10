@@ -1,4 +1,5 @@
 const Combo = require("../models/combo.models");
+const Lesson = require("../models/lesson.models");
 
 class ComboController {
   // [GET] /combo
@@ -14,13 +15,17 @@ class ComboController {
   //[POST] /combo
   async create(req, res, next) {
     const { name, price, image, description, lessons } = req.body;
-    if (!name || !price || !image || !description || !lessons) {
+    if (!name || !image || !description || !lessons) {
       res.status(400).json({
         message: "Please provide all the required fields",
         status: 400
       });
     } else {
+      const lesson = await Lesson.find({ _id: { $in: lessons } });
+      const perLesson = lesson.map(lesson => lesson.price);
+      const totalPrice = perLesson.reduce((a, b) => a + b, 0);
       const newCombo = new Combo(req.body);
+      newCombo.price = totalPrice;
       try {
         const savedCombo = await newCombo.save();
         res.status(200).json({ message: "Combo created successfully", combo: savedCombo, status: 200 });
