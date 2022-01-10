@@ -12,7 +12,7 @@ const Order = new Schema(
                 lesson: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'Lesson',
-                    required: true,
+                    required: true
                 },
             }
         ],

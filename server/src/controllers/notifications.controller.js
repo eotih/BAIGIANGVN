@@ -47,7 +47,7 @@ class NotificationsController {
           if (!description || !status || !type) {
             res.status(400).json({
               message: "Please provide all the required fields",
-              status: 200
+              status: 400,
             });
           } else {
             notification.description = description;

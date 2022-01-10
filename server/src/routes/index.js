@@ -5,6 +5,7 @@ const OrderRouter = require('./order.routes');
 const NewsRouter = require('./news.routes');
 const NotificationsRouter = require('./notifications.routes');
 const BankRouter = require('./bank.routes');
+const ComboRouter = require('./combo.routes');
 const TransactionHistoryRouter = require('./transaction_history.routes');
 
 function route(app) {
@@ -15,6 +16,7 @@ function route(app) {
     app.use('/news', NewsRouter);
     app.use('/notifications', NotificationsRouter);
     app.use('/bank', BankRouter);
+    app.use('/combo', ComboRouter);
     app.use('/transaction_history', TransactionHistoryRouter);
 }
 module.exports = route;

@@ -1,6 +1,7 @@
 const Lesson = require('../models/lesson.models');
+const Combo = require('../models/combo.models');
 class LessonController {
-    // [GET] /lessons
+    // [GET] /lesson
     show(req, res, next) {
         Lesson.find().sort({ createdAt: -1 })
             .then((lessons) => {
@@ -8,7 +9,7 @@ class LessonController {
             })
             .catch(next);
     }
-    // [POST] /lessons
+    // [POST] /lesson
     async create(req, res, next) {
         const { name, description, price, week, subject, grade, category, sale } = req.body;
         const lesson = await Lesson.findOne({ name: name });
@@ -45,7 +46,7 @@ class LessonController {
             }
         }
     }
-    // [PUT] /lessons/:id
+    // [PUT] /lesson/:id
     async update(req, res, next) {
         const { name, description, price, week, subject, grade, category, sale } = req.body;
         await Lesson.findById(req.params.id)
@@ -88,7 +89,7 @@ class LessonController {
                 }
             })
     }
-    // [DELETE] /lessons/:id
+    // [DELETE] /lesson/:id
     async deleteLesson(req, res, next) {
         const lesson = await Lesson.findById(req.params.id);
         if (lesson) {
@@ -98,7 +99,7 @@ class LessonController {
             res.status(404).json({ message: 'Lesson not found', status: 404 });
         }
     }
-    // [GET] /lessons/:id
+    // [GET] /lesson/:id
     getById(req, res, next) {
         Lesson.findById(req.params.id)
             .then((lesson) => {
@@ -106,13 +107,26 @@ class LessonController {
             })
             .catch(next);
     }
-    // [GET] /lessons/week/:id
+    // [GET] /lesson/week/:id
     getByWeek(req, res, next) {
         Lesson.find({ week: req.params.id })
             .then((lesson) => {
                 res.status(200).json(lesson);
             })
             .catch(next);
+    }
+    // [GET] /lesson/not-in
+    async getLessonNotInCombo(req, res, next) {
+        const combo = await Combo.find();
+        const comboList = combo.map(combo => combo.lessons);
+        const comboIdList = comboList.reduce((acc, cur) => acc.concat(cur), []);
+        Lesson.find({ _id: { $nin: comboIdList } })
+            .then((lessons) => {
+                res.status(200).json(lessons);
+            }
+            )
+            .catch(next);
+
     }
 }
 module.exports = new LessonController;
