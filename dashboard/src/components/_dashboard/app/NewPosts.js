@@ -6,6 +6,7 @@ import { Box, Stack, Card, Divider, Typography, Avatar } from '@mui/material';
 //
 import Scrollbar from '../../Scrollbar';
 import { get5News, newsContext } from '../../../context';
+import { fDateTimeSuffix } from '../../../utils/formatTime';
 // ----------------------------------------------------------------------
 
 function NewsItem({ news }) {
@@ -26,7 +27,7 @@ function NewsItem({ news }) {
                 {user.name}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                {createdAt}
+                {fDateTimeSuffix(createdAt)}
               </Typography>
             </Box>
           </Stack>
@@ -80,16 +81,14 @@ export default function NewPosts() {
       {news
         .filter((res) => res.deleted === false)
         .map((news) => (
-          <>
-            <Card>
-              <Scrollbar>
-                <Stack spacing={2} sx={{ p: 2, pr: 2 }}>
-                  <NewsItem key={news._id} news={news} />
-                </Stack>
-              </Scrollbar>
-              <Divider />
-            </Card>
-          </>
+          <Card key={news._id}>
+            <Scrollbar>
+              <Stack spacing={2} sx={{ p: 2, pr: 2 }}>
+                <NewsItem key={news._id} news={news} />
+              </Stack>
+            </Scrollbar>
+            <Divider />
+          </Card>
         ))}
     </Stack>
   );

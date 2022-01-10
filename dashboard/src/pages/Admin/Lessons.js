@@ -199,7 +199,13 @@ export default function Lesson() {
                   <TextField fullWidth label="Sale" {...getFieldProps('sale')} />
                 </Stack>
                 <TextField fullWidth label="Image" {...getFieldProps('image')} />
-                <TextField fullWidth label="Description" {...getFieldProps('description')} />
+                <TextField
+                  fullWidth
+                  minRows={3}
+                  multiline
+                  label="Description"
+                  {...getFieldProps('description')}
+                />
                 <LoadingButton
                   loading={isSubmitting}
                   fullWidth

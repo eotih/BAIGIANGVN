@@ -1,5 +1,11 @@
 export { getHistory, getHistoryByID } from './HistoryConnect';
-export { getLesson, createLesson, updateLesson, deleteLesson } from './LessonConnect';
+export {
+  getLesson,
+  createLesson,
+  updateLesson,
+  deleteLesson,
+  getLessonNotInCombo
+} from './LessonConnect';
 export {
   getNews,
   createNews,
@@ -18,3 +24,4 @@ export {
 export { getUser, createUser, updateUser, deleteUser } from './UserConnect';
 export { getTransaction, createTransaction, getTransactionByEmail } from './TransactionConnect';
 export { getBank, createBank, updateBank, deleteBank } from './BankConnect';
+export { getCombo, createCombo, updateCombo, deleteCombo } from './ComboConnect';

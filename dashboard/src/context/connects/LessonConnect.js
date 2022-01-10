@@ -51,5 +51,13 @@ const deleteLesson = async (dispatch, lesson) => {
     dispatch(deleteLessonFailure(error.response.data.message));
   }
 };
-
-export { getLesson, createLesson, updateLesson, deleteLesson };
+const getLessonNotInCombo = async (dispatch) => {
+  dispatch(getLessonStart());
+  try {
+    const { data } = await axios.get('/lesson/not-in', configNormal);
+    dispatch(getLessonSuccess(data));
+  } catch (error) {
+    dispatch(getLessonFailure(error));
+  }
+};
+export { getLesson, createLesson, updateLesson, deleteLesson, getLessonNotInCombo };

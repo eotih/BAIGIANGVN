@@ -6,3 +6,4 @@ export { UserContext, UserContextProvider } from './UserContext';
 export { AccountContext, AccountProvider } from './AccountContext';
 export { BankContext, BankContextProvider } from './BankContext';
 export { TransactionContext, TransactionContextProvider } from './TransactionContext';
+export { ComboContext, ComboContextProvider } from './ComboContext';

@@ -22,7 +22,8 @@ import SearchNotFound from '../components/SearchNotFound';
 import { HistoryListHead, HistoryListToolbar } from '../components/_dashboard/history';
 import { getHistoryByID, historyContext } from '../context';
 import { accountContext } from '../context/Hooks';
-
+import { fDateTime } from '../utils/formatTime';
+import { fCurrency } from '../utils/formatNumber';
 //
 
 // ----------------------------------------------------------------------
@@ -70,7 +71,7 @@ export default function History() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('createdAt');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { history, dispatch } = historyContext();
@@ -183,10 +184,10 @@ export default function History() {
                             />
                           </TableCell>
                           <TableCell align="left">{email}</TableCell>
-                          <TableCell align="left">{deposit_amount}</TableCell>
-                          <TableCell align="left">{account_balance}</TableCell>
+                          <TableCell align="left">{fCurrency(deposit_amount)} VND</TableCell>
+                          <TableCell align="left">{fCurrency(account_balance)} VND</TableCell>
                           <TableCell align="left">{payment}</TableCell>
-                          <TableCell align="left">{createdAt}</TableCell>
+                          <TableCell align="left">{fDateTime(createdAt)}</TableCell>
                         </TableRow>
                       );
                     })}

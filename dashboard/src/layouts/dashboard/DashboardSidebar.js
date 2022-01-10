@@ -133,12 +133,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             </Typography> */}
           </Box>
 
-          <Button
-            fullWidth
-            href="https://zaloapp.com/qr/p/x4zlp3jm10m6"
-            target="_blank"
-            variant="contained"
-          >
+          <Button fullWidth href="https://zalo.me/0397971798" target="_blank" variant="contained">
             Liên hệ ngay
           </Button>
         </Stack>

@@ -5,3 +5,4 @@ export { default as NotificationsReducer } from './NotificationsReducer';
 export { default as UserReducer } from './UserReducer';
 export { default as BankReducer } from './BankReducer';
 export { default as TransactionReducer } from './TransactionReducer';
+export { default as ComboReducer } from './ComboReducer';

@@ -74,7 +74,7 @@ function applySortFilter(array, comparator, query) {
   }
   return stabilizedThis.map((el) => el[0]);
 }
-export default function Transer() {
+export default function Transfer() {
   const [page, setPage] = useState(0);
   const [email, setEmail] = useState('');
   const [payment, setPayment] = useState('');

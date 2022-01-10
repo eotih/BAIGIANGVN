@@ -26,6 +26,10 @@ export {
   getTransaction,
   createTransaction,
   getTransactionByEmail,
+  getCombo,
+  createCombo,
+  updateCombo,
+  deleteCombo,
   deleteBank
 } from './connects';
 export * from './Hooks';

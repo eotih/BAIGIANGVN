@@ -7,6 +7,7 @@ import { NewsContext } from './contexts/NewsContext';
 import { LessonContext } from './contexts/LessonContext';
 import { HistoryContext } from './contexts/HistoryContext';
 import { BankContext } from './contexts/BankContext';
+import { ComboContext } from './contexts/ComboContext';
 import { TransactionContext } from './contexts/TransactionContext';
 
 const accountContext = () => {
@@ -38,6 +39,10 @@ const bankContext = () => {
   const { bank, status, dispatch, message, error, loading } = useContext(BankContext);
   return { bank, status, dispatch, message, error, loading };
 };
+const comboContext = () => {
+  const { combo, status, dispatchCombo, message, error, loading } = useContext(ComboContext);
+  return { combo, status, dispatchCombo, message, error, loading };
+};
 const transactionContext = () => {
   const { transaction, status, dispatchTransaction, message, error, loading } =
     useContext(TransactionContext);
@@ -51,5 +56,6 @@ export {
   newsContext,
   bankContext,
   transactionContext,
+  comboContext,
   historyContext
 };

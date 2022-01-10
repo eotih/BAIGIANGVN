@@ -226,7 +226,13 @@ export default function News() {
                     ))}
                   </Select>
                 </FormControl>
-                <TextField fullWidth label="Description" {...getFieldProps('description')} />
+                <TextField
+                  multiline
+                  minRows={3}
+                  fullWidth
+                  label="Description"
+                  {...getFieldProps('description')}
+                />
                 <LoadingButton
                   loading={isSubmitting}
                   fullWidth
