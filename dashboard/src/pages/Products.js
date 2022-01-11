@@ -48,6 +48,12 @@ export default function Product() {
       setOpenFilter(false);
     }
   });
+  // const handleSubmitBuyCourseSuccess = () => {
+  //   console.log('handleSubmitBuyCourseSuccess');
+  // };
+  // const handleSubmitBuyCourseFail = () => {
+  //   console.log('handleSubmitBuyCourseSuccess');
+  // };
 
   const handleShowModal = () => (
     <Modal
@@ -121,7 +127,7 @@ export default function Product() {
                   spacing={2}
                 >
                   <LoadingButton size="large" type="submit" variant="contained">
-                    Tải xuống ngay !
+                    Thêm vào giỏ hàng
                   </LoadingButton>
                   <LoadingButton
                     onClick={() => handleCloseModal()}
@@ -159,32 +165,30 @@ export default function Product() {
     <Page title="Dashboard: Products | Sản phẩm">
       {openModal === true && handleShowModal()}
       <Container maxWidth>
-        <Stack>
-          <Typography variant="h4" sx={{ mb: 5 }}>
-            Gói combo
-          </Typography>
-          <Carousel
-            sx={{
-              width: '100%',
-              height: 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            slides={combo.map((slide) => (
-              <img
-                onClick={() => {
-                  setComboLesson(slide);
-                  handleOpenModal();
-                }}
-                style={{ cursor: 'pointer' }}
-                key={slide._id}
-                src={slide.image}
-                alt={slide.name}
-              />
-            ))}
-          />
-        </Stack>
+        <Typography variant="h4" sx={{ mb: 5 }}>
+          Gói combo
+        </Typography>
+        <Carousel
+          sx={{
+            width: '100%',
+            height: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          slides={combo.map((slide) => (
+            <img
+              onClick={() => {
+                setComboLesson(slide);
+                handleOpenModal();
+              }}
+              style={{ cursor: 'pointer' }}
+              key={slide._id}
+              src={slide.image}
+              alt={slide.name}
+            />
+          ))}
+        />
         <Typography variant="h4" sx={{ mb: 5 }}>
           Sản phẩm khác
         </Typography>
@@ -206,10 +210,14 @@ export default function Product() {
             <ProductSort />
           </Stack>
         </Stack>
-        <Stack>
-          <ProductList products={lesson} />
-          <ProductCartWidget />
-        </Stack>
+        <ProductList products={lesson} />
+        <ProductCartWidget
+          formik={formik}
+          isOpenFilter={openFilter}
+          onResetFilter={handleResetFilter}
+          onOpenFilter={handleOpenFilter}
+          onCloseFilter={handleCloseFilter}
+        />
       </Container>
     </Page>
   );
