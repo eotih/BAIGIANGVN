@@ -13,6 +13,7 @@ export {
   getHistory,
   getHistoryByID,
   getLesson,
+  getLessonNotInCombo,
   createLesson,
   updateLesson,
   deleteLesson,

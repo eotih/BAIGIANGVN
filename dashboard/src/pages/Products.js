@@ -159,7 +159,7 @@ export default function Product() {
     <Page title="Dashboard: Products | Sản phẩm">
       {openModal === true && handleShowModal()}
       <Container maxWidth>
-        <Stack spacing={3}>
+        <Stack>
           <Typography variant="h4" sx={{ mb: 5 }}>
             Gói combo
           </Typography>
@@ -184,10 +184,10 @@ export default function Product() {
               />
             ))}
           />
-          <Typography variant="h4" sx={{ mb: 5 }}>
-            Sản phẩm khác
-          </Typography>
         </Stack>
+        <Typography variant="h4" sx={{ mb: 5 }}>
+          Sản phẩm khác
+        </Typography>
         <Stack
           direction="row"
           flexWrap="wrap-reverse"
@@ -206,7 +206,6 @@ export default function Product() {
             <ProductSort />
           </Stack>
         </Stack>
-
         <Stack>
           <ProductList products={lesson} />
           <ProductCartWidget />

@@ -53,6 +53,10 @@ const sidebarConfig = [
         path: '/admin/lessons'
       },
       {
+        title: 'Combo',
+        path: '/admin/combo'
+      },
+      {
         title: 'transfer',
         path: '/admin/transfer'
       },
