@@ -123,8 +123,7 @@ class LessonController {
         Lesson.find({ _id: { $nin: comboIdList } })
             .then((lessons) => {
                 res.status(200).json(lessons);
-            }
-            )
+            })
             .catch(next);
 
     }

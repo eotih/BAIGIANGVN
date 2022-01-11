@@ -14,8 +14,8 @@ class ComboController {
   }
   //[POST] /combo
   async create(req, res, next) {
-    const { name, price, image, description, lessons } = req.body;
-    if (!name || !image || !description || !lessons) {
+    const { name, price, image, description, lessons, sale } = req.body;
+    if (!name || !image || !description || !lessons || !sale) {
       res.status(400).json({
         message: "Please provide all the required fields",
         status: 400
@@ -45,7 +45,7 @@ class ComboController {
             status: 404
           });
         } else {
-          const { name, price, image, description, lessons } = req.body;
+          const { name, price, image, description, lessons,sale } = req.body;
           if (!name || !price || !image || !description || !lessons) {
             res.status(400).json({
               message: "Please provide all the required fields",
@@ -57,7 +57,8 @@ class ComboController {
             combo.image = image;
             combo.description = description;
             combo.lessons = lessons;
-            Combo
+            combo.sale = sale;
+            combo
               .save()
               .then((updatedCombo) => {
                 if (updatedCombo) {

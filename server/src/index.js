@@ -7,6 +7,7 @@ const route = require("./routes");
 const db = require("./configs/db.config");
 const dotenv = require("dotenv");
 const compression = require("compression");
+const morgan = require("morgan");
 // Config dotenv
 dotenv.config();
 // Connect to the database
@@ -35,6 +36,7 @@ app.use(cors());
 app.use(express.json()); // gửi từ code javascript
 app.use(express.static(path.join(__dirname, "public"))); // Cấp quyền cho phép người dùng có thể xem được những thứ trong folder public
 app.use(bodyParser.urlencoded({ extended: true })); // gửi từ code html
+app.use(morgan("dev"));
 // app.use((req, res, next) => {
 //   if(req.method=== 'POST'){
 //     req.body.createdAt = Date.now();

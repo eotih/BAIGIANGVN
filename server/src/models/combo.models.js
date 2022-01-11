@@ -7,6 +7,7 @@ const Combo = new Schema(
         price: { type: Number, required: true },
         image: { type: String, required: true },
         description: { type: String, required: true },
+        sale: { type: String, required: true },
         lessons: [{ type: Schema.Types.ObjectId, ref: 'Lesson' }]
     },
     {
