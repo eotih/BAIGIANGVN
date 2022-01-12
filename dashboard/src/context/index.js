@@ -24,6 +24,7 @@ export {
   getBank,
   createBank,
   updateBank,
+  deleteBank,
   getTransaction,
   createTransaction,
   getTransactionByEmail,
@@ -31,6 +32,9 @@ export {
   createCombo,
   updateCombo,
   deleteCombo,
-  deleteBank
+  getCart,
+  createCart,
+  updateCart,
+  deleteCart
 } from './connects';
 export * from './Hooks';

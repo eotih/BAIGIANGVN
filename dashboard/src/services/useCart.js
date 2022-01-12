@@ -3,7 +3,7 @@ import { useState } from 'react';
 export default function useCart() {
   const getCart = () => {
     const cartString = localStorage.getItem('cart');
-    return cartString;
+    return cartString ? JSON.parse(cartString) : [];
   };
   const [cart, setCart] = useState(getCart());
   const addToCart = (value) => {

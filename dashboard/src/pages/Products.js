@@ -16,6 +16,7 @@ import {
   ProductFilterSidebar
 } from '../components/_dashboard/products';
 import { styleModal } from '../components/tableListComponents';
+import useCart from '../services/useCart';
 //
 // import Scrollbar from '../components/Scrollbar';
 import { getLesson, lessonContext, comboContext, getCombo } from '../context';
@@ -24,18 +25,18 @@ import { getLesson, lessonContext, comboContext, getCombo } from '../context';
 
 export default function Product() {
   const [openFilter, setOpenFilter] = useState(false);
+  const [openCart, setOpenCart] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const handleCloseModal = () => setOpenModal(false);
   const handleOpenModal = () => setOpenModal(true);
   const { lesson, dispatch } = lessonContext();
   const { combo, dispatchCombo } = comboContext();
   const [comboLesson, setComboLesson] = useState([]);
-
+  const { cart, addToCart, removeFromCart } = useCart();
   useEffect(() => {
     getLesson(dispatch);
     getCombo(dispatchCombo);
   }, [dispatch, dispatchCombo]);
-
   const formik = useFormik({
     initialValues: {
       gender: '',
@@ -48,13 +49,12 @@ export default function Product() {
       setOpenFilter(false);
     }
   });
-  // const handleSubmitBuyCourseSuccess = () => {
-  //   console.log('handleSubmitBuyCourseSuccess');
-  // };
-  // const handleSubmitBuyCourseFail = () => {
-  //   console.log('handleSubmitBuyCourseSuccess');
-  // };
-
+  const handleAddToCart = (item) => {
+    addToCart(item);
+  };
+  const handleRemoveFromCart = (item) => {
+    removeFromCart(item);
+  };
   const handleShowModal = () => (
     <Modal
       keepMounted // Better open performance on mobile.
@@ -126,11 +126,16 @@ export default function Product() {
                   }}
                   spacing={2}
                 >
-                  <LoadingButton size="large" type="submit" variant="contained">
+                  <LoadingButton
+                    onClick={() => handleAddToCart(comboLesson)}
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                  >
                     Thêm vào giỏ hàng
                   </LoadingButton>
                   <LoadingButton
-                    onClick={() => handleCloseModal()}
+                    onClick={() => handleRemoveFromCart()}
                     color="error"
                     size="large"
                     type="submit"
@@ -157,6 +162,18 @@ export default function Product() {
   };
 
   const handleResetFilter = () => {
+    handleSubmit();
+    resetForm();
+  };
+  const handleOpenCart = () => {
+    setOpenCart(true);
+  };
+
+  const handleCloseCart = () => {
+    setOpenCart(false);
+  };
+
+  const handleResetCart = () => {
     handleSubmit();
     resetForm();
   };
@@ -212,11 +229,12 @@ export default function Product() {
         </Stack>
         <ProductList products={lesson} />
         <ProductCartWidget
+          cart={cart}
           formik={formik}
-          isOpenFilter={openFilter}
-          onResetFilter={handleResetFilter}
-          onOpenFilter={handleOpenFilter}
-          onCloseFilter={handleCloseFilter}
+          isOpenCart={openCart}
+          onResetCart={handleResetCart}
+          onOpenCart={handleOpenCart}
+          onCloseCart={handleCloseCart}
         />
       </Container>
     </Page>

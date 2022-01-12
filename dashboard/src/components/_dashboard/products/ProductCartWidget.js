@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react';
+import PropTypes from 'prop-types';
 import shoppingCartFill from '@iconify/icons-eva/shopping-cart-fill';
 // material
 import { Form, FormikProvider } from 'formik';
@@ -44,13 +45,19 @@ const RootStyle = styled('div')(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
+CartWidget.propTypes = {
+  isOpenCart: PropTypes.bool,
+  onOpenCart: PropTypes.func,
+  onCloseCart: PropTypes.func,
+  formik: PropTypes.object
+};
 
-export default function CartWidget({ isOpenFilter, onOpenFilter, onCloseFilter, formik }) {
-  const { values, getFieldProps, handleChange } = formik;
+export default function CartWidget({ isOpenCart, onOpenCart, onCloseCart, formik }) {
+  const { values, getFieldProps } = formik;
   return (
     <>
       <RootStyle>
-        <Badge onClick={onOpenFilter} showZero badgeContent={0} color="error" max={99}>
+        <Badge onClick={onOpenCart} showZero badgeContent={0} color="error" max={99}>
           <Icon icon={shoppingCartFill} width={24} height={24} />
         </Badge>
       </RootStyle>
@@ -58,8 +65,8 @@ export default function CartWidget({ isOpenFilter, onOpenFilter, onCloseFilter, 
         <Form autoComplete="off" noValidate>
           <Drawer
             anchor="right"
-            open={isOpenFilter}
-            onClose={onCloseFilter}
+            open={isOpenCart}
+            onClose={onCloseCart}
             PaperProps={{
               sx: { width: 280, border: 'none', overflow: 'hidden' }
             }}
@@ -76,7 +83,7 @@ export default function CartWidget({ isOpenFilter, onOpenFilter, onCloseFilter, 
                 </Typography>
                 <Icon icon={shoppingCartFill} width={24} height={24} />
               </Stack>
-              <IconButton onClick={onCloseFilter}>
+              <IconButton onClick={onCloseCart}>
                 <Icon icon={closeFill} width={20} height={20} />
               </IconButton>
             </Stack>
@@ -154,7 +161,12 @@ export default function CartWidget({ isOpenFilter, onOpenFilter, onCloseFilter, 
                 <LoadingButton size="large" type="submit" variant="contained">
                   Thanh toán
                 </LoadingButton>
-                <LoadingButton color="error" size="large" type="submit" variant="contained">
+                <LoadingButton
+                  onClick={() => onCloseCart()}
+                  color="error"
+                  size="large"
+                  variant="contained"
+                >
                   Hủy
                 </LoadingButton>
               </Stack>

@@ -36,7 +36,7 @@ export default function ComboMoreMenu({ data, lesson, onDelete, styleModal, onEd
   const { _id, name, image, description, price, lessons } = data;
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [newLesson, setNewLesson] = useState('');
+  const [setNewLesson] = useState('');
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
