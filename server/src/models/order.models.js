@@ -18,6 +18,7 @@ const Order = new Schema(
         ],
         paymentMethod: { type: String, required: true },
         totalPrice: { type: Number, required: true },
+        note: { type: String, required: true },
         user: {
             type: Schema.Types.ObjectId,
             ref: 'User',

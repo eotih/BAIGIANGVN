@@ -1,6 +1,6 @@
 const Combo = require("../models/combo.models");
 const Lesson = require("../models/lesson.models");
-
+const { getPrice } = require("../utils/math")
 class ComboController {
   // [GET] /combo
   show(req, res, next) {
@@ -14,7 +14,7 @@ class ComboController {
   }
   //[POST] /combo
   async create(req, res, next) {
-    const { name, price, image, description, lessons, sale } = req.body;
+    const { name, image, description, lessons, sale } = req.body;
     if (!name || !image || !description || !lessons || !sale) {
       res.status(400).json({
         message: "Please provide all the required fields",
@@ -22,10 +22,9 @@ class ComboController {
       });
     } else {
       const lesson = await Lesson.find({ _id: { $in: lessons } });
-      const perLesson = lesson.map(lesson => lesson.price);
-      const totalPrice = perLesson.reduce((a, b) => a + b, 0);
+      const lessonPrice = getPrice(lesson);
       const newCombo = new Combo(req.body);
-      newCombo.price = totalPrice;
+      newCombo.price = lessonPrice;
       try {
         const savedCombo = await newCombo.save();
         res.status(200).json({ message: "Combo created successfully", combo: savedCombo, status: 200 });
@@ -36,7 +35,7 @@ class ComboController {
     }
   }
   // [PUT] /combo/:id
-  update(req, res, next) {
+  async update(req, res, next) {
     Combo.findById(req.params.id)
       .then((combo) => {
         if (!combo) {
@@ -45,30 +44,35 @@ class ComboController {
             status: 404
           });
         } else {
-          const { name, price, image, description, lessons,sale } = req.body;
-          if (!name || !price || !image || !description || !lessons) {
+          const { name, image, description, lessons, sale } = req.body;
+          if (!name || !image || !description || !lessons) {
             res.status(400).json({
               message: "Please provide all the required fields",
               status: 400
             });
           } else {
-            combo.name = name;
-            combo.price = price;
-            combo.image = image;
-            combo.description = description;
-            combo.lessons = lessons;
-            combo.sale = sale;
-            combo
-              .save()
-              .then((updatedCombo) => {
-                if (updatedCombo) {
-                  res.status(200).json({ message: "Combo updated successfully", combo: updatedCombo, status: 200 });
-                }
-                else {
-                  res.status(400).json({ message: "Combo not updated", status: 400 });
-                }
+            Lesson.find({ _id: { $in: lessons } })
+              .then((lesson) => {
+                const lessonPrice = getPrice(lesson);
+                combo.name = name;
+                combo.image = image;
+                combo.description = description;
+                combo.lessons = lessons;
+                combo.price = lessonPrice;
+                combo.sale = sale;
+                combo
+                  .save()
+                  .then((updatedCombo) => {
+                    if (updatedCombo) {
+                      res.status(200).json({ message: "Combo updated successfully", combo: updatedCombo, status: 200 });
+                    }
+                    else {
+                      res.status(400).json({ message: "Combo not updated", status: 400 });
+                    }
+                  })
               })
               .catch(next);
+
           }
         }
       })
@@ -76,9 +80,9 @@ class ComboController {
   }
   // [DELETE] /combo/:id
   async deleteCombo(req, res, next) {
-    const Combo = await Combo.findById(req.params.id);
-    if (Combo) {
-      const deleteCombo = await Combo.remove();
+    const combo = await Combo.findById(req.params.id);
+    if (combo) {
+      const deleteCombo = await combo.remove();
       res.status(200).json({ message: "Combo Deleted", combo: deleteCombo, status: 200 });
     } else {
       res.status(404).json({ message: "Combo not found", status: 404 });
@@ -89,7 +93,7 @@ class ComboController {
     Combo.findById(req.params.id)
       .populate("lessons")
       .then((combo) => {
-        res.status(200).json(Combo);
+        res.status(200).json(combo);
       })
       .catch(next);
   }
