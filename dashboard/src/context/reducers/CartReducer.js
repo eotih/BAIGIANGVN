@@ -1,6 +1,4 @@
 const CartReducer = (state, action) => {
-  console.log('state', state);
-  console.log('action', action);
   switch (action.type) {
     case 'GET_CART_START':
       return {
@@ -39,6 +37,7 @@ const CartReducer = (state, action) => {
       };
     case 'CREATE_OR_UPDATE_CART_FAILURE':
       return {
+        ...state,
         loading: false,
         error: action.error
       };

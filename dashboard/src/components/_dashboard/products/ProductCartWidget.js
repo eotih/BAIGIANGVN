@@ -55,8 +55,8 @@ CartWidget.propTypes = {
 export default function CartWidget({ listCart, isOpenCart, onOpenCart, onCloseCart, formik }) {
   const [count, setCount] = useState(0);
   useEffect(() => {
-    if (listCart) {
-      const { lessons, combos } = listCart;
+    if (listCart[0]) {
+      const { lessons, combos } = listCart[0];
       if (lessons && combos) {
         setCount(lessons.length + combos.length);
       } else if (lessons) {
@@ -108,8 +108,8 @@ export default function CartWidget({ listCart, isOpenCart, onOpenCart, onCloseCa
                   Danh sách Combo
                 </Typography>
                 <FormGroup>
-                  {listCart && listCart.combos && listCart.combos.length > 0 ? (
-                    listCart.combos.map((combo) => <Label key={combo._id}>{combo.name}</Label>)
+                  {listCart[0] && listCart[0].combos && listCart[0].combos.length > 0 ? (
+                    listCart[0].combos.map((combo) => <Label key={combo._id}>{combo.name}</Label>)
                   ) : (
                     <Typography variant="subtitle">Không có combo nào</Typography>
                   )}
@@ -121,9 +121,11 @@ export default function CartWidget({ listCart, isOpenCart, onOpenCart, onCloseCa
                   Danh sách Khóa học
                 </Typography>
                 <FormGroup>
-                  {listCart &&
-                    listCart.lessons &&
-                    listCart.lessons.map((lesson) => <Label key={lesson._id}>{lesson.name}</Label>)}
+                  {listCart[0] &&
+                    listCart[0].lessons &&
+                    listCart[0].lessons.map((lesson) => (
+                      <Label key={lesson._id}>{lesson.name}</Label>
+                    ))}
                 </FormGroup>
                 <Divider />
               </Stack>
@@ -147,7 +149,7 @@ export default function CartWidget({ listCart, isOpenCart, onOpenCart, onCloseCa
                 >
                   <Typography variant="h6">Tiền tài liệu: </Typography>
                   <Label color="error" variant="filled">
-                    - {listCart && listCart.totalPrice ? listCart.totalPrice : 0} VND
+                    - {listCart[0] && listCart[0].totalPrice ? listCart[0].totalPrice : 0} VND
                   </Label>
                 </Stack>
                 <Divider />
