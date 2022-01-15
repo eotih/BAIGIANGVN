@@ -4,15 +4,13 @@ const { isAdmin, isAuthenticated } = require("../utils/auth");
 const {
   show,
   getById,
-  update,
+  addOrUpdate,
   deleteCart,
-  create,
 } = require("../controllers/cart.controller");
 
 router.get("/", isAuthenticated, show);
 router.get("/:id", isAuthenticated, getById);
-router.post("/", isAuthenticated, isAdmin, create);
-router.put("/:id", isAuthenticated, isAdmin, update);
-router.delete("/:id", isAuthenticated, isAdmin, deleteCart);
+router.post("/", isAuthenticated, addOrUpdate);
+router.delete("/:id", isAuthenticated, deleteCart);
 
 module.exports = router;
