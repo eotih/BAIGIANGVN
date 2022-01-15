@@ -5,7 +5,7 @@ const { getPrice } = require("../utils/math");
 class CartController {
   // [GET] /cart
   show(req, res, next) {
-    Cart.findOne({user: req.user._id})
+    Cart.find({ user: req.user._id })
       .sort({ createdAt: -1 })
       .populate("combos")
       .populate("lessons")
@@ -43,17 +43,23 @@ class CartController {
       }
     } else {
       // check in cart exist that lesson or combo id 
-      if(combos && cart.combos){
+      if (combos && cart.combos) {
         checkExistCombo = cart.combos.filter((combo) => combos.includes(combo._id));
       }
-      if(lessons && cart.lessons){
+      if (lessons && cart.lessons) {
         checkExistLesson = cart.lessons.filter((lesson) => lessons.includes(lesson._id));
       }
       if (checkExistLesson.length > 0 || checkExistCombo.length > 0) {
         res.status(400).json({ message: "Lesson or combo already exist in cart", status: 400 });
       } else {
-        cart.lessons = cart.lessons.concat(lessons);
-        cart.combos = cart.combos.concat(combos);
+        console.log('lesson', lesson);
+        console.log('combos', combos);
+        if (lessons !== undefined) {
+          cart.lessons = cart.lessons.concat(lessons);
+        }
+        if (combos !== undefined) {
+          cart.combos = cart.combos.concat(combos);
+        }
         cart.totalPrice = totalPrice;
         try {
           const savedCart = await cart.save();
