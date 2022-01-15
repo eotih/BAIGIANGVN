@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useFormik } from 'formik';
@@ -16,10 +17,19 @@ import {
   ProductFilterSidebar
 } from '../components/_dashboard/products';
 import { styleModal } from '../components/tableListComponents';
-import useCart from '../services/useCart';
+import { toastOpen } from '../components/Toast';
 //
 // import Scrollbar from '../components/Scrollbar';
-import { getLesson, lessonContext, comboContext, getCombo } from '../context';
+import {
+  getLesson,
+  lessonContext,
+  comboContext,
+  getCombo,
+  getCart,
+  deleteCart,
+  createOrUpdateCart,
+  cartContext
+} from '../context';
 
 // ----------------------------------------------------------------------
 
@@ -27,16 +37,24 @@ export default function Product() {
   const [openFilter, setOpenFilter] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [comboLesson, setComboLesson] = useState([]);
   const handleCloseModal = () => setOpenModal(false);
   const handleOpenModal = () => setOpenModal(true);
   const { lesson, dispatch } = lessonContext();
   const { combo, dispatchCombo } = comboContext();
-  const [comboLesson, setComboLesson] = useState([]);
-  const { cart, addToCart, removeFromCart } = useCart();
+  const { cart, message, status, dispatchCart } = cartContext();
+  const { openToast, handleOpenToast, renderToast } = toastOpen();
   useEffect(() => {
     getLesson(dispatch);
     getCombo(dispatchCombo);
-  }, [dispatch, dispatchCombo]);
+    getCart(dispatchCart);
+    if (message) {
+      handleOpenToast({
+        message,
+        color: status === 200 ? 'success' : 'error'
+      })();
+    }
+  }, [dispatch, dispatchCart, dispatchCombo, message]);
   const formik = useFormik({
     initialValues: {
       gender: '',
@@ -49,11 +67,17 @@ export default function Product() {
       setOpenFilter(false);
     }
   });
-  const handleAddToCart = (item) => {
-    addToCart(item);
+  const handleAddComboToCart = (item) => {
+    createOrUpdateCart(dispatchCart, {
+      combos: item._id
+    });
+    handleCloseModal();
   };
-  const handleRemoveFromCart = (item) => {
-    removeFromCart(item);
+  const handleAddLessonsToCart = (item) => {
+    createOrUpdateCart(dispatchCart, {
+      lessons: item._id
+    });
+    handleCloseModal();
   };
   const handleShowModal = () => (
     <Modal
@@ -127,7 +151,7 @@ export default function Product() {
                   spacing={2}
                 >
                   <LoadingButton
-                    onClick={() => handleAddToCart(comboLesson)}
+                    onClick={() => handleAddComboToCart(comboLesson)}
                     size="large"
                     type="submit"
                     variant="contained"
@@ -135,7 +159,7 @@ export default function Product() {
                     Thêm vào giỏ hàng
                   </LoadingButton>
                   <LoadingButton
-                    onClick={() => handleRemoveFromCart()}
+                    onClick={() => handleCloseModal()}
                     color="error"
                     size="large"
                     type="submit"
@@ -177,11 +201,11 @@ export default function Product() {
     handleSubmit();
     resetForm();
   };
-
   return (
     <Page title="Dashboard: Products | Sản phẩm">
       {openModal === true && handleShowModal()}
-      <Container maxWidth>
+      {openToast.isOpen === true && renderToast()}
+      <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
           Gói combo
         </Typography>
@@ -227,9 +251,10 @@ export default function Product() {
             <ProductSort />
           </Stack>
         </Stack>
-        <ProductList products={lesson} />
+        <ProductList addLessonsToCart={handleAddLessonsToCart} products={lesson} />
         <ProductCartWidget
-          cart={cart}
+          listCart={cart}
+          deleteCart={deleteCart}
           formik={formik}
           isOpenCart={openCart}
           onResetCart={handleResetCart}

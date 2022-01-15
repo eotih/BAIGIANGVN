@@ -12,7 +12,7 @@ const INITIAL_STATE = {
 };
 const CartContext = createContext(INITIAL_STATE);
 const CartContextProvider = ({ children }) => {
-  const [state, dispatchCombo] = useReducer(logger(CartReducer), INITIAL_STATE);
+  const [state, dispatchCart] = useReducer(logger(CartReducer), INITIAL_STATE);
   const { cart, status, message, loading, error } = state;
   return (
     <CartContext.Provider
@@ -22,7 +22,7 @@ const CartContextProvider = ({ children }) => {
         status,
         message,
         error,
-        dispatchCombo
+        dispatchCart
       }}
     >
       {children}

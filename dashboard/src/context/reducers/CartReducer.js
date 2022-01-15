@@ -1,4 +1,6 @@
 const CartReducer = (state, action) => {
+  console.log('state', state);
+  console.log('action', action);
   switch (action.type) {
     case 'GET_CART_START':
       return {
@@ -17,42 +19,26 @@ const CartReducer = (state, action) => {
         loading: false,
         error: action.error
       };
-    case 'CREATE_CART_START':
+    case 'CREATE_OR_UPDATE_CART_START':
       return {
         ...state,
         loading: true,
         error: null
       };
-    case 'CREATE_CART_SUCCESS':
+
+    case 'CREATE_OR_UPDATE_CART_SUCCESS':
       return {
         loading: false,
-        message: action.message,
         status: action.status,
-        cart: [...state.cart, action.cart]
-      };
-    case 'CREATE_CART_FAILURE':
-      return {
-        ...state,
-        loading: false,
-        error: action.error
-      };
-    case 'UPDATE_CART_START':
-      return {
-        ...state,
-        loading: true,
-        error: null
-      };
-    case 'UPDATE_CART_SUCCESS':
-      return {
-        cart: state.cart.map((cart) => (cart._id === action.cart._id ? action.cart : cart)),
         message: action.message,
-        status: action.status,
-        loading: false,
-        error: null
+        cart: action.cart.createdCart
+          ? [...state.cart, action.cart.createdCart]
+          : state.cart.map((cart) =>
+              cart._id === action.cart.updatedCart._id ? action.cart.updatedCart : cart
+            )
       };
-    case 'UPDATE_CART_FAILURE':
+    case 'CREATE_OR_UPDATE_CART_FAILURE':
       return {
-        ...state,
         loading: false,
         error: action.error
       };

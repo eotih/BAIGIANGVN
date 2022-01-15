@@ -9,30 +9,17 @@ const getCartFailure = (error) => ({
   type: 'GET_CART_FAILURE',
   error
 });
-const createCartStart = () => ({
-  type: 'CREATE_CART_START'
+const createOrUpdateCartStart = () => ({
+  type: 'CREATE_OR_UPDATE_CART_START'
 });
-const createCartSuccess = (cart) => ({
-  type: 'CREATE_CART_SUCCESS',
+const createOrUpdateCartSuccess = (cart) => ({
+  type: 'CREATE_OR_UPDATE_CART_SUCCESS',
   status: cart.status,
   message: cart.message,
-  cart: cart.cart
+  cart
 });
-const createCartFailure = (error) => ({
-  type: 'CREATE_CART_FAILURE',
-  error
-});
-const updateCartStart = () => ({
-  type: 'UPDATE_CART_START'
-});
-const updateCartSuccess = (cart) => ({
-  type: 'UPDATE_CART_SUCCESS',
-  status: cart.status,
-  message: cart.message,
-  cart: cart.cart
-});
-const updateCartFailure = (error) => ({
-  type: 'UPDATE_CART_FAILURE',
+const createOrUpdateCartFailure = (error) => ({
+  type: 'CREATE_OR_UPDATE_CART_FAILURE',
   error
 });
 const deleteCartStart = () => ({
@@ -53,12 +40,9 @@ export {
   getCartStart,
   getCartSuccess,
   getCartFailure,
-  createCartStart,
-  createCartSuccess,
-  createCartFailure,
-  updateCartStart,
-  updateCartSuccess,
-  updateCartFailure,
+  createOrUpdateCartStart,
+  createOrUpdateCartSuccess,
+  createOrUpdateCartFailure,
   deleteCartStart,
   deleteCartSuccess,
   deleteCartFailure

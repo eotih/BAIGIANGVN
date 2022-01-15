@@ -41,8 +41,8 @@ const bankContext = () => {
   return { bank, status, dispatch, message, error, loading };
 };
 const cartContext = () => {
-  const { cart, status, dispatch, message, error, loading } = useContext(CartContext);
-  return { cart, status, dispatch, message, error, loading };
+  const { cart, status, dispatchCart, message, error, loading } = useContext(CartContext);
+  return { cart, status, dispatchCart, message, error, loading };
 };
 const comboContext = () => {
   const { combo, status, dispatchCombo, message, error, loading } = useContext(ComboContext);

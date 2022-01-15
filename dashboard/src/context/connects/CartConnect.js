@@ -2,12 +2,9 @@ import {
   getCartStart,
   getCartSuccess,
   getCartFailure,
-  createCartStart,
-  createCartSuccess,
-  createCartFailure,
-  updateCartStart,
-  updateCartSuccess,
-  updateCartFailure,
+  createOrUpdateCartStart,
+  createOrUpdateCartSuccess,
+  createOrUpdateCartFailure,
   deleteCartStart,
   deleteCartSuccess,
   deleteCartFailure
@@ -24,22 +21,13 @@ const getCart = async (dispatch) => {
     dispatch(getCartFailure(error));
   }
 };
-const createCart = async (dispatch, cart) => {
-  dispatch(createCartStart());
+const createOrUpdateCart = async (dispatch, cart) => {
+  dispatch(createOrUpdateCartStart());
   try {
     const { data } = await axios.post('/cart', cart, configNormal);
-    dispatch(createCartSuccess(data));
+    dispatch(createOrUpdateCartSuccess(data));
   } catch (error) {
-    dispatch(createCartFailure(error));
-  }
-};
-const updateCart = async (dispatch, cart) => {
-  dispatch(updateCartStart());
-  try {
-    const { data } = await axios.put(`/cart/${cart._id}`, cart, configNormal);
-    dispatch(updateCartSuccess(data));
-  } catch (error) {
-    dispatch(updateCartFailure(error.response.data.message));
+    dispatch(createOrUpdateCartFailure(error));
   }
 };
 const deleteCart = async (dispatch, cart) => {
@@ -48,8 +36,8 @@ const deleteCart = async (dispatch, cart) => {
     const { data } = await axios.delete(`/cart/${cart}`, configNormal);
     dispatch(deleteCartSuccess(data));
   } catch (error) {
-    dispatch(deleteCartFailure(error.response.data.message));
+    dispatch(deleteCartFailure(error));
   }
 };
 
-export { getCart, createCart, updateCart, deleteCart };
+export { getCart, createOrUpdateCart, deleteCart };

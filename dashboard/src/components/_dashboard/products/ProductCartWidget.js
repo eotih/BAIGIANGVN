@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
 import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 import shoppingCartFill from '@iconify/icons-eva/shopping-cart-fill';
 // material
 import { Form, FormikProvider } from 'formik';
@@ -10,10 +11,8 @@ import {
   Badge,
   Stack,
   Drawer,
-  Checkbox,
   Divider,
   IconButton,
-  FormControlLabel,
   Typography,
   FormGroup
 } from '@mui/material';
@@ -49,15 +48,28 @@ CartWidget.propTypes = {
   isOpenCart: PropTypes.bool,
   onOpenCart: PropTypes.func,
   onCloseCart: PropTypes.func,
+  listCart: PropTypes.array,
   formik: PropTypes.object
 };
 
-export default function CartWidget({ isOpenCart, onOpenCart, onCloseCart, formik }) {
-  const { values, getFieldProps } = formik;
+export default function CartWidget({ listCart, isOpenCart, onOpenCart, onCloseCart, formik }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (listCart) {
+      const { lessons, combos } = listCart;
+      if (lessons && combos) {
+        setCount(lessons.length + combos.length);
+      } else if (lessons) {
+        setCount(lessons.length);
+      } else if (combos) {
+        setCount(combos.length);
+      }
+    }
+  }, [listCart]);
   return (
     <>
       <RootStyle>
-        <Badge onClick={onOpenCart} showZero badgeContent={0} color="error" max={99}>
+        <Badge onClick={onOpenCart} showZero badgeContent={count} color="error" max={99}>
           <Icon icon={shoppingCartFill} width={24} height={24} />
         </Badge>
       </RootStyle>
@@ -68,7 +80,7 @@ export default function CartWidget({ isOpenCart, onOpenCart, onCloseCart, formik
             open={isOpenCart}
             onClose={onCloseCart}
             PaperProps={{
-              sx: { width: 280, border: 'none', overflow: 'hidden' }
+              sx: { width: 300, border: 'none', overflow: 'hidden' }
             }}
           >
             <Stack
@@ -92,26 +104,27 @@ export default function CartWidget({ isOpenCart, onOpenCart, onCloseCart, formik
 
             <Scrollbar>
               <Stack spacing={3} sx={{ p: 3 }}>
-                <div>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Danh sách sản phẩm
-                  </Typography>
-                  <FormGroup>
-                    {FILTER_GENDER_OPTIONS.map((item) => (
-                      <FormControlLabel
-                        key={item}
-                        control={
-                          <Checkbox
-                            {...getFieldProps('gender')}
-                            value={item}
-                            checked={values.gender.includes(item)}
-                          />
-                        }
-                        label={item}
-                      />
-                    ))}
-                  </FormGroup>
-                </div>
+                <Typography variant="subtitle1" gutterBottom>
+                  Danh sách Combo
+                </Typography>
+                <FormGroup>
+                  {listCart && listCart.combos && listCart.combos.length > 0 ? (
+                    listCart.combos.map((combo) => <Label key={combo._id}>{combo.name}</Label>)
+                  ) : (
+                    <Typography variant="subtitle">Không có combo nào</Typography>
+                  )}
+                </FormGroup>
+                <Divider />
+              </Stack>
+              <Stack spacing={3} sx={{ p: 3 }}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Danh sách Khóa học
+                </Typography>
+                <FormGroup>
+                  {listCart &&
+                    listCart.lessons &&
+                    listCart.lessons.map((lesson) => <Label key={lesson._id}>{lesson.name}</Label>)}
+                </FormGroup>
                 <Divider />
               </Stack>
             </Scrollbar>
@@ -124,7 +137,7 @@ export default function CartWidget({ isOpenCart, onOpenCart, onCloseCart, formik
                 >
                   <Typography variant="h6">Khả dụng: </Typography>
                   <Label color="primary" variant="filled">
-                    31213213
+                    31213213 VND
                   </Label>
                 </Stack>
                 <Stack
@@ -134,7 +147,7 @@ export default function CartWidget({ isOpenCart, onOpenCart, onCloseCart, formik
                 >
                   <Typography variant="h6">Tiền tài liệu: </Typography>
                   <Label color="error" variant="filled">
-                    - 12312313
+                    - {listCart && listCart.totalPrice ? listCart.totalPrice : 0} VND
                   </Label>
                 </Stack>
                 <Divider />
@@ -145,7 +158,7 @@ export default function CartWidget({ isOpenCart, onOpenCart, onCloseCart, formik
                 >
                   <Typography variant="h6">Số dư </Typography>
                   <Label color="primary" variant="filled">
-                    2343242
+                    2343242 VND
                   </Label>
                 </Stack>
               </Stack>

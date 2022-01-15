@@ -33,8 +33,7 @@ export {
   updateCombo,
   deleteCombo,
   getCart,
-  createCart,
-  updateCart,
+  createOrUpdateCart,
   deleteCart
 } from './connects';
 export * from './Hooks';

@@ -25,4 +25,4 @@ export { getUser, createUser, updateUser, deleteUser } from './UserConnect';
 export { getTransaction, createTransaction, getTransactionByEmail } from './TransactionConnect';
 export { getBank, createBank, updateBank, deleteBank } from './BankConnect';
 export { getCombo, createCombo, updateCombo, deleteCombo } from './ComboConnect';
-export { getCart, createCart, updateCart, deleteCart } from './CartConnect';
+export { getCart, createOrUpdateCart, deleteCart } from './CartConnect';

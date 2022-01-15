@@ -44,10 +44,11 @@ const hoverZoomIn = {
 };
 // ----------------------------------------------------------------------
 ShopProductCard.propTypes = {
-  product: PropTypes.object
+  product: PropTypes.object,
+  addLessonsToCart: PropTypes.func
 };
 
-export default function ShopProductCard({ product }) {
+export default function ShopProductCard({ addLessonsToCart, product }) {
   const { name, image, price, sale, description, week, grade, category, subject } = product;
   const [open, setOpen] = useState(false);
   const [loadMore, setLoadMore] = useState(false);
@@ -59,7 +60,7 @@ export default function ShopProductCard({ product }) {
   const handleLoadMore = () => setLoadMore(true);
   const handleShowLess = () => setLoadMore(false);
   const handleOpenModalConfirm = () => {
-    console.log(123);
+    addLessonsToCart(product);
   };
 
   const styleBoxModal = {

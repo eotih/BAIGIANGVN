@@ -5,18 +5,18 @@ export default function useCart() {
     const cartString = localStorage.getItem('cart');
     return cartString ? JSON.parse(cartString) : [];
   };
-  const [cart, setCart] = useState(getCart());
+  const [cartStorage, setCartStorage] = useState(getCart());
   const addToCart = (value) => {
-    const newCart = [...cart, value];
+    const newCart = [...cartStorage, value];
     localStorage.setItem('cart', JSON.stringify(newCart));
-    setCart(newCart);
+    setCartStorage(newCart);
   };
   const removeFromCart = () => {
     localStorage.removeItem('cart');
-    setCart([]);
+    setCartStorage([]);
   };
   return {
-    cart,
+    cartStorage,
     addToCart,
     removeFromCart
   };
