@@ -52,8 +52,6 @@ class CartController {
       if (checkExistLesson.length > 0 || checkExistCombo.length > 0) {
         res.status(400).json({ message: "Lesson or combo already exist in cart", status: 400 });
       } else {
-        console.log('lesson', lesson);
-        console.log('combos', combos);
         if (lessons !== undefined) {
           cart.lessons = cart.lessons.concat(lessons);
         }
