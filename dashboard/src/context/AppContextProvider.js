@@ -8,6 +8,7 @@ import {
   TransactionContextProvider,
   ComboContextProvider,
   CartContextProvider,
+  OrderContextProvider,
   HistoryContextProvider
 } from './contexts';
 
@@ -22,4 +23,5 @@ providers.push(BankContextProvider);
 providers.push(TransactionContextProvider);
 providers.push(ComboContextProvider);
 providers.push(CartContextProvider);
+providers.push(OrderContextProvider);
 export const MasterProvider = providers.master();

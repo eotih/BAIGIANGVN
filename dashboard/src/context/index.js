@@ -34,6 +34,11 @@ export {
   deleteCombo,
   getCart,
   createOrUpdateCart,
-  deleteCart
+  deleteCart,
+  getOrder,
+  getOrderByUser,
+  createOrder,
+  updateOrder,
+  deleteOrder
 } from './connects';
 export * from './Hooks';

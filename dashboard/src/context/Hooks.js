@@ -10,6 +10,7 @@ import { BankContext } from './contexts/BankContext';
 import { ComboContext } from './contexts/ComboContext';
 import { TransactionContext } from './contexts/TransactionContext';
 import { CartContext } from './contexts/CartContext';
+import { OrderContext } from './contexts/OrderContext';
 
 const accountContext = () => {
   const account = useContext(AccountContext);
@@ -44,6 +45,10 @@ const cartContext = () => {
   const { cart, status, dispatchCart, message, error, loading } = useContext(CartContext);
   return { cart, status, dispatchCart, message, error, loading };
 };
+const orderContext = () => {
+  const { order, status, dispatchOrder, message, error, loading } = useContext(OrderContext);
+  return { order, status, dispatchOrder, message, error, loading };
+};
 const comboContext = () => {
   const { combo, status, dispatchCombo, message, error, loading } = useContext(ComboContext);
   return { combo, status, dispatchCombo, message, error, loading };
@@ -63,5 +68,6 @@ export {
   cartContext,
   transactionContext,
   comboContext,
+  orderContext,
   historyContext
 };

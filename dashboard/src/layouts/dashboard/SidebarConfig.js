@@ -33,10 +33,16 @@ const sidebarConfig = [
     icon: getIcon('si-glyph:money-coin')
   },
   {
-    title: 'lịch sử',
+    title: 'lịch sử nạp tiền',
     path: '/dashboard/lichsu',
     admin: false,
     icon: getIcon('fontisto:history')
+  },
+  {
+    title: 'đơn hàng',
+    path: '/dashboard/donhang',
+    admin: false,
+    icon: getIcon('ri:bill-line')
   },
   {
     title: 'admin',
@@ -51,6 +57,10 @@ const sidebarConfig = [
       {
         title: 'lessons',
         path: '/admin/lessons'
+      },
+      {
+        title: 'orders',
+        path: '/admin/orders'
       },
       {
         title: 'Combo',

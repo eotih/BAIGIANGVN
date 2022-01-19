@@ -45,8 +45,6 @@ export default function Product() {
   const { cart, message, status, dispatchCart } = cartContext();
   const { openToast, handleOpenToast, renderToast } = toastOpen();
   useEffect(() => {
-    getLesson(dispatch);
-    getCombo(dispatchCombo);
     getCart(dispatchCart);
     if (message) {
       handleOpenToast({
@@ -54,7 +52,11 @@ export default function Product() {
         color: status === 200 ? 'success' : 'error'
       })();
     }
-  }, [dispatch, dispatchCart, dispatchCombo, message]);
+  }, [dispatchCart, message]);
+  useEffect(() => {
+    getLesson(dispatch);
+    getCombo(dispatchCombo);
+  }, [dispatch, dispatchCombo]);
   const formik = useFormik({
     initialValues: {
       gender: '',
@@ -79,6 +81,18 @@ export default function Product() {
     });
     handleCloseModal();
   };
+  // const handleRemoveComboToCart = (item) => {
+  //   deleteCart(dispatchCart, {
+  //     combos: item._id
+  //   });
+  //   handleCloseModal();
+  // };
+  // const handleRemoveLessonsToCart = (item) => {
+  //   deleteCart(dispatchCart, {
+  //     lessons: item._id
+  //   });
+  //   handleCloseModal();
+  // };
   const handleShowModal = () => (
     <Modal
       keepMounted // Better open performance on mobile.

@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import Invest from './pages/Invest';
 import Products from './pages/Products';
 import History from './pages/History';
+import Order from './pages/Order';
 // import Blog from './pages/Blog';
 import NotFound from './pages/Page404';
 import isAdmin from './services/auth';
@@ -22,6 +23,7 @@ import Combo from './pages/Admin/Combo';
 import TrashbinNewsAdmin from './pages/Admin/Trash-bin-news';
 import Transfer from './pages/Admin/Transfer';
 import LessonAdmin from './pages/Admin/Lessons';
+import OrderAdmin from './pages/Admin/Order';
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +39,7 @@ export default function Router() {
         { path: 'products', element: <Products /> },
         { path: 'taikhoan', element: <Profile /> },
         { path: 'naptien', element: <Invest /> },
+        { path: 'donhang', element: <Order /> },
         { path: 'lichsu', element: <History /> }
       ]
     },
@@ -59,6 +62,7 @@ export default function Router() {
         { path: 'notifications', element: admin ? <Notifications /> : <NotFound /> },
         { path: 'transfer', element: admin ? <Transfer /> : <NotFound /> },
         { path: 'combo', element: admin ? <Combo /> : <NotFound /> },
+        { path: 'orders', element: admin ? <OrderAdmin /> : <NotFound /> },
         { path: 'bank', element: admin ? <Bank /> : <NotFound /> }
       ]
     },

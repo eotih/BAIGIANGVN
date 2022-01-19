@@ -89,3 +89,17 @@ export {
   deleteCartSuccess,
   deleteCartFailure
 } from './CartAction';
+export {
+  getOrderStart,
+  getOrderSuccess,
+  getOrderFailure,
+  createOrderStart,
+  createOrderSuccess,
+  createOrderFailure,
+  updateOrderStart,
+  updateOrderSuccess,
+  updateOrderFailure,
+  deleteOrderStart,
+  deleteOrderSuccess,
+  deleteOrderFailure
+} from './OrderAction';

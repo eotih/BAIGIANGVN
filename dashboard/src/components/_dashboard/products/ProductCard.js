@@ -54,13 +54,14 @@ export default function ShopProductCard({ addLessonsToCart, product }) {
   const [loadMore, setLoadMore] = useState(false);
   // const account = accountContext();
   // const { money } = account.user;
-  const totalPrice = (price * 80) / 100;
+  const totalPrice = price - (price * sale) / 100;
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
   const handleLoadMore = () => setLoadMore(true);
   const handleShowLess = () => setLoadMore(false);
   const handleOpenModalConfirm = () => {
     addLessonsToCart(product);
+    handleCloseModal();
   };
 
   const styleBoxModal = {

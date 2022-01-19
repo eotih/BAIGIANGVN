@@ -7,3 +7,4 @@ export { default as BankReducer } from './BankReducer';
 export { default as TransactionReducer } from './TransactionReducer';
 export { default as ComboReducer } from './ComboReducer';
 export { default as CartReducer } from './CartReducer';
+export { default as OrderReducer } from './OrderReducer';
