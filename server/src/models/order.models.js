@@ -3,28 +3,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Order = new Schema(
     {
-        orderItems: [
-            {
-                name: { type: String, required: true },
-                price: { type: Number, required: true },
-                quantity: { type: Number, required: true },
-                image: { type: String, required: true },
-                lesson: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Lesson',
-                    required: true
-                },
-            }
-        ],
-        paymentMethod: { type: String, required: true },
+        lessons: [{ type: Schema.Types.ObjectId, ref: 'Lesson' }],
+        combos: [{ type: Schema.Types.ObjectId, ref: 'Combo' }],
         totalPrice: { type: Number, required: true },
-        note: { type: String, required: true },
-        user: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
-        }, // user who made the order
-        paidAt: { type: Date },
+        note: { type: String },
+        state: { type: String, required: true, default: 'Pending' },
+        user: { type: Schema.Types.ObjectId, ref: 'User', required: true }// user who made the order
     },
     {
         timestamps: true,

@@ -1,68 +1,89 @@
 const Order = require('../models/order.models');
 const User = require('../models/user.models');
+const Cart = require('../models/cart.models');
 
 class OrderController {
-    // [GET] /orders
+    // [GET] /order
     show(req, res, next) {
-        Order.find().sort({ createdAt: -1 })
+        Order.find()
+            .sort({ createdAt: -1 })
+            .populate("combos")
+            .populate("lessons")
+            .populate("user", { name: 1, image: 1 })
             .then((orders) => {
-                if (orders) {
-                    res.status(200).json(orders);
+                res.status(200).json(orders);
+            })
+            .catch(next);
+    }
+    // [POST] /order
+    async create(req, res, next) {
+        const { lessons, combos, totalPrice } = req.body;
+        const user = await User.findById(req.user._id);
+        const cart = await Cart.findOne({ user: req.user._id });
+        if (!lessons || !combos || !totalPrice) {
+            res.status(400).json({
+                message: 'Missing fields',
+                status: 400
+            });
+        } else {
+            const newOrder = new Order(req.body);
+            newOrder.save()
+                .then((order) => {
+                    if (order) {
+                        user.money = Number(user.money) - Number(totalPrice);
+                        user.save()
+                        // delete cart from user
+                        cart.remove()
+                        res.status(200).json({
+                            message: 'Order created successfully',
+                            status: 200,
+                            order
+                        });
+                    }
+                    else {
+                        res.status(400).json({
+                            message: 'Order not created',
+                            status: 400
+                        });
+                    }
+                })
+                .catch(next);
+        }
+
+    }
+    //[PUT] /order/:id
+    updateState(req, res, next) {
+        const { state } = req.body;
+        Order.findById(req.params.id)
+            .then((order) => {
+                if (!order) {
+                    res.status(404).json({
+                        message: 'Order not found'
+                    });
                 } else {
-                    res.status(404).json({ message: 'No orders found', status: 404 });
+                    order.state = state;
+                    order.save()
+                        .then((order) => {
+                            if (order) {
+                                res.status(200).json({
+                                    message: 'Order updated successfully',
+                                    status: 200,
+                                    order
+                                });
+                            }
+                            else {
+                                res.status(400).json({
+                                    message: 'Order not updated',
+                                    status: 400
+                                });
+                            }
+                        })
+                        .catch(next);
                 }
             })
             .catch(next);
     }
-    // [POST] /orders
-    async create(req, res, next) {
-        const { orderItems, paymentMethod, itemsPrice, totalPrice } = req.body;
-        if (orderItems.length === 0) {
-            res.status(400).json({
-                message: 'Order must have at least one item'
-            });
-        }
-        else {
-            // Check if user exists and money is enough
-            const user = await User.findById(user);
-            if (!user) {
-                res.status(400).json({
-                    message: 'User does not exist',
-                    status: 400
-                });
-            }
-            else if (user.money < totalPrice) {
-                res.status(400).json({
-                    message: 'User does not have enough money',
-                    status: 400
-                });
-            }
-            else {
-                if (orderItems.length > 0) {
-                    for (let i = 0; i < orderItems.length; i++) {
-                        const order = new Order({
-                            orderItems: orderItems[i],
-                            user: req.user._id,
-                            paymentMethod: paymentMethod,
-                            totalPrice: totalPrice,
-
-                        })
-                        const createdOrder = await order.save();
-                        user.money -= totalPrice;
-                        user.deposited += totalPrice;
-                        await user.save();
-                        res.status(200).json({ message: 'Order created', order: createdOrder, status: 200 });
-                    }
-                } else {
-                    res.status(400).json({
-                        message: 'Order must have at least one item',
-                        status: 400
-                    });
-                }
-            }
-        }
-    }
-    // [DELETE] /orders/:id
+    // [DELETE] /order/:id
     deleteOrder(req, res, next) {
         Order.deleteOne({ _id: req.params.id })
             .then((order) => {
@@ -75,7 +96,7 @@ class OrderController {
             })
             .catch(next);
     }
-    // [GET] /orders/:id
+    // [GET] /order/:id
     getById(req, res, next) {
         Order.findById(req.params.id)
             .then((order) => {
@@ -88,9 +109,13 @@ class OrderController {
             })
             .catch(next);
     }
-    //[GET] /orders/user/:id
+    //[GET] /order/user
     getByUserId(req, res, next) {
-        Order.find({ user: req.params.id })
+        Order.find({ user: req.user._id })
+        .sort({ createdAt: -1 })
+        .populate("combos")
+        .populate("lessons")
+        .populate("user", { name: 1, image: 1 })
             .then((orders) => {
                 if (orders) {
                     res.status(200).json(orders);

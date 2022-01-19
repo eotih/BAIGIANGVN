@@ -1,6 +1,6 @@
 const Combo = require("../models/combo.models");
 const Lesson = require("../models/lesson.models");
-const { getPrice } = require("../utils/math")
+const { getPriceCombos } = require("../utils/math")
 class ComboController {
   // [GET] /combo
   show(req, res, next) {
@@ -22,7 +22,7 @@ class ComboController {
       });
     } else {
       const lesson = await Lesson.find({ _id: { $in: lessons } });
-      const lessonPrice = getPrice(lesson);
+      const lessonPrice = getPriceCombos(lesson);
       const newCombo = new Combo(req.body);
       newCombo.price = lessonPrice;
       try {

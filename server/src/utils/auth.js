@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const generateToken = (user) => {
-    const { _id, name, email, isAdmin, money, image, deposited } = user;
+    const { _id, name, email, isAdmin, image } = user;
     return jwt.sign(
         {
             _id: _id,

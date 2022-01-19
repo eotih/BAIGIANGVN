@@ -1,7 +1,7 @@
 const Cart = require("../models/cart.models");
 const Combo = require("../models/combo.models");
 const Lesson = require("../models/lesson.models");
-const { getPrice } = require("../utils/math");
+const { getPrice, getPriceCombos } = require("../utils/math");
 class CartController {
   // [GET] /cart
   show(req, res, next) {
@@ -9,7 +9,7 @@ class CartController {
       .sort({ createdAt: -1 })
       .populate("combos")
       .populate("lessons")
-      .populate("user")
+      .populate("user", { _id: 1, money: 1 })
       .then((cart) => {
         res.status(200).json(cart);
       })
@@ -58,7 +58,7 @@ class CartController {
         if (combos !== undefined) {
           cart.combos = cart.combos.concat(combos);
         }
-        cart.totalPrice = totalPrice;
+        cart.totalPrice = Number(cart.totalPrice) + Number(totalPrice);
         try {
           const savedCart = await cart.save();
           res.status(200).json({ message: "Cart updated successfully", updatedCart: savedCart, status: 200 });
@@ -67,6 +67,28 @@ class CartController {
           res.status(500).json({ message: err, status: 500 });
         }
       }
+    }
+  }
+  // [PUT] cart/:id
+  async minusCart(req, res, next) {
+    const cart = await Cart.findById(req.params.id);
+    if (cart) {
+      const { combos, lessons } = req.body;
+      const lesson = await Lesson.find({ _id: { $in: lessons } });
+      const combo = await Combo.find({ _id: { $in: combos } });
+      const comboPrice = getPrice(combo);
+      const lessonPrice = getPrice(lesson);
+      const totalPrice = comboPrice + lessonPrice;
+      cart.totalPrice = totalPrice;
+      try {
+        const savedCart = await cart.save();
+        res.status(200).json({ message: "Cart updated successfully", updatedCart: savedCart, status: 200 });
+      }
+      catch (err) {
+        res.status(500).json({ message: err, status: 500 });
+      }
+    } else {
+      res.status(404).json({ message: "Cart not found", status: 404 });
     }
   }
   // [DELETE] /cart/:id

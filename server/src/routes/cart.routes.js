@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { isAdmin, isAuthenticated } = require("../utils/auth");
+const { isAuthenticated } = require("../utils/auth");
 const {
   show,
   getById,

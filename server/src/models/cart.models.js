@@ -6,7 +6,7 @@ const Cart = new Schema(
         totalPrice: { type: Number, required: true },
         lessons: [{ type: Schema.Types.ObjectId, ref: 'Lesson' }],
         combos: [{ type: Schema.Types.ObjectId, ref: 'Combo' }],
-        user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 
     },
     {
